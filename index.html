@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App de Nutrición</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f6faf5;
+      font-family: "Poppins", system-ui, -apple-system, sans-serif;
+      color: #2f4f3a;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      text-align: center;
+      padding: 0 16px;
+      opacity: 0;
+      animation: entrada 1.2s ease-out forwards;
+    }
+
+    @keyframes entrada {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      h1 {
+        animation: none;
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Hola, app de nutrición</h1>
+</body>
+</html>
