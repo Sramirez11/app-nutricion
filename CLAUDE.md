@@ -14,7 +14,7 @@
   Los archivos hoy-v* (desde la v71) solo tienen el home y el
   registro (alimentos, agua y suplementos); Mi plan, Estadísticas
   y Milo no se dibujan ahí.
-- Todas las secciones respetan el alcance de Hoy (hoy-v98, antes
+- Todas las secciones respetan el alcance de Hoy (hoy-v106, antes
   v69) descrito en este archivo. Cuando una pantalla muestra otra
   sección (por ejemplo, el recorrido del onboarding mostrando Hoy),
   usa el diseño más reciente de esa sección, sin reinventarlo. Si
@@ -32,11 +32,11 @@
 - Objetivos: perder peso, mantenerlo o ganar masa (sin dirty bulk).
 - La app no reemplaza a un nutricionista.
 
-## Arquitectura (referencia: wireframes/hoy-v98.html)
+## Arquitectura (referencia: wireframes/hoy-v106.html)
 - Barra de navegación = solo lugares: Hoy, Mi plan, Estadísticas.
   A la derecha, el botón de Milo.
 - Perfil vive en el avatar del encabezado, no en la barra.
-- No hay botón flotante "+". Se registra desde las tarjetas de Hoy.
+- No hay botón flotante "+". Se registra desde los tabs de Hoy.
 - Cada elemento tiene un solo trabajo.
 - Onboarding: meta obligatoria y datos básicos; el plan de comidas
   es opcional y se puede crear después desde Mi plan.
@@ -65,7 +65,7 @@
   callout informativo, sin ritmo y con "Continuar" desactivado.
 - "¿Qué comidas haces al día?": checks con 4 marcadas (desayuno,
   almuerzo, snack de la tarde y cena) y un callout. Sin contador.
-  Reparte las calorías por comida y define "Comidas 0 de 4" en Hoy.
+  Reparte las calorías por comida y define las filas de "Tus comidas" en Hoy.
 - Números con teclado numérico, solo en cm y kg. Botones "Atrás" y
   "Continuar" del mismo tamaño, sin chevrones. Lenguaje sin siglas.
 - "Tu plan está listo": un solo botón principal, "Ir al inicio". La
@@ -89,56 +89,64 @@
 ## Hoy
 - Tarjeta de balance: "Calorías consumidas X / 2.000 kcal" con
   barra, y Proteína, Carbos y Grasa en formato "actual / meta".
-- "¿Qué quieres registrar hoy?": 3 tarjetas horizontales (Comidas,
-  Agua, Suplementos) con título, cantidad y un botón oscuro con +
-  blanco. Toda la tarjeta es táctil. Cantidades: Comidas "3 de 5"
-  (sin plan: "3 hoy"), Agua en vasos ("6 de 8 vasos"; 1 vaso =
-  250 ml, 8 vasos = 2 L) y Suplementos "1 de 2".
+- Debajo del balance, 3 tabs solo con el nombre, en chips: Comidas,
+  Agua y Suplementos, sin estado ni contador. Siempre abre en Comidas.
+- Tab Comidas: no hay botón de Comidas. Cada comida marcada en el
+  paso 5 del onboarding es una fila con aire. Vacía: solo imagen,
+  nombre y un + oscuro, sin plato, sin "pendiente" ni resaltar según
+  la hora. Registrada: lo que comió y un lápiz. Al final, una fila
+  punteada "+ Agregar otra comida".
 - Nombres de las comidas en toda la app, iguales al onboarding:
   Desayuno, Snack de la mañana, Almuerzo, Snack de la tarde y Cena.
-- Comidas: dos caminos, sin más. La tarjeta abre el drawer
-  "Registrar comida" con "Comidas del plan · Agrega una comida de tu
-  plan de comidas" (sin decir qué comida "toca"; sin plan: "Lo
-  frecuente") o "Algo nuevo".
-  - Comidas del plan: "¿Cuál vas a registrar?" lista solo las
-    comidas del plan que faltan (cada una se registra una vez al
-    día). Cada tarjeta: foto, nombre de la comida, plato y el radio
-    a la derecha, sin kcal. Al elegir una, se abre el bloque de porción, igual en
-    todos los casos: con alerta, una línea "Bajo en proteína · 62 de
-    140 g" con barra y "Elige tu porción" con dos tarjetas
-    horizontales, una debajo de otra (Ajustada, recomendada, / De
-    siempre), con la porción en gramos en una línea (ej.: "Yogur
-    griego 200 g · Queso 30 g") y el radio a la derecha; la elegida
-    se resalta (borde de 2 px y fondo gris), con aire entre tarjetas.
-    Sin alerta, "Tu porción" es una lista sin tarjeta (Proteína:
-    2 huevos pericos · Carbohidrato: 1 arepa mediana · Bebida: 1
-    taza de café con leche). → "Registrar" (desactivado
-    hasta elegir) → snackbar.
-  - Algo nuevo: solo dos opciones, "Tomar foto" o "Buscar". El
-    momento sale de la hora y se cambia en el chip del encabezado.
-  - Buscar: resultados con su fuente (ICBF primero) → porción en
-    este orden: imagen, información nutricional (kcal, proteína,
-    carbos, grasa en bloques) y al final "¿Cuántas comiste?" con −
-    y + oscuros y la unidad ("mediana · 90 g") → Registrar.
-  - Cámara y Editar (lápiz) usan la misma revisión: imagen, total
-    nutricional en bloques y cada alimento con su porción debajo
-    ("1 pocillo · 5 kcal") y "✎ Editar", más "+ Agregar otro
-    alimento" → Registrar (en Editar, "Guardar").
+- Registrar una comida: tocar la fila abre un drawer con el nombre
+  de la comida y 3 opciones: "Comida del plan" (con el plato), "Nueva
+  comida" y "Preparar algo con lo que tengo". Sin plan, las dos últimas.
+  - Comida del plan (3 toques: fila → Comida del plan → Registrar):
+    pantalla con el plato y sus ingredientes en lista, sin tarjeta
+    (Proteína: 2 huevos pericos · Carbohidrato: 1 arepa mediana ·
+    Fruta: 1 fruta). Solo si va bajo en proteína: una línea "Bajo en
+    proteína · 62 de 140 g" con barra y "Elige tu porción" con dos
+    tarjetas horizontales (Ajustada, recomendada, / De siempre), con
+    la porción en gramos y el radio a la derecha; la elegida se
+    resalta (borde de 2 px y fondo gris). Sin kcal. → snackbar con
+    Deshacer. Cada comida se registra una vez al día.
+  - Nueva comida: solo "Tomar foto" o "Buscar". Queda en la comida
+    que tocó; no se elige el momento.
+  - Buscar: resultados con su fuente (ICBF primero), incluidos platos
+    completos si están en la base de datos → porción: imagen,
+    información nutricional en bloques y "¿Cuánto comiste?" con − y +
+    → "Registrar" o "+ Agregar otro alimento".
+  - Tu plato (varios alimentos), Cámara, "Ya la comí" y Editar (lápiz)
+    usan la misma revisión: total nutricional en bloques y cada
+    alimento con su porción debajo ("1 pocillo · 5 kcal") y "✎ Editar",
+    más "+ Agregar otro alimento" → Registrar (en Editar, "Guardar" y
+    "Quitar esta comida"). Salir con la × con algo agregado pregunta
+    "¿Salir sin guardar?".
+  - Preparar: abre Milo sabiendo qué comida tocó. Milo propone la
+    preparación y termina en "Ya la comí", que abre la revisión con
+    los ingredientes llenos. Con la × no se registra nada.
+  - "+ Agregar otra comida": drawer "Otra comida" con Tomar foto o
+    Buscar y, si hay plan, el aviso "Queda fuera de tu plan y suma a
+    tu día" (no restringe). Queda como fila con la etiqueta "Fuera
+    del plan". Sin plan funciona igual, sin aviso.
   - Grabar (voz) queda fuera del MVP.
-- Agua: drawer (no pantalla completa), solo en vasos de 250 ml.
-  Solo tiene "¿Cuántos vasos tomaste?" con ×, "Meta: 8 vasos de
-  250 ml = 2 L" en pequeño, el contador (+ negro, − con borde; 1
-  por defecto, el − desactivado en 1) y "Registrar" (2 toques).
-  Nada de cuántos llevas ni vasitos: ya lo dice la tarjeta. Se
-  puede pasar de 8 vasos. Sin selección de medida.
+- Tab Agua: sin meta, estado vacío "Aún no defines tu agua" con
+  "Definir mi meta", que abre un drawer con "¿Cuántos vasos quieres
+  tomar al día?", la recomendación destacada ("Te recomendamos 8 vasos
+  al día · Equivalen a 2 litros de agua"), contador y "Guardar". Con
+  meta, una sola tarjeta: "6 / 8 vasos" con − y +, barra y abajo "Tu
+  meta: 2 litros al día" con "✎ Editar". El + registra al momento con
+  Deshacer; sin botón de guardar. Se puede pasar de la meta. Solo
+  vasos de 250 ml. Editar la meta abre el mismo drawer sin botón: se
+  guarda al cambiarla y confirma con "Meta actualizada".
 - Los elementos de selección (radio y check) van a la derecha de la
   tarjeta, salvo los checks de listas para marcar.
 - Todos los drawers tienen una × para cerrar y también se cierran
   tocando el fondo. En drawers y pantallas completas, la × va a la
   derecha del título.
 - Suplementos tiene dos momentos, separados en el diseño.
-- Suplementos, primera vez (al tocar la tarjeta, que dice
-  "Agregar"): usa el tracker del onboarding (‹ desde el paso 2,
+- Suplementos, primera vez: su tab muestra el estado vacío "Aún no
+  agregas suplementos" con "Agregar suplementos", que abre 3 pasos con el tracker del onboarding (‹ desde el paso 2,
   3 segmentos, "X de 3" y × a la derecha) y un título de 28 sin
   subtítulo.
   1) "¿Qué suplementos tomas?": buscador y "Los más comunes" (sin
@@ -159,55 +167,26 @@
      permiso de notificaciones (en iPhone solo si la app está en la
      pantalla de inicio).
   "Confirmar": título y botón dicen "Confirmar"; resumen de
-  suplementos, días y recordatorio. Vuelve al home con el snackbar
-  "Confirmamos tus 2 suplementos" y la tarjeta en "0 de 2".
+  suplementos, días y recordatorio. Vuelve al tab con el snackbar
+  "Confirmamos tus 2 suplementos" y el avance en 0.
 - Drawer de dosis (con aire): "Medida" (las unidades que aplican;
   ej.: creatina en gramos o scoop), luego "¿Cuánto tomas cada vez?"
   con − y + oscuros y el valor "5 g por toma" → "Guardar" (al
   editar, también "Quitar de mis suplementos").
-- Suplementos, uso diario: pantalla con un solo título, "Suplementos
-  de hoy", sin divisor, con el botón de acción "✎ Editar" junto a la
-  × (entra al flujo de 3 pasos; solo ahí se agrega, cambia o quita
-  un suplemento). Debajo, 3 bloques grises iguales (mismo ancho,
-  radio y espaciado que las filas) con lo general, en grande:
-  cuántos suplementos, los días ("Lun a vie") y el recordatorio
-  ("8:00 a. m."). La dosis no se repite arriba: vive en las filas.
-  Abajo, "Marca lo que tomaste hoy · 1 de 2": filas con check como
-  en la primera vez (nombre y "5 g por toma"); lo pendiente no
-  viene marcado. Aquí solo se marca: lo ya tomado se ve con check
-  gris y la hora y no se desmarca; un error se corrige con Deshacer
-  en el snackbar. "Registrar (X)" se activa al marcar algo, guarda
-  y vuelve al home con el snackbar. La dosis "solo por hoy" queda
-  fuera del MVP.
-- La tarjeta de suplementos cuenta solo los días programados; si
-  hoy no toca (ej.: sábado con "Lunes a viernes"), dice "Hoy no
-  toca". Si un
-  suplemento tiene calorías (ej.: proteína en polvo), suma al
-  balance del día.
-- Todos los drawers tienen una × para cerrar y también se cierran
-  tocando el fondo. En drawers y pantallas completas, la × va a la
-  derecha del título.
-- Suplementos: pantalla completa (puede haber muchos). Cada uno con
-  nombre, medida por toma y el contador del agua (− y +). "Por
-  tomar" viene en 1; "Ya tomados" muestra la hora. Con todo en 0,
-  "Registrar" se desactiva. "+ Agregar suplemento": nombre (con
-  sugerencias), cantidad por toma y unidad (cápsulas, gramos o
-  scoop) → Guardar. Cambiar la medida o quitar vive en "Editar"
-  (arriba a la derecha), no en cada fila. Sin suplementos: estado
-  vacío con "Agregar suplemento". Si un suplemento tiene calorías
-  (ej.: proteína en polvo), suma al balance del día.
-- Todos los drawers tienen una × para cerrar y también se cierran
-  tocando el fondo. En drawers y pantallas completas, la × va a la
-  derecha del título.
-- Suplementos: pantalla completa con cada suplemento por nombre y
-  su medida como dato con lápiz (cápsulas, gramos o scoop). Lo
-  pendiente viene marcado. Sin suplementos: estado vacío con
-  "Agregar suplemento".
-- "Comidas de hoy": lo registrado (comida y plato) con lápiz para
-  editar, sin kcal por comida: el total ya está en la tarjeta de
-  balance. Los snackbars de comidas tampoco muestran kcal
-  ("Snack de la tarde registrado", con Deshacer). El
-  lápiz abre la misma pantalla de revisión; su botón dice "Guardar".
+- Suplementos, uso diario: en su tab, una sola tarjeta igual a la del
+  agua: "1 / 2 suplementos" con barra, una fila con check por
+  suplemento (nombre y "5 g por toma"; lo pendiente no viene marcado)
+  y abajo "Lunes a viernes · 8:00 a. m." con "✎ Editar", que entra a
+  los 3 pasos (solo ahí se agrega, cambia o quita). Marcar registra al
+  momento con Deshacer, sin botón. Lo ya tomado se ve con check gris y
+  la hora y no se desmarca. Si hoy no toca (ej.: sábado con "Lunes a
+  viernes"), la tarjeta dice "Hoy no toca". Si un suplemento tiene
+  calorías (ej.: proteína en polvo), suma al balance del día. La dosis
+  "solo por hoy" queda fuera del MVP.
+- Sin kcal por comida en el home ni en los snackbars de comidas ("Snack
+  de la tarde registrado", con Deshacer): el total ya está en el
+  balance. El lápiz abre la pantalla de revisión; su botón dice
+  "Guardar".
 - El botón de registrar solo dice "Registrar".
 
 ## Mi plan (alcance MVP, referencia: wireframes/plan-v3.html)
@@ -253,6 +232,9 @@
 - "Analizar mi progreso" interpreta los datos de Estadísticas (el
   porqué y qué sigue), sin mostrar cifras distintas. Milo no es un
   panel de estadísticas: lo básico no depende de la IA.
+- "Preparar algo con lo que tengo" también se abre desde una comida
+  en Hoy: es la misma conversación, sabe qué comida tocó y termina en
+  "Ya la comí".
 - Atajo: registrar el peso por chat, con confirmación de lo que Milo
   entendió; se guarda en Estadísticas.
 
@@ -262,9 +244,8 @@
   (genéricos), Open Food Facts (marcas). La IA estima porciones;
   los macros salen de la base de datos.
 - La alerta de nutrición se activa pasada la hora del almuerzo si
-  un macro va por debajo del 50 % de la meta. Se muestra dentro de
-  la tarjeta de la comida elegida en "Comidas del plan", no como
-  fila en Hoy.
+  un macro va por debajo del 50 % de la meta. Se muestra al abrir
+  "Comida del plan", no como fila en Hoy.
 - Los ajustes de porción deben ser realistas y en gramos del
   alimento (ej.: yogur 100 g → 200 g).
 - Ritmo para perder peso según el peso de cada persona: Constante
