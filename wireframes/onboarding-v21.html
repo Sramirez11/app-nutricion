@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe – Onboarding v21</title>
+  <style>
+    /* ===== Paleta de wireframe: solo grises, blanco y negro (igual a hoy-v69) ===== */
+    :root {
+      --negro: #111;
+      --gris-oscuro: #555;
+      --gris-medio: #999;
+      --gris-claro: #ddd;
+      --gris-fondo: #f2f2f2;
+      --blanco: #fff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--gris-claro);
+      color: var(--negro);
+      padding: 24px 16px;
+    }
+
+    .intro { max-width: 820px; margin: 0 auto 32px; font-size: 13px; color: var(--gris-oscuro); line-height: 1.5; }
+    .intro h1 { font-size: 17px; color: var(--negro); margin-bottom: 6px; }
+
+    .lienzo { display: flex; justify-content: center; align-items: flex-start; gap: 48px; flex-wrap: wrap; }
+
+    .etiqueta-vista { text-align: center; margin-bottom: 12px; max-width: 390px; }
+    .etiqueta-vista strong { display: block; font-size: 14px; }
+    .etiqueta-vista span { font-size: 12px; color: var(--gris-oscuro); }
+
+    /* ===== Marco del celular (390 px) ===== */
+    .telefono {
+      width: 390px; height: 844px; background: var(--blanco);
+      border: 2px solid var(--negro); border-radius: 32px;
+      position: relative; overflow: hidden;
+    }
+    .barra-estado {
+      height: 44px; display: flex; justify-content: space-between; align-items: center;
+      padding: 0 28px; font-size: 15px; font-weight: 600;
+    }
+    .barra-estado .indicadores { display: flex; gap: 4px; }
+    .barra-estado .indicadores i { width: 16px; height: 10px; border-radius: 2px; background: var(--negro); }
+
+    /* Pantalla de onboarding: contenido arriba, botón fijo abajo */
+    .pantalla { height: calc(100% - 44px); display: flex; flex-direction: column; padding: 8px 20px 32px; }
+    .pantalla .cuerpo { flex: 1; overflow: hidden; }
+    .pie-boton { padding-top: 12px; }
+
+    .placeholder { background: var(--gris-claro); border: 1px dashed var(--gris-medio); border-radius: 6px; flex-shrink: 0; }
+
+    /* Escala tipográfica: 28 título · 17 título de pantalla · 15 elemento · 13 secundario · 12 etiquetas */
+    .titulo { font-size: 28px; font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; }
+    .bajada { font-size: 15px; color: var(--gris-oscuro); line-height: 1.45; margin-top: 10px; }
+    .secundario { font-size: 13px; color: var(--gris-oscuro); line-height: 1.45; }
+    .etiqueta { font-size: 12px; color: var(--gris-oscuro); }
+
+    /* Progreso: atrás + 5 segmentos + paso */
+    .progreso { display: flex; align-items: center; gap: 12px; margin: 4px 0 24px; }
+    .progreso .atras { font-size: 22px; width: 20px; }
+    .progreso .segmentos { flex: 1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+    .progreso .segmentos i { height: 4px; border-radius: 2px; background: var(--gris-claro); }
+    .progreso .segmentos i.hecho { background: var(--negro); }
+    .progreso .paso { font-size: 12px; color: var(--gris-oscuro); white-space: nowrap; }
+
+    .boton-principal {
+      display: block; width: 100%; height: 50px; border: none; border-radius: 25px;
+      background: var(--negro); color: var(--blanco); font: inherit; font-size: 15px; font-weight: 600;
+    }
+    .boton-principal.inactivo { background: var(--gris-claro); color: var(--gris-medio); }
+    .boton-secundario {
+      display: block; width: 100%; height: 50px; border-radius: 25px; margin-top: 10px;
+      background: var(--blanco); color: var(--negro); border: 1.5px solid var(--negro); font: inherit; font-size: 15px; font-weight: 600;
+    }
+    .boton-texto { display: block; text-align: center; font-size: 13px; font-weight: 600; margin-top: 14px; color: var(--gris-oscuro); }
+
+    /* Opciones de una sola elección: toda la tarjeta es táctil */
+    .opciones { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+    .opcion {
+      display: flex; align-items: center; gap: 14px; padding: 16px;
+      border: 1.5px solid var(--gris-claro); border-radius: 16px;
+    }
+    .opcion .placeholder { width: 36px; height: 36px; }
+    .opcion .info { flex: 1; }
+    .opcion .t { font-size: 15px; font-weight: 600; }
+    .opcion .s { font-size: 13px; color: var(--gris-oscuro); margin-top: 2px; }
+    .opcion .radio { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--gris-medio); flex-shrink: 0; }
+    .opcion.activa { border: 2px solid var(--negro); background: var(--gris-fondo); }
+    .opcion.activa .radio { border: 7px solid var(--negro); }
+
+    /* Datos básicos */
+    .campos { margin-top: 20px; display: flex; flex-direction: column; gap: 14px; }
+    .campo .etiqueta { margin-bottom: 6px; display: block; }
+    .entrada {
+      height: 48px; border: 1.5px solid var(--gris-claro); border-radius: 12px; padding: 0 14px;
+      display: flex; align-items: center; justify-content: space-between; font-size: 15px; font-weight: 600;
+    }
+    .entrada span { font-size: 13px; font-weight: 400; color: var(--gris-oscuro); }
+    .dos-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .segmentado { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 4px; background: var(--gris-fondo); border-radius: 12px; }
+    .segmentado span { height: 40px; display: flex; align-items: center; justify-content: center; font-size: 15px; border-radius: 9px; color: var(--gris-oscuro); }
+    .segmentado span.activo { background: var(--blanco); color: var(--negro); font-weight: 600; border: 1.5px solid var(--negro); }
+    .ayuda { font-size: 12px; color: var(--gris-oscuro); margin-top: 6px; }
+
+    /* Bienvenida */
+    .bienvenida { height: calc(100% - 44px); display: flex; flex-direction: column; padding: 8px 20px 32px; }
+    .bienvenida .imagen { flex: 1; margin: 12px 0 28px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--gris-oscuro); }
+    .logo { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; }
+    .logo .placeholder { width: 28px; height: 28px; border-radius: 8px; }
+    .puntos { display: flex; flex-direction: column; gap: 8px; margin: 18px 0 24px; }
+    .puntos div { display: flex; gap: 10px; font-size: 13px; color: var(--gris-oscuro); align-items: center; }
+    .puntos i { width: 6px; height: 6px; border-radius: 50%; background: var(--negro); flex-shrink: 0; }
+
+    /* Tarjeta de la meta calculada */
+    .meta-tarjeta { background: var(--gris-fondo); border-radius: 20px; padding: 20px; margin-top: 22px; }
+    .meta-tarjeta .fila-meta { display: flex; justify-content: space-between; align-items: flex-end; }
+    .meta-tarjeta .cifra { font-size: 28px; font-weight: 700; line-height: 1; }
+    .meta-tarjeta .der { text-align: right; }
+    .linea-tiempo { margin: 18px 0 6px; position: relative; height: 10px; border-radius: 5px; background: var(--gris-claro); }
+    .linea-tiempo div { position: absolute; left: 0; top: 0; bottom: 0; width: 6%; border-radius: 5px; background: var(--negro); }
+    .linea-tiempo-etq { display: flex; justify-content: space-between; font-size: 12px; color: var(--gris-oscuro); }
+    .divisor { border: none; border-top: 1px solid var(--gris-claro); margin: 18px 0 14px; }
+    .recomendado .t { font-size: 13px; color: var(--gris-oscuro); }
+    .recomendado .kcal { font-size: 28px; font-weight: 700; margin: 4px 0 14px; }
+    .recomendado .kcal span { font-size: 13px; font-weight: 400; color: var(--gris-oscuro); }
+    .macros { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .macros .n { font-size: 13px; color: var(--gris-oscuro); }
+    .macros .v { font-size: 15px; font-weight: 600; margin-top: 2px; }
+    .nota { display: flex; gap: 10px; margin-top: 16px; font-size: 13px; color: var(--gris-oscuro); line-height: 1.45; }
+    .nota .placeholder { width: 20px; height: 20px; border-radius: 50%; }
+    .legal { font-size: 12px; color: var(--gris-medio); line-height: 1.4; margin-top: 12px; }
+    .link { font-size: 13px; font-weight: 600; text-decoration: underline; }
+
+    /* Variantes de la tarjeta de meta */
+    .variantes { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+    .variante { border: 1.5px solid var(--gris-claro); border-radius: 16px; padding: 14px 16px; }
+    .variante .etiqueta { margin-bottom: 4px; display: block; }
+    .variante .t { font-size: 15px; font-weight: 600; }
+    .variante .s { font-size: 13px; color: var(--gris-oscuro); margin-top: 4px; line-height: 1.4; }
+
+    /* ¿Quieres un plan? */
+    .beneficios { margin-top: 22px; display: flex; flex-direction: column; gap: 14px; }
+    .beneficio { display: flex; gap: 12px; align-items: flex-start; }
+    .beneficio .placeholder { width: 36px; height: 36px; border-radius: 10px; }
+    .beneficio .t { font-size: 15px; font-weight: 600; }
+    .beneficio .s { font-size: 13px; color: var(--gris-oscuro); margin-top: 2px; }
+    .vista-plan { margin-top: 22px; border: 1.5px solid var(--gris-claro); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .vista-plan .fila-p { display: flex; gap: 10px; align-items: center; }
+    .vista-plan .fila-p .placeholder { width: 40px; height: 40px; }
+    .vista-plan .fila-p .t { font-size: 13px; font-weight: 600; }
+    .vista-plan .fila-p .s { font-size: 12px; color: var(--gris-oscuro); }
+
+    /* Conversación con Milo */
+    .chat { height: calc(100% - 44px); display: flex; flex-direction: column; padding: 4px 16px 24px; }
+    .cab-chat { display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid var(--gris-fondo); }
+    .cab-chat .cerrar { font-size: 22px; width: 24px; }
+    .cab-chat .t { font-size: 17px; font-weight: 700; }
+    .cab-chat .s { font-size: 12px; color: var(--gris-oscuro); }
+    .cab-chat .paso { margin-left: auto; font-size: 12px; color: var(--gris-oscuro); }
+    .logo-m { width: 28px; height: 28px; border-radius: 8px; border: 1.5px solid var(--negro); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0; }
+    .burbujas { flex: 1; overflow: hidden; padding: 6px 0; }
+    .burbuja { display: flex; gap: 10px; align-items: flex-start; margin-top: 16px; }
+    .burbuja p { background: var(--gris-fondo); border-radius: 4px 16px 16px 16px; padding: 10px 14px; font-size: 15px; line-height: 1.4; }
+    .yo { margin: 12px 0 0 auto; width: fit-content; max-width: 78%; background: var(--negro); color: var(--blanco); border-radius: 16px 16px 4px 16px; padding: 10px 14px; font-size: 15px; }
+    .chips-resp { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0 38px; }
+    .chips-resp span { font-size: 13px; font-weight: 600; padding: 9px 14px; border-radius: 18px; border: 1.5px solid var(--negro); background: var(--blanco); }
+    .chips-resp span small { display: block; font-size: 12px; font-weight: 400; color: var(--gris-oscuro); }
+    .chips-resp.multiple span.activo { background: var(--negro); color: var(--blanco); }
+    .chips-resp.multiple span.activo small { color: var(--gris-claro); }
+    .campo-chat { display: flex; align-items: center; gap: 8px; border: 1.5px solid var(--gris-claro); border-radius: 24px; height: 48px; padding: 0 6px 0 16px; font-size: 15px; color: var(--gris-medio); }
+    .campo-chat .enviar { margin-left: auto; width: 36px; height: 36px; border-radius: 50%; background: var(--negro); color: var(--blanco); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+
+    /* Resumen del plan dentro del chat */
+    .resumen-plan { margin: 12px 0 0 38px; border: 1.5px solid var(--negro); border-radius: 16px; padding: 12px 14px; }
+    .resumen-plan .cab { display: flex; justify-content: space-between; font-size: 13px; color: var(--gris-oscuro); margin-bottom: 6px; }
+    .resumen-plan .linea { display: flex; justify-content: space-between; font-size: 13px; padding: 6px 0; border-bottom: 1px solid var(--gris-fondo); }
+    .resumen-plan .linea:last-of-type { border-bottom: none; }
+    .resumen-plan .linea b { font-weight: 600; }
+    .resumen-plan .linea.libre { color: var(--gris-oscuro); }
+
+    /* Primer día en Hoy */
+    .contenido { height: calc(100% - 44px); overflow: hidden; display: flex; flex-direction: column; }
+    .zona-superior { padding: 4px 20px 24px; }
+    .zona-inferior { flex: 1; background: var(--gris-fondo); border-top: 1px solid var(--gris-claro); padding: 20px 16px 130px; }
+    .cabecera { display: flex; justify-content: space-between; align-items: center; margin: 8px 0 18px; }
+    .cabecera h1 { font-size: 34px; line-height: 1.1; }
+    .perfil { width: 36px; height: 36px; border-radius: 50%; background: var(--gris-claro); border: 1.5px solid var(--negro); }
+    .eyebrow { font-size: 13px; font-weight: 500; color: var(--gris-oscuro); }
+    .fila-cifra { display: flex; align-items: baseline; gap: 6px; margin: 6px 0 14px; }
+    .fila-cifra .cifra { font-size: 28px; font-weight: 700; line-height: 1; }
+    .barra { height: 4px; border-radius: 2px; background: var(--gris-claro); overflow: hidden; }
+    .barra.grande { height: 10px; border-radius: 5px; }
+    .macros-col { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 24px; margin-top: 22px; }
+    .macros-col .n { font-size: 13px; color: var(--gris-oscuro); }
+    .macros-col .v { font-size: 15px; font-weight: 600; margin: 6px 0 10px; white-space: nowrap; }
+    .macros-col .v span { font-size: 12px; font-weight: 400; color: var(--gris-oscuro); }
+    .titulo-seccion { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+    .r3-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .r3 { background: var(--blanco); border-radius: 16px; padding: 10px; border: 1px solid var(--gris-claro); }
+    .r3-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .r3-top .placeholder { width: 24px; height: 24px; }
+    .mas-ic { width: 32px; height: 32px; border-radius: 50%; background: var(--negro); color: var(--blanco); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .r3 .t { font-size: 13px; font-weight: 500; color: var(--gris-oscuro); }
+    .r3 .v { font-size: 15px; font-weight: 700; margin-top: 2px; }
+    .bienvenida-hoy { background: var(--blanco); border-radius: 16px; border: 1.5px solid var(--negro); padding: 14px 16px; margin-bottom: 20px; display: flex; gap: 12px; }
+    .bienvenida-hoy .t { font-size: 15px; font-weight: 600; }
+    .bienvenida-hoy .s { font-size: 13px; color: var(--gris-oscuro); margin-top: 4px; line-height: 1.4; }
+    .bienvenida-hoy .x { margin-left: auto; color: var(--gris-medio); font-size: 15px; }
+    .vacio { margin-top: 20px; font-size: 13px; color: var(--gris-oscuro); text-align: center; padding: 18px; border: 1px dashed var(--gris-medio); border-radius: 16px; }
+
+    .nav { position: absolute; left: 16px; right: 16px; bottom: 24px; display: flex; align-items: center; gap: 10px; }
+    .capsula {
+      flex: 1; height: 64px; display: grid; grid-template-columns: repeat(3, 1fr); align-items: center; padding: 4px;
+      background: rgba(255, 255, 255, 0.92); border: 1.5px solid var(--negro); border-radius: 32px; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+    .nav-item { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 11px; color: var(--gris-oscuro); border-radius: 28px; }
+    .nav-item .placeholder { width: 22px; height: 22px; }
+    .nav-item.activo { color: var(--negro); font-weight: 700; background: var(--gris-claro); }
+    .nav-ia {
+      width: 64px; height: 64px; flex-shrink: 0; border-radius: 50%; background: rgba(255, 255, 255, 0.92);
+      border: 1.5px solid var(--negro); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 800;
+    }
+
+    /* Notas de decisión debajo de cada celular */
+    .decision { max-width: 390px; margin-top: 12px; font-size: 12px; color: var(--gris-oscuro); line-height: 1.45; }
+    .decision b { color: var(--negro); }
+
+    /* ===================== v2 ===================== */
+    /* Botonera inferior: atrás (borde) + continuar (negro). Sin flecha arriba */
+    .botonera { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; padding-top: 12px; }
+    .botonera .boton-secundario { margin-top: 0; }
+    .progreso.solo { margin-top: 8px; }
+
+    /* Bienvenida corta */
+    .bienvenida .imagen { flex: 1; margin: 20px 0 32px; }
+
+    /* Lista abierta (selector de rueda): la fila del centro es la elegida */
+    .rueda { position: relative; isolation: isolate; margin-top: 36px; }
+    .rueda .item { height: 52px; display: flex; align-items: center; justify-content: center; font-size: 17px; color: var(--gris-medio); }
+    .rueda .item.cerca { color: var(--gris-oscuro); }
+    .rueda .item.lejos { color: var(--gris-claro); }
+    .rueda .item.elegido { font-size: 28px; font-weight: 700; color: var(--negro); }
+    .rueda .item.elegido span { font-size: 15px; font-weight: 400; color: var(--gris-oscuro); margin-left: 6px; }
+    .rueda .marco { position: absolute; left: 0; right: 0; top: 104px; height: 52px; border-radius: 12px; background: var(--gris-fondo); border: 1.5px solid var(--negro); z-index: -1; }
+    .rueda-par { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .rueda-par .rueda { margin-top: 12px; }
+    .rueda-par .etiqueta { display: block; text-align: center; margin-top: 28px; }
+    .rueda-par .rueda .item.elegido span { font-size: 13px; }
+
+    /* Tu meta, versión corta */
+    .meta-corta { background: var(--gris-fondo); border-radius: 20px; padding: 20px; margin-top: 24px; }
+    .meta-corta .linea-meta { font-size: 15px; font-weight: 600; }
+    .meta-corta .linea-meta span { font-weight: 400; color: var(--gris-oscuro); }
+    .base { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; color: var(--gris-oscuro); margin-top: 12px; }
+    .base b { font-size: 15px; color: var(--negro); }
+
+    /* Walkthrough: capa oscura, el elemento explicado queda por encima */
+    .capa-guia { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.55); z-index: 4; }
+    .foco { position: relative; z-index: 5; background: var(--blanco); border-radius: 16px; box-shadow: 0 0 0 8px var(--blanco); }
+    .zona-inferior .foco { box-shadow: 0 0 0 8px var(--gris-fondo); background: var(--gris-fondo); }
+    .nav.foco-nav { z-index: 5; }
+    .globo {
+      position: absolute; left: 20px; right: 20px; z-index: 6; background: var(--blanco); border-radius: 16px;
+      border: 1.5px solid var(--negro); padding: 16px;
+    }
+    .globo .paso-g { font-size: 12px; color: var(--gris-oscuro); }
+    .globo .t { font-size: 15px; font-weight: 700; margin-top: 4px; }
+    .globo .s { font-size: 13px; color: var(--gris-oscuro); margin-top: 4px; line-height: 1.45; }
+    .globo .acc { display: flex; align-items: center; margin-top: 14px; }
+    .globo .acc .puntos-g { display: flex; gap: 5px; }
+    .globo .acc .puntos-g i { width: 6px; height: 6px; border-radius: 50%; background: var(--gris-claro); }
+    .globo .acc .puntos-g i.on { background: var(--negro); }
+    .globo .acc .sig { height: 36px; padding: 0 18px; border-radius: 18px; background: var(--negro); color: var(--blanco); font-size: 13px; font-weight: 600; display: flex; align-items: center; }
+    .globo .acc .omitir { font-size: 13px; font-weight: 600; color: var(--gris-oscuro); margin-left: auto; margin-right: 14px; }
+    .globo::after { content: ""; position: absolute; left: var(--flecha, 50%); width: 14px; height: 14px; background: var(--blanco); transform: rotate(45deg); }
+    .globo.arriba::after { top: -8.5px; border-left: 1.5px solid var(--negro); border-top: 1.5px solid var(--negro); }
+    .globo.abajo::after { bottom: -8.5px; border-right: 1.5px solid var(--negro); border-bottom: 1.5px solid var(--negro); }
+
+    /* ===================== v3 ===================== */
+    /* Patrón móvil: atrás (‹) arriba a la izquierda junto al progreso; un solo CTA a lo ancho abajo */
+    .progreso .atras.oculto { visibility: hidden; }
+
+    /* Bienvenida: imagen al 50 % */
+    .bienvenida-v3 { height: calc(100% - 44px); display: flex; flex-direction: column; }
+    .bienvenida-v3 .imagen { height: 50%; margin: 0 20px; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--gris-oscuro); }
+    .bienvenida-v3 .texto { flex: 1; display: flex; flex-direction: column; padding: 32px 20px 32px; }
+    .bienvenida-v3 .texto .pie-boton { margin-top: auto; }
+
+    /* Pregunta que se abre dentro de la opción elegida */
+    .opcion-abierta { border: 2px solid var(--negro); background: var(--gris-fondo); border-radius: 16px; overflow: hidden; }
+    .opcion-abierta .opcion { border: none; background: transparent; }
+    .opcion-abierta .opcion .radio { border: 7px solid var(--negro); }
+    .sub { margin: 0 16px 16px; padding-top: 14px; border-top: 1px solid var(--gris-claro); }
+    .sub .t { font-size: 13px; font-weight: 600; }
+    .stepper { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; background: var(--blanco); border-radius: 12px; border: 1.5px solid var(--gris-claro); padding: 6px; }
+    .stepper .btn { width: 40px; height: 40px; border-radius: 10px; background: var(--gris-fondo); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .stepper .valor { font-size: 28px; font-weight: 700; }
+    .stepper .valor span { font-size: 15px; font-weight: 400; color: var(--gris-oscuro); margin-left: 4px; }
+    .sub .ayuda { margin-top: 8px; }
+
+    /* Regla horizontal: mismo componente para estatura y peso, uno debajo del otro */
+    .medida { margin-top: 28px; }
+    .medida .cab-m { display: flex; justify-content: space-between; align-items: baseline; }
+    .medida .cab-m .t { font-size: 15px; font-weight: 600; }
+    .medida .cab-m .unidad { display: flex; gap: 4px; padding: 3px; background: var(--gris-fondo); border-radius: 8px; }
+    .medida .cab-m .unidad span { font-size: 12px; padding: 4px 10px; border-radius: 6px; color: var(--gris-oscuro); }
+    .medida .cab-m .unidad span.on { background: var(--blanco); color: var(--negro); font-weight: 600; border: 1px solid var(--negro); }
+    .medida .valor-m { text-align: center; font-size: 28px; font-weight: 700; margin: 14px 0 8px; }
+    .medida .valor-m span { font-size: 15px; font-weight: 400; color: var(--gris-oscuro); margin-left: 4px; }
+    .regla { position: relative; height: 56px; border-radius: 12px; background: var(--gris-fondo); overflow: hidden; }
+    .regla .marcas {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 100%;
+      background:
+        repeating-linear-gradient(to right, transparent 0 calc(10% - 1px), var(--gris-medio) calc(10% - 1px) calc(10% + 1px), transparent calc(10% + 1px) 20%) left bottom / 100% 24px no-repeat,
+        repeating-linear-gradient(to right, transparent 0 calc(2% - 0.5px), var(--gris-claro) calc(2% - 0.5px) calc(2% + 0.5px), transparent calc(2% + 0.5px) 4%) left bottom / 100% 12px no-repeat;
+    }
+    .regla .numeros { position: absolute; left: 0; right: 0; top: 6px; display: grid; grid-template-columns: repeat(5, 1fr); text-align: center; font-size: 12px; color: var(--gris-medio); }
+    .regla .aguja { position: absolute; left: 50%; top: 22px; bottom: 0; width: 3px; margin-left: -1.5px; background: var(--negro); border-radius: 2px; }
+    .separador-m { border: none; border-top: 1px solid var(--gris-claro); margin: 28px 0 0; }
+
+    /* Elegir ritmo: 2 opciones, una recomendada */
+    .ritmos { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+    .ritmo { border: 1.5px solid var(--gris-claro); border-radius: 16px; padding: 14px 16px; }
+    .ritmo.activa { border: 2px solid var(--negro); background: var(--gris-fondo); }
+    .ritmo .fila-r { display: flex; align-items: center; gap: 8px; }
+    .ritmo .fila-r .t { font-size: 15px; font-weight: 700; }
+    .ritmo .fila-r .radio { margin-left: auto; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--gris-medio); }
+    .ritmo.activa .fila-r .radio { border: 7px solid var(--negro); }
+    .etiqueta-rec { font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 10px; background: var(--negro); color: var(--blanco); }
+    .ritmo .s { font-size: 13px; color: var(--gris-oscuro); margin-top: 4px; }
+    .ritmo .kcal-r { display: flex; justify-content: space-between; align-items: baseline; margin-top: 12px; }
+    .ritmo .kcal-r b { font-size: 17px; }
+    .ritmo .kcal-r span { font-size: 12px; color: var(--gris-oscuro); }
+    .porque { margin-top: 16px; border-radius: 16px; padding: 14px 16px; border: 1px dashed var(--gris-medio); }
+    .porque .t { font-size: 13px; font-weight: 700; }
+    .porque .s { font-size: 13px; color: var(--gris-oscuro); margin-top: 4px; line-height: 1.45; }
+
+    /* Chips de varias respuestas en el chat */
+    .chips-resp.multiple span.activo { background: var(--negro); color: var(--blanco); }
+    .confirmar-chips { margin: 10px 0 0 38px; display: inline-block; font-size: 13px; font-weight: 600; text-decoration: underline; }
+    .generando { margin: 12px 0 0 38px; display: flex; flex-direction: column; gap: 8px; }
+    .generando div { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--gris-oscuro); }
+    .generando i { width: 14px; height: 14px; border-radius: 50%; background: var(--negro); flex-shrink: 0; }
+    .generando i.pend { background: transparent; border: 1.5px solid var(--gris-medio); }
+    .recetario { margin-top: 8px; font-size: 12px; color: var(--gris-oscuro); display: flex; gap: 6px; align-items: center; }
+    .recetario .placeholder { width: 16px; height: 16px; border-radius: 4px; }
+
+    /* Invitación al recorrido: hoja inferior sobre Hoy */
+    .hoja-inv { position: absolute; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--blanco); border-radius: 24px 24px 0 0; padding: 10px 20px 32px; }
+    .hoja-inv .agarradera { width: 40px; height: 5px; border-radius: 3px; background: var(--gris-claro); margin: 0 auto 18px; }
+    .hoja-inv .placeholder.ilus { height: 140px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--gris-oscuro); }
+    .hoja-inv .t { font-size: 17px; font-weight: 700; margin-top: 18px; }
+    .hoja-inv .s { font-size: 15px; color: var(--gris-oscuro); margin-top: 6px; line-height: 1.4; }
+    .hoja-inv .boton-principal { margin-top: 20px; }
+    .globo .cerrar-g { position: absolute; right: 14px; top: 12px; font-size: 15px; color: var(--gris-medio); }
+    .globo .acc .atras-g { font-size: 13px; font-weight: 600; color: var(--gris-oscuro); margin-left: auto; margin-right: 14px; }
+
+    /* ===================== v4 ===================== */
+    /* Botonera abajo: Atrás (borde) + Continuar (negro), desde el paso 2 */
+    .bienvenida-v3 .texto .titulo { margin-top: 4px; }
+
+    /* Selección múltiple en lista: casilla cuadrada */
+    .check-lista { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+    .check { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border: 1.5px solid var(--gris-claro); border-radius: 14px; }
+    .check .info { flex: 1; }
+    .check .t { font-size: 15px; font-weight: 600; }
+    .check .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .check .caja { width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--gris-medio); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--blanco); }
+    .check.on { border: 2px solid var(--negro); background: var(--gris-fondo); }
+    .check.on .caja { background: var(--negro); border-color: var(--negro); }
+    .check.on .caja::after { content: "✓"; }
+    .contador { font-size: 13px; color: var(--gris-oscuro); margin-top: 12px; }
+
+    /* Grupos de chips (varias respuestas) */
+    .grupo { margin-top: 22px; }
+    .grupo .t-grupo { font-size: 15px; font-weight: 600; }
+    .grupo .s-grupo { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .chips-sel { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .chips-sel span { font-size: 13px; font-weight: 600; padding: 9px 14px; border-radius: 18px; border: 1.5px solid var(--gris-claro); }
+    .chips-sel span.on { background: var(--negro); color: var(--blanco); border-color: var(--negro); }
+    .chips-sel span.mas { border-style: dashed; color: var(--gris-oscuro); }
+
+    /* Armando el plan */
+    .armando { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    .armando .placeholder { width: 120px; height: 120px; border-radius: 60px; margin-bottom: 28px; }
+    .armando .titulo { font-size: 17px; }
+    .armando .generando { margin: 20px 0 0; align-items: flex-start; }
+
+    /* Resultado del plan */
+    .resultado { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; }
+    .comida-r { display: flex; gap: 12px; align-items: center; padding: 10px; border: 1.5px solid var(--gris-claro); border-radius: 14px; }
+    .comida-r .placeholder { width: 52px; height: 52px; border-radius: 10px; }
+    .comida-r .info { flex: 1; }
+    .comida-r .m { font-size: 12px; color: var(--gris-oscuro); }
+    .comida-r .t { font-size: 15px; font-weight: 600; margin-top: 1px; }
+    .comida-r .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .comida-r .k { font-size: 13px; font-weight: 600; white-space: nowrap; align-self: flex-start; }
+    .comida-r.fuerte { border: 2px solid var(--negro); }
+    .comida-r.libre { border-style: dashed; }
+    .comida-r.libre .placeholder { visibility: hidden; width: 0; margin-right: -12px; }
+    .suma { display: flex; justify-content: space-between; font-size: 13px; color: var(--gris-oscuro); margin-top: 10px; padding: 0 4px; }
+    .suma b { color: var(--negro); }
+    .resumen-pref { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .resumen-pref span { font-size: 12px; padding: 4px 10px; border-radius: 12px; background: var(--gris-fondo); color: var(--gris-oscuro); }
+
+    /* ===================== v5 ===================== */
+    /* Botonera con chevrones: dos botones del mismo tamaño */
+    .botonera.par { grid-template-columns: 1fr 1fr; }
+    .botonera .boton-secundario, .botonera .boton-principal, .pie-boton .boton-principal.chev { display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .chev-i { font-size: 20px; line-height: 1; font-weight: 400; }
+
+    /* Bienvenida: ilustración con íconos (emojis en gris) */
+    .ilus-bienvenida { height: 50%; margin: 0 20px; border-radius: 24px; background: var(--gris-fondo); position: relative; overflow: hidden; }
+    .ilus-bienvenida .plato {
+      position: absolute; left: 50%; top: 50%; width: 150px; height: 150px; margin: -75px 0 0 -75px; border-radius: 50%;
+      background: var(--blanco); border: 1.5px solid var(--gris-claro); display: flex; align-items: center; justify-content: center; font-size: 64px;
+    }
+    .ilus-bienvenida .bur {
+      position: absolute; width: 56px; height: 56px; border-radius: 50%; background: var(--blanco); border: 1.5px solid var(--gris-claro);
+      display: flex; align-items: center; justify-content: center; font-size: 26px;
+    }
+    .ilus-bienvenida .mini {
+      position: absolute; left: 24px; bottom: 22px; background: var(--blanco); border: 1.5px solid var(--negro); border-radius: 14px; padding: 10px 12px; width: 170px;
+    }
+    .ilus-bienvenida .mini .k { font-size: 15px; font-weight: 700; }
+    .ilus-bienvenida .mini .k span { font-size: 12px; font-weight: 400; color: var(--gris-oscuro); }
+    .ilus-bienvenida .mini .barra { margin-top: 6px; height: 6px; }
+    .ilus-bienvenida .mini .barra div { width: 68%; }
+    .ilus-bienvenida .check-mini {
+      position: absolute; right: 24px; top: 22px; background: var(--negro); color: var(--blanco); border-radius: 14px; padding: 8px 12px; font-size: 12px; font-weight: 600;
+    }
+    .gris { filter: grayscale(1); }
+    .eyebrow-b { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gris-oscuro); }
+    .bienvenida-v3 .texto .titulo { margin-top: 8px; }
+    .bienvenida-v3 .texto .bajada { margin-top: 12px; }
+
+    /* Objetivo: radio claro + pregunta compacta dentro de la opción */
+    .indicacion { font-size: 13px; color: var(--gris-oscuro); margin-top: 8px; }
+    .cuanto { display: flex; align-items: center; justify-content: space-between; margin: 0 16px 14px 66px; padding-top: 12px; border-top: 1px solid var(--gris-claro); }
+    .cuanto .t { font-size: 13px; color: var(--gris-oscuro); }
+    .mini-stepper { display: flex; align-items: center; gap: 10px; }
+    .mini-stepper .btn { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--gris-medio); display: flex; align-items: center; justify-content: center; font-size: 15px; background: var(--blanco); }
+    .mini-stepper .valor { font-size: 15px; font-weight: 700; min-width: 40px; text-align: center; }
+    .opcion-abierta .opcion .radio, .opcion .radio { position: relative; }
+
+    /* Slider */
+    .slider-campo { margin-top: 26px; }
+    .slider-campo .cab-m { display: flex; justify-content: space-between; align-items: center; }
+    .slider-campo .cab-m .t { font-size: 15px; font-weight: 600; }
+    .slider-campo .valor-m { font-size: 28px; font-weight: 700; margin: 10px 0 16px; }
+    .slider-campo .valor-m span { font-size: 15px; font-weight: 400; color: var(--gris-oscuro); margin-left: 4px; }
+    .slider { position: relative; height: 28px; }
+    .slider .pista { position: absolute; left: 0; right: 0; top: 11px; height: 6px; border-radius: 3px; background: var(--gris-claro); }
+    .slider .relleno { position: absolute; left: 0; top: 11px; height: 6px; border-radius: 3px; background: var(--negro); }
+    .slider .perilla { position: absolute; top: 0; width: 28px; height: 28px; margin-left: -14px; border-radius: 50%; background: var(--blanco); border: 2px solid var(--negro); box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+    .slider-limites { display: flex; justify-content: space-between; font-size: 12px; color: var(--gris-medio); margin-top: 8px; }
+    .slider-campo .unidad { display: flex; gap: 4px; padding: 3px; background: var(--gris-fondo); border-radius: 8px; }
+    .slider-campo .unidad span { font-size: 12px; padding: 4px 10px; border-radius: 6px; color: var(--gris-oscuro); }
+    .slider-campo .unidad span.on { background: var(--blanco); color: var(--negro); font-weight: 600; border: 1px solid var(--negro); }
+
+    /* ¿Plan? Beneficios con ícono */
+    .beneficios-v5 { display: flex; flex-direction: column; gap: 18px; margin-top: 28px; }
+    .beneficios-v5 .b { display: flex; gap: 14px; align-items: flex-start; }
+    .beneficios-v5 .ico { width: 44px; height: 44px; border-radius: 12px; background: var(--gris-fondo); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .beneficios-v5 .t { font-size: 15px; font-weight: 600; }
+    .beneficios-v5 .s { font-size: 13px; color: var(--gris-oscuro); margin-top: 2px; line-height: 1.4; }
+
+    /* Invitación: lo que Milo hace y lo que no */
+    .hoja-inv.caracteristicas { padding-bottom: 28px; }
+    .hoja-inv .grupo-c { margin-top: 14px; }
+    .hoja-inv .grupo-c .etq { font-size: 12px; font-weight: 600; color: var(--gris-oscuro); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+    .hoja-inv .item-c { display: flex; gap: 10px; align-items: center; font-size: 13px; padding: 5px 0; }
+    .hoja-inv .item-c i { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; font-style: normal; font-size: 11px; display: flex; align-items: center; justify-content: center; }
+    .hoja-inv .item-c i.si { background: var(--negro); color: var(--blanco); }
+    .hoja-inv .item-c i.no { border: 1.5px solid var(--gris-medio); color: var(--gris-oscuro); }
+    .hoja-inv .item-c.no-t { color: var(--gris-oscuro); }
+    .hoja-inv .t-inv { font-size: 17px; font-weight: 700; }
+    .hoja-inv .s-inv { font-size: 13px; color: var(--gris-oscuro); margin-top: 4px; }
+
+    /* ===================== v6 ===================== */
+    .contador-sup { font-size: 13px; color: var(--gris-oscuro); margin-top: 8px; }
+    .contador-sup b { color: var(--negro); }
+    .check-lista { margin-top: 16px; }
+    /* Resumen de respuestas */
+    .cab-resumen { display: flex; align-items: center; gap: 12px; margin: 4px 0 16px; }
+    .cab-resumen .atras { font-size: 22px; }
+    .cab-resumen .t { font-size: 17px; font-weight: 700; }
+    .resumen-lista { border: 1.5px solid var(--gris-claro); border-radius: 16px; overflow: hidden; }
+    .res-fila { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--gris-claro); }
+    .res-fila:last-child { border-bottom: none; }
+    .res-fila .info { flex: 1; }
+    .res-fila .etq { font-size: 12px; color: var(--gris-oscuro); }
+    .res-fila .v { font-size: 15px; font-weight: 600; margin-top: 2px; }
+    .res-fila .editar { font-size: 13px; font-weight: 600; text-decoration: underline; }
+    /* Recorrido: resaltar solo una parte de la barra */
+    .nav.foco-cap, .nav.foco-ia { z-index: 5; }
+    .nav.foco-cap .nav-ia, .nav.foco-ia .capsula { filter: brightness(0.45); }
+    .globo .opciones-ia { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .globo .opciones-ia div { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; padding: 8px 10px; border-radius: 10px; background: var(--gris-fondo); }
+    .globo .opciones-ia span { font-size: 16px; }
+    .globo .libre { font-size: 12px; color: var(--gris-oscuro); margin-top: 8px; }
+    .beta { font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 8px; border: 1px solid var(--gris-medio); color: var(--gris-oscuro); margin-left: 6px; vertical-align: middle; }
+
+    /* ===================== v7 ===================== */
+    .opciones.compactas { gap: 8px; margin-top: 10px; }
+    .opciones.compactas .opcion { padding: 12px 16px; }
+
+    /* ===================== v9 ===================== */
+    .exito { text-align: center; margin-top: 12px; }
+    .exito-ic { width: 56px; height: 56px; border-radius: 50%; background: var(--negro); color: var(--blanco); font-size: 26px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+    .exito-datos { font-size: 15px; color: var(--gris-oscuro); margin-top: 8px; }
+    .exito-datos b { color: var(--negro); }
+    .t-oferta { font-size: 17px; font-weight: 700; }
+    .s-oferta { font-size: 13px; color: var(--gris-oscuro); margin-top: 4px; }
+
+    /* ===================== v10 ===================== */
+    .radio-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .radio-card { display: flex; align-items: center; gap: 10px; padding: 14px; border: 1.5px solid var(--gris-claro); border-radius: 16px; }
+    .radio-card .placeholder { width: 28px; height: 28px; }
+    .radio-card .t { flex: 1; font-size: 15px; font-weight: 600; }
+    .radio-card .radio { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--gris-medio); flex-shrink: 0; }
+    .radio-card.activa { border: 2px solid var(--negro); background: var(--gris-fondo); }
+    .radio-card.activa .radio { border: 7px solid var(--negro); }
+    .ritmos { margin-top: 16px; }
+    .porque-in { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--gris-claro); display: flex; flex-direction: column; gap: 6px; }
+    .porque-in .pq { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
+    .porque-in .pq i { width: 18px; height: 18px; border-radius: 50%; background: var(--negro); color: var(--blanco); font-style: normal; font-size: 10px; display: flex; align-items: center; justify-content: center; }
+    .porque-in .pq-base { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .resultado-card { background: var(--gris-fondo); border-radius: 20px; padding: 18px 20px; margin-top: 18px; }
+    .res-kcal { font-size: 28px; font-weight: 700; margin: 4px 0 14px; }
+    .res-kcal span { font-size: 15px; font-weight: 400; color: var(--gris-oscuro); }
+    .res-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .res-meta .v { font-size: 15px; font-weight: 600; margin-top: 2px; }
+    .oferta-card { display: flex; gap: 12px; align-items: flex-start; margin-top: 16px; padding: 14px 16px; border: 1.5px dashed var(--gris-medio); border-radius: 16px; }
+    .oferta-card .placeholder { width: 40px; height: 40px; border-radius: 10px; }
+    .oferta-card .t { font-size: 15px; font-weight: 600; }
+    .oferta-card .s { font-size: 13px; color: var(--gris-oscuro); margin-top: 2px; }
+    .opcional { font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 8px; border: 1px solid var(--gris-medio); color: var(--gris-oscuro); margin-left: 4px; vertical-align: middle; }
+    .res-cards { display: flex; flex-direction: column; gap: 10px; }
+    .res-card { border: 1.5px solid var(--gris-claro); border-radius: 16px; padding: 14px 16px; }
+    .res-card .cab { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+    .res-card .cab .t { font-size: 15px; font-weight: 700; }
+    .res-card .editar { font-size: 13px; font-weight: 600; text-decoration: underline; }
+    .chips-mini { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chips-mini span { font-size: 12px; padding: 4px 10px; border-radius: 12px; background: var(--gris-fondo); }
+    .sub-r { display: flex; align-items: center; gap: 10px; padding: 3px 0; }
+    .sub-r .k { font-size: 12px; color: var(--gris-oscuro); width: 84px; flex-shrink: 0; }
+
+    /* ===================== v11 ===================== */
+    .bienvenida-v3 .ilus-bienvenida.llena { height: auto; flex: 1; }
+    .bienvenida-v3 .texto.corto { flex: none; padding: 24px 20px 32px; }
+    .bienvenida-v3 .texto.corto .pie-boton { margin-top: 24px; }
+    .fila-exito { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+    .fila-exito .exito-ic { width: 40px; height: 40px; font-size: 20px; margin: 0; flex-shrink: 0; }
+    .plan-listo { display: flex; flex-direction: column; justify-content: space-between; padding-bottom: 4px; }
+    .plan-listo .fila-exito, .plan-listo .resultado-card, .plan-listo .invita-card { margin-top: 0; }
+    .plan-listo .resultado-card { padding: 18px 20px; }
+    .plan-listo .invita-card { padding: 22px 20px; }
+    .plan-listo .invita-card .lista-inv { gap: 10px; margin-top: 16px; }
+    .invita-card { margin-top: 14px; background: var(--negro); color: var(--blanco); border-radius: 20px; padding: 18px; }
+    .invita-card .eyebrow-inv { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gris-claro); }
+    .invita-card .t { font-size: 17px; font-weight: 700; margin-top: 6px; }
+    .invita-card .lista-inv { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+    .invita-card .lista-inv div { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--gris-claro); }
+    .invita-card .lista-inv span { width: 26px; height: 26px; border-radius: 8px; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+    .invita-card .btn-inv { margin-top: 14px; height: 46px; border-radius: 23px; background: var(--blanco); color: var(--negro); font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .invita-card .nota-inv { font-size: 12px; color: var(--gris-medio); text-align: center; margin-top: 8px; }
+
+    /* ===================== v12 · solo onboarding ===================== */
+    .pasos-info { display: flex; gap: 8px; margin-top: 14px; }
+    .pasos-info span { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 12px; background: var(--gris-fondo); color: var(--gris-oscuro); }
+    .bienvenida-v3 .texto.corto .pie-boton { margin-top: 20px; }
+    /* Campo numérico: se escribe con el teclado, sin arrastrar */
+    .campos-num { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+    .campo-num { display: flex; align-items: baseline; gap: 8px; height: 60px; padding: 0 16px; border: 1.5px solid var(--gris-claro); border-radius: 14px; align-items: center; }
+    .campo-num.activo { border: 2px solid var(--negro); }
+    .campo-num .etq-num { flex: 1; font-size: 15px; color: var(--gris-oscuro); }
+    .campo-num .valor-num { font-size: 28px; font-weight: 700; display: flex; align-items: center; }
+    .campo-num .unidad-num { font-size: 15px; color: var(--gris-oscuro); width: 36px; }
+    .cursor { display: inline-block; width: 2px; height: 26px; background: var(--negro); margin-left: 2px; }
+    .fila-titulo { display: flex; justify-content: space-between; align-items: center; }
+    .unidades { display: flex; gap: 4px; padding: 3px; background: var(--gris-fondo); border-radius: 8px; }
+    .unidades span { font-size: 12px; padding: 4px 8px; border-radius: 6px; color: var(--gris-oscuro); }
+    .unidades span.on { background: var(--blanco); color: var(--negro); font-weight: 600; border: 1px solid var(--negro); }
+    .validacion { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 13px; color: var(--gris-oscuro); }
+    .validacion i { width: 18px; height: 18px; border-radius: 50%; background: var(--negro); color: var(--blanco); font-style: normal; font-size: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    /* Teclado numérico del sistema (dibujo) */
+    .pantalla.con-teclado { padding-bottom: 290px; }
+    .pantalla.con-teclado .botonera { padding-top: 8px; }
+    .teclado { position: absolute; left: 0; right: 0; bottom: 0; background: var(--gris-claro); padding: 0 6px 22px; }
+    .teclado .accesorio { display: flex; justify-content: space-between; align-items: center; height: 40px; padding: 0 10px; font-size: 15px; }
+    .teclado .accesorio .flechas { color: var(--gris-oscuro); letter-spacing: 14px; }
+    .teclado .accesorio .ok { font-weight: 700; }
+    .teclado .teclas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .teclado .teclas span { height: 46px; border-radius: 6px; background: var(--blanco); display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 1px 0 var(--gris-medio); }
+    .teclado .teclas span.sin { background: transparent; box-shadow: none; font-size: 18px; }
+    /* Actividad: 4 opciones en cuadrícula */
+    .dias-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 22px; }
+    .dia-op { height: 96px; border: 1.5px solid var(--gris-claro); border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+    .dia-op .n { font-size: 28px; font-weight: 700; }
+    .dia-op .s { font-size: 13px; color: var(--gris-oscuro); }
+    .dia-op.activa { border: 2px solid var(--negro); background: var(--gris-fondo); }
+    .macros-txt { font-size: 12px; color: var(--gris-oscuro); margin-top: 4px; }
+
+    /* ===================== v13 ===================== */
+    .campo-num.aviso { border: 2px dashed var(--negro); }
+    .alerta-peso { margin-top: 12px; border-radius: 16px; background: var(--gris-fondo); padding: 14px 16px; }
+    .alerta-peso .t { display: flex; gap: 8px; align-items: flex-start; font-size: 15px; font-weight: 700; line-height: 1.3; }
+    .alerta-peso .t i { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--negro); font-style: normal; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .alerta-peso .rango { display: flex; justify-content: space-between; align-items: baseline; margin-top: 10px; padding: 8px 10px; border-radius: 10px; background: var(--blanco); font-size: 13px; color: var(--gris-oscuro); }
+    .alerta-peso .rango b { font-size: 15px; color: var(--negro); }
+    .alerta-peso .s { font-size: 13px; color: var(--gris-oscuro); line-height: 1.45; margin-top: 10px; }
+    .acc-alerta { display: flex; align-items: center; gap: 14px; margin-top: 12px; }
+    .btn-alerta { height: 38px; padding: 0 16px; border-radius: 19px; border: 1.5px solid var(--negro); background: var(--blanco); font-size: 13px; font-weight: 600; display: flex; align-items: center; }
+    .link-alerta { font-size: 13px; font-weight: 600; color: var(--gris-oscuro); text-decoration: underline; }
+    .etapa { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 10px; border-radius: 10px; background: var(--blanco); font-size: 13px; color: var(--gris-oscuro); margin-bottom: 4px; }
+    .etapa b { font-size: 13px; color: var(--negro); }
+    /* Invitación clara: opcional, botón secundario */
+    .invita-card.clara { background: var(--blanco); color: var(--negro); border: 1.5px solid var(--gris-claro); }
+    .invita-card.clara .eyebrow-inv { color: var(--gris-oscuro); }
+    .invita-card.clara .lista-inv div { color: var(--gris-oscuro); }
+    .invita-card.clara .lista-inv span { background: var(--gris-fondo); }
+    .invita-card.clara .btn-inv { background: var(--blanco); color: var(--negro); border: 1.5px solid var(--negro); }
+
+    /* ===================== v14 · final ===================== */
+    .bienvenida-v3 .texto.abajo { justify-content: flex-end; }
+    .bienvenida-v3 .texto.abajo .pie-boton { margin-top: 28px; }
+    .boton-principal.inactivo { background: var(--gris-claro); color: var(--gris-medio); }
+    .falta { font-size: 12px; font-weight: 600; color: var(--gris-oscuro); }
+    .campo-num.error { border: 2px dashed var(--negro); }
+    .msj-error { font-size: 13px; color: var(--gris-oscuro); margin-top: 8px; line-height: 1.4; }
+    .campo-num.doble .etq-num { flex: 1; }
+    .campo-num.doble .unidad-num { width: auto; margin-right: 8px; }
+    .campo-num.doble .unidad-num:last-child { margin-right: 0; }
+
+    /* ===================== v16 · armar tu plan ===================== */
+    .progreso .cerrar-flujo { font-size: 22px; line-height: 1; margin-left: 4px; }
+    .comida-r .der { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; align-self: stretch; justify-content: space-between; }
+    .comida-r .der .k { align-self: auto; }
+    .comida-r .cambiar { font-size: 12px; font-weight: 600; text-decoration: underline; }
+    .comida-r.libre { padding: 10px 14px; }
+    .resumen-pref span:first-child { color: var(--negro); font-weight: 600; }
+    .dialogo { position: absolute; left: 24px; right: 24px; top: 300px; z-index: 6; background: var(--blanco); border-radius: 20px; padding: 22px 20px 18px; }
+    .dialogo .t { font-size: 17px; font-weight: 700; }
+    .dialogo .s { font-size: 13px; color: var(--gris-oscuro); margin-top: 6px; line-height: 1.45; }
+    .contexto-lienzo { width: 100%; text-align: center; font-size: 13px; font-weight: 600; color: var(--gris-oscuro); margin: 8px 0 -24px; }
+
+    /* ===================== v17 ===================== */
+    .progreso .cerrar-flujo { font-size: 26px; font-weight: 300; margin-left: 8px; width: 32px; height: 32px; border-radius: 50%; background: var(--gris-fondo); display: flex; align-items: center; justify-content: center; }
+    .chips-sel span.off { color: var(--gris-claro); border-color: var(--gris-fondo); background: var(--gris-fondo); }
+
+    /* ===================== v18 ===================== */
+    .nota-plan { display: flex; gap: 10px; align-items: flex-start; margin-top: 18px; padding: 12px 14px; border-radius: 14px; background: var(--gris-fondo); font-size: 13px; color: var(--gris-oscuro); line-height: 1.45; }
+    .nota-plan .placeholder { width: 20px; height: 20px; border-radius: 50%; }
+
+    /* ===================== v21 ===================== */
+    .comida-r.fuera { border: 1.5px dashed var(--gris-medio); background: var(--gris-fondo); padding: 12px 14px; }
+    .comida-r.fuera .t { font-weight: 600; }
+    .comida-r.fuera .k { font-weight: 600; }
+    .contador-sup.falta-c { color: var(--negro); font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <div class="intro">
+    <h1>Onboarding v21 · armar tu plan de comidas</h1>
+    Flujo opcional que empieza en "Tu plan está listo" (v15). Principal (0 a 8): entrada → 4 pasos (cuáles, tu alimentación, lo que te gusta, cómo cocinas) → armando → resultado → cambiar una comida → resumen editable.
+    Variantes (9 a 13): vegetariana (pasos 2 y 3), ninguna comida elegida, solo 2 comidas (con calorías fuera del plan) y salir a mitad del flujo.
+    Persona principal: Andrés, 2.000 kcal en 4 comidas (desayuno, almuerzo, snack de la tarde y cena), como de todo, alergia a mariscos, no le gusta el cerdo, ejercicio 3 a 4 días.
+  </div>
+
+  <div class="lienzo">
+
+    <!-- ========== 0 · Plan listo ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>0 · Tu plan está listo</strong>
+        <span>Punto de entrada al flujo.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>8:59</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo plan-listo">
+            <div class="fila-exito">
+              <div class="exito-ic">✓</div>
+              <div class="titulo">Tu plan está listo</div>
+            </div>
+            <div class="resultado-card">
+              <div class="etiqueta">Te recomendamos al día</div>
+              <div class="res-kcal">2.000 <span>kcal</span></div>
+              <div class="macros">
+                <div><div class="n">Proteína</div><div class="v">140 g</div></div>
+                <div><div class="n">Carbohidratos</div><div class="v">215 g</div></div>
+                <div><div class="n">Grasa</div><div class="v">65 g</div></div>
+              </div>
+              <hr class="divisor">
+              <div class="res-meta">
+                <div><div class="etiqueta">Tu meta</div><div class="v">Perder 3 kg</div></div>
+                <div><div class="etiqueta">Llegarías</div><div class="v">A mediados de diciembre</div></div>
+              </div>
+            </div>
+            <div class="invita-card clara">
+              <div class="eyebrow-inv">Te recomendamos <span class="opcional">Opcional</span></div>
+              <div class="t">Arma con nosotros tu plan de comidas</div>
+              <div class="lista-inv">
+                <div><span class="gris">🥗</span>Comidas con lo que te gusta</div>
+                <div><span class="gris">🥄</span>Porciones fáciles de medir</div>
+                <div><span class="gris">📖</span>Recetas cortas de 3 a 5 pasos</div>
+              </div>
+              <div class="btn-inv">Armar mi plan de comidas</div>
+            </div>
+          </div>
+          <div class="pie-boton"><button class="boton-principal">Ir al inicio</button></div>
+        </div>
+      </div>
+      <p class="decision"><b>Contexto:</b> pantalla final del onboarding (v15). "Armar mi plan de comidas" abre este flujo; "Ir al inicio" lo salta.</p>
+    </div>
+
+    <!-- ========== 1 · Paso 1 ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>1 · Tus comidas 1 de 4 · cuáles</strong>
+        <span>5 comidas posibles, sin preentreno.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:00</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="progreso solo">
+              <div class="segmentos" style="grid-template-columns: repeat(4, 1fr);"><i class="hecho"></i><i></i><i></i><i></i></div>
+              <span class="cerrar-flujo">×</span>
+            </div>
+            <div class="titulo">¿Qué comidas quieres en tu plan?</div>
+            <div class="contador-sup"><b>4 comidas</b> en tu plan</div>
+            <div class="check-lista">
+              <div class="check on"><div class="info"><div class="t">Desayuno</div></div><div class="caja"></div></div>
+              <div class="check"><div class="info"><div class="t">Snack de la mañana</div></div><div class="caja"></div></div>
+              <div class="check on"><div class="info"><div class="t">Almuerzo</div></div><div class="caja"></div></div>
+              <div class="check on"><div class="info"><div class="t">Snack de la tarde</div></div><div class="caja"></div></div>
+              <div class="check on"><div class="info"><div class="t">Cena</div></div><div class="caja"></div></div>
+            </div>
+            <div class="nota-plan"><div class="placeholder"></div><span>No importa si eliges 1 o 5 comidas. Si comes algo más, lo puedes registrar fuera de tu plan.</span></div>
+          </div>
+          <div class="pie-boton"><button class="boton-principal">Continuar</button></div>
+        </div>
+      </div>
+      <p class="decision"><b>Cambio:</b> una nota debajo de la lista aclara que el número de comidas no limita lo que se registra: lo que coma de más se registra fuera de su plan. Arriba quedan solo la barra de pasos y la ×.</p>
+    </div>
+
+    <!-- ========== 2 · Paso 2 ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>2 · Tus comidas 2 de 4 · tu alimentación</strong>
+        <span>"Como de todo" y "Ninguna" que se desmarca sola.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:00</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="progreso solo">
+              <div class="segmentos" style="grid-template-columns: repeat(4, 1fr);"><i class="hecho"></i><i class="hecho"></i><i></i><i></i></div>
+              <span class="cerrar-flujo">×</span>
+            </div>
+            <div class="titulo">Conozcamos tu alimentación</div>
+            <div class="indicacion">Así tu plan respeta cómo comes.</div>
+            <div class="grupo">
+              <div class="t-grupo">¿Cómo te alimentas?</div>
+              <div class="chips-sel"><span class="on">Como de todo</span><span>Vegetariano</span><span>Vegano</span></div>
+            </div>
+            <div class="grupo">
+              <div class="t-grupo">Alergias o intolerancias</div>
+              <div class="chips-sel"><span>Ninguna</span><span>Lácteos</span><span>Gluten</span><span>Huevo</span><span>Maní</span><span class="on">Mariscos</span><span class="mas">+ Otra</span></div>
+            </div>
+            <div class="grupo">
+              <div class="t-grupo">Alimentos que no te gusta comer</div>
+              <div class="s-grupo">Opcional</div>
+              <div class="chips-sel"><span>Res</span><span class="on">Cerdo</span><span>Hígado</span><span>Pescado</span><span>Brócoli</span><span>Picante</span><span class="mas">+ Otro</span></div>
+            </div>
+          </div>
+          <div class="botonera par">
+            <button class="boton-secundario">Atrás</button>
+            <button class="boton-principal">Continuar</button>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Cambio:</b> lo que se elige arriba filtra lo de abajo. Con "Como de todo" se ven todas las opciones; con vegetariano o vegano solo las que corresponden (celular 9). Al marcar una alergia, "Ninguna" se desmarca.</p>
+    </div>
+
+    <!-- ========== 3 · Paso 3 ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>3 · Tus comidas 3 de 4 · lo que te gusta</strong>
+        <span>Opcional: si no elige nada, el plan va con variedad.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:01</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="progreso solo">
+              <div class="segmentos" style="grid-template-columns: repeat(4, 1fr);"><i class="hecho"></i><i class="hecho"></i><i class="hecho"></i><i></i></div>
+              <span class="cerrar-flujo">×</span>
+            </div>
+            <div class="titulo">¿Qué te gusta comer?</div>
+            <div class="indicacion">Elige varias. Si no eliges, armamos tu plan con variedad.</div>
+            <div class="grupo" style="margin-top: 16px;">
+              <div class="t-grupo">Proteínas</div>
+              <div class="chips-sel"><span class="on">Pollo</span><span class="on">Huevo</span><span class="on">Pescado</span><span>Res</span><span>Pavo</span><span>Fríjol y lenteja</span></div>
+            </div>
+            <div class="grupo">
+              <div class="t-grupo">Carbohidratos</div>
+              <div class="chips-sel"><span class="on">Arroz</span><span class="on">Arepa</span><span class="on">Papa</span><span>Plátano</span><span>Avena</span><span>Pasta</span></div>
+            </div>
+            <div class="grupo">
+              <div class="t-grupo">Vegetales</div>
+              <div class="chips-sel"><span class="on">Tomate</span><span class="on">Lechuga</span><span>Zanahoria</span><span>Espinaca</span><span>Ahuyama</span><span>Pepino</span></div>
+            </div>
+          </div>
+          <div class="botonera par">
+            <button class="boton-secundario">Atrás</button>
+            <button class="boton-principal">Continuar</button>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Cambio:</b> el paso es opcional y lo dice. "Continuar" siempre está activo. Ya no aparece el cerdo porque lo marcó en el paso 2.</p>
+    </div>
+
+    <!-- ========== 4 · Paso 4 ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>4 · Tus comidas 4 de 4 · cómo cocinas</strong>
+        <span>"Sin cocinar" con ejemplos.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:01</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="progreso solo">
+              <div class="segmentos" style="grid-template-columns: repeat(4, 1fr);"><i class="hecho"></i><i class="hecho"></i><i class="hecho"></i><i class="hecho"></i></div>
+              <span class="cerrar-flujo">×</span>
+            </div>
+            <div class="titulo">¿Cómo te gusta cocinar?</div>
+            <div class="grupo">
+              <div class="t-grupo">Tipo de cocina</div>
+              <div class="s-grupo">Puedes elegir varias</div>
+              <div class="chips-sel"><span class="on">Colombiana casera</span><span class="on">Mediterránea</span><span>Mexicana</span><span>Italiana</span><span>Sin preferencia</span></div>
+            </div>
+            <div class="grupo">
+              <div class="t-grupo">Preparaciones</div>
+              <div class="s-grupo">Puedes elegir varias</div>
+              <div class="chips-sel"><span class="on">A la plancha</span><span class="on">Al horno</span><span>Guisado</span><span>Al vapor</span><span>En air fryer</span><span>Sin cocinar (ensaladas, wraps)</span></div>
+            </div>
+            <div class="grupo">
+              <div class="t-grupo">¿Cuánto tiempo tienes para cocinar?</div>
+              <div class="chips-sel"><span>15 min</span><span class="on">30 min</span><span>Más de 30</span></div>
+            </div>
+          </div>
+          <div class="botonera par">
+            <button class="boton-secundario">Atrás</button>
+            <button class="boton-principal">Armar plan</button>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Cambio:</b> "Sin cocinar" lleva ejemplos para que no se confunda con comida lista o enlatada.</p>
+    </div>
+
+    <!-- ========== 5 · Armando ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>5 · Armando tu plan de comidas</strong>
+        <span>Mismo componente que "Calculando tu plan" del onboarding.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:02</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="armando">
+            <div class="placeholder"></div>
+            <div class="titulo">Armando tu plan de comidas…</div>
+            <div class="generando">
+              <div><i></i>4 comidas para tus 2.000 kcal</div>
+              <div><i></i>Sin mariscos ni cerdo</div>
+              <div><i></i>Con pollo, huevo y pescado</div>
+              <div><i class="pend"></i>Recetas de 30 minutos o menos</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Cambio:</b> mismo título, ritmo y estilo que "Calculando tu plan", así los dos momentos de espera se reconocen como lo mismo. Pasa solo al resultado.</p>
+    </div>
+
+    <!-- ========== 6 · Resultado ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>6 · Tu plan de comidas está listo</strong>
+        <span>Cambiar un plato sin rehacer todo.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:02</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="titulo" style="margin-top: 8px;">Tu plan de comidas está listo</div>
+            <div class="resumen-pref"><span>Porciones para tus 2.000 kcal</span><span>Sin mariscos ni cerdo</span></div>
+            <div class="resultado">
+              <div class="comida-r"><div class="placeholder"></div><div class="info"><div class="m">Desayuno</div><div class="t">Huevos pericos con arepa y fruta</div><div class="s">2 huevos · 1 arepa mediana · 1 fruta</div></div><div class="der"><div class="k">500 kcal</div><span class="cambiar">Cambiar</span></div></div>
+              <div class="comida-r"><div class="placeholder"></div><div class="info"><div class="m">Almuerzo</div><div class="t">Arroz, pollo, frijoles y ensalada</div><div class="s">1 taza de arroz · 1 palma de pollo · ½ taza de frijoles</div></div><div class="der"><div class="k">700 kcal</div><span class="cambiar">Cambiar</span></div></div>
+              <div class="comida-r"><div class="placeholder"></div><div class="info"><div class="m">Snack de la tarde</div><div class="t">Yogur griego con banano</div><div class="s">1 vaso de yogur · 1 banano</div></div><div class="der"><div class="k">250 kcal</div><span class="cambiar">Cambiar</span></div></div>
+              <div class="comida-r"><div class="placeholder"></div><div class="info"><div class="m">Cena</div><div class="t">Tilapia con papa y verduras al horno</div><div class="s">1 filete · 2 papas medianas · verduras</div></div><div class="der"><div class="k">550 kcal</div><span class="cambiar">Cambiar</span></div></div>
+            </div>
+            <div class="suma"><span>Puedes cambiarlo cuando quieras en Mi plan. Lo que comas fuera de tu plan también lo puedes registrar.</span></div>
+          </div>
+          <div class="pie-boton">
+            <button class="boton-principal">Guardar plan de comidas</button>
+            <span class="boton-texto">Editar mis respuestas</span>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Cambio:</b> con 4 comidas el plan cubre toda la meta: 500 + 700 + 250 + 550 = 2.000 kcal, cada una dentro de su tope. La línea final ya no menciona Hoy: "Lo que comas fuera de tu plan también lo puedes registrar".</p>
+    </div>
+
+    <!-- ========== 7 · Cambiar opción ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>7 · Cambiar una comida</strong>
+        <span>Hoja inferior con las 2 opciones equivalentes.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:03</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="titulo" style="margin-top: 8px;">Tu plan de comidas está listo</div>
+            <div class="resumen-pref"><span>Porciones para tus 2.000 kcal</span><span>Sin mariscos ni cerdo</span></div>
+          </div>
+        </div>
+        <div class="capa-guia"></div>
+        <div class="hoja-inv">
+          <div class="agarradera"></div>
+          <div class="t-inv">Cena · elige una opción</div>
+          <div class="s-inv">Las dos aportan lo mismo a tu meta.</div>
+          <div class="opciones" style="margin-top: 14px;">
+            <div class="opcion activa"><div class="placeholder"></div><div class="info"><div class="t">Tilapia con papa y verduras al horno</div><div class="s">1 filete · 2 papas medianas · verduras · 550 kcal</div></div><div class="radio"></div></div>
+            <div class="opcion"><div class="placeholder"></div><div class="info"><div class="t">Pechuga a la plancha con papa criolla</div><div class="s">1 palma de pollo · 8 papas criollas · ensalada · 560 kcal</div></div><div class="radio"></div></div>
+          </div>
+          <button class="boton-principal" style="margin-top: 18px;">Usar esta opción</button>
+        </div>
+      </div>
+      <p class="decision"><b>Por qué:</b> cambiar un plato toma 2 toques y no rehace el plan. Son las mismas 2 opciones por comida que viven en Mi plan.</p>
+    </div>
+
+    <!-- ========== 8 · Resumen ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>8 · Editar mis respuestas · resumen</strong>
+        <span>Una tarjeta por paso; las respuestas en chips.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:03</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="cab-resumen"><span class="atras">‹</span><span class="t">Tus respuestas</span></div>
+            <div class="res-cards">
+              <div class="res-card">
+                <div class="cab"><span class="t">Comidas</span><span class="editar">Editar</span></div>
+                <div class="chips-mini"><span>Desayuno</span><span>Almuerzo</span><span>Snack de la tarde</span><span>Cena</span></div>
+              </div>
+              <div class="res-card">
+                <div class="cab"><span class="t">Tu alimentación</span><span class="editar">Editar</span></div>
+                <div class="sub-r"><span class="k">Alimentación</span><span class="chips-mini"><span>Como de todo</span></span></div>
+                <div class="sub-r"><span class="k">Alergias</span><span class="chips-mini"><span>Mariscos</span></span></div>
+                <div class="sub-r"><span class="k">No te gusta</span><span class="chips-mini"><span>Cerdo</span></span></div>
+              </div>
+              <div class="res-card">
+                <div class="cab"><span class="t">Lo que te gusta</span><span class="editar">Editar</span></div>
+                <div class="chips-mini"><span>Pollo</span><span>Huevo</span><span>Pescado</span><span>Arroz</span><span>Arepa</span><span>Papa</span><span>Tomate</span><span>Lechuga</span></div>
+              </div>
+              <div class="res-card">
+                <div class="cab"><span class="t">Cómo cocinas</span><span class="editar">Editar</span></div>
+                <div class="chips-mini"><span>Colombiana</span><span>Mediterránea</span><span>Plancha</span><span>Horno</span><span>30 min</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="pie-boton"><button class="boton-principal">Actualizar plan de comidas</button></div>
+        </div>
+      </div>
+      <p class="decision"><b>Se mantiene</b> el resumen por tarjetas de v11. Se abre con "Editar mis respuestas"; cada "Editar" abre ese paso y vuelve aquí. "Actualizar plan de comidas" vuelve a armarlo y lleva al resultado.</p>
+    </div>
+
+    <!-- ========== 9 · Vegetariano 2 ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>9 · Variante vegetariana · paso 2</strong>
+        <span>Sin carnes; "Ninguna" deshabilita las demás alergias.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:00</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="progreso solo">
+              <div class="segmentos" style="grid-template-columns: repeat(4, 1fr);"><i class="hecho"></i><i class="hecho"></i><i></i><i></i></div>
+              <span class="cerrar-flujo">×</span>
+            </div>
+            <div class="titulo">Conozcamos tu alimentación</div>
+            <div class="indicacion">Así tu plan respeta cómo comes.</div>
+            <div class="grupo">
+              <div class="t-grupo">¿Cómo te alimentas?</div>
+              <div class="chips-sel"><span>Como de todo</span><span class="on">Vegetariano</span><span>Vegano</span></div>
+            </div>
+            <div class="grupo">
+              <div class="t-grupo">Alergias o intolerancias</div>
+              <div class="chips-sel"><span class="on">Ninguna</span><span class="off">Lácteos</span><span class="off">Gluten</span><span class="off">Huevo</span><span class="off">Maní</span><span class="off">Soya</span><span class="off">+ Otra</span></div>
+            </div>
+            <div class="grupo">
+              <div class="t-grupo">Alimentos que no te gusta comer</div>
+              <div class="s-grupo">Opcional</div>
+              <div class="chips-sel"><span>Brócoli</span><span class="on">Berenjena</span><span>Champiñones</span><span>Coliflor</span><span>Picante</span><span class="mas">+ Otro</span></div>
+            </div>
+          </div>
+          <div class="botonera par">
+            <button class="boton-secundario">Atrás</button>
+            <button class="boton-principal">Continuar</button>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Por qué:</b> al elegir vegetariano, ninguna lista muestra carnes ni pescado (en vegano tampoco huevo ni lácteos). Al marcar "Ninguna" en alergias, las demás opciones se deshabilitan; para elegir una alergia se desmarca "Ninguna".</p>
+    </div>
+
+    <!-- ========== 10 · Vegetariano 3 ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>10 · Variante vegetariana · paso 3</strong>
+        <span>Proteínas sin carne.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:01</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="progreso solo">
+              <div class="segmentos" style="grid-template-columns: repeat(4, 1fr);"><i class="hecho"></i><i class="hecho"></i><i class="hecho"></i><i></i></div>
+              <span class="cerrar-flujo">×</span>
+            </div>
+            <div class="titulo">¿Qué te gusta comer?</div>
+            <div class="indicacion">Elige varias. Si no eliges, armamos tu plan con variedad.</div>
+            <div class="grupo" style="margin-top: 16px;">
+              <div class="t-grupo">Proteínas</div>
+              <div class="chips-sel"><span class="on">Huevo</span><span class="on">Fríjol y lenteja</span><span>Garbanzo</span><span>Queso y yogur</span><span>Tofu</span><span>Quinua</span></div>
+            </div>
+            <div class="grupo">
+              <div class="t-grupo">Carbohidratos</div>
+              <div class="chips-sel"><span class="on">Arroz</span><span class="on">Arepa</span><span>Papa</span><span>Plátano</span><span class="on">Avena</span><span>Pasta</span></div>
+            </div>
+            <div class="grupo">
+              <div class="t-grupo">Vegetales</div>
+              <div class="chips-sel"><span class="on">Tomate</span><span>Lechuga</span><span class="on">Espinaca</span><span>Zanahoria</span><span>Ahuyama</span><span>Pepino</span></div>
+            </div>
+          </div>
+          <div class="botonera par">
+            <button class="boton-secundario">Atrás</button>
+            <button class="boton-principal">Continuar</button>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Por qué:</b> las proteínas cambian según cómo se alimenta la persona, con opciones locales (fríjol, lenteja, garbanzo) primero.</p>
+    </div>
+
+    <!-- ========== 11 · Paso 1 ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>11 · Variante · ninguna comida elegida</strong>
+        <span>"Continuar" gris hasta elegir al menos una.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:00</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="progreso solo">
+              <div class="segmentos" style="grid-template-columns: repeat(4, 1fr);"><i class="hecho"></i><i></i><i></i><i></i></div>
+              <span class="cerrar-flujo">×</span>
+            </div>
+            <div class="titulo">¿Qué comidas quieres en tu plan?</div>
+            <div class="contador-sup falta-c">Elige al menos una comida</div>
+            <div class="check-lista">
+              <div class="check"><div class="info"><div class="t">Desayuno</div></div><div class="caja"></div></div>
+              <div class="check"><div class="info"><div class="t">Snack de la mañana</div></div><div class="caja"></div></div>
+              <div class="check"><div class="info"><div class="t">Almuerzo</div></div><div class="caja"></div></div>
+              <div class="check"><div class="info"><div class="t">Snack de la tarde</div></div><div class="caja"></div></div>
+              <div class="check"><div class="info"><div class="t">Cena</div></div><div class="caja"></div></div>
+            </div>
+            <div class="nota-plan"><div class="placeholder"></div><span>No importa si eliges 1 o 5 comidas. Si comes algo más, lo puedes registrar fuera de tu plan.</span></div>
+          </div>
+          <div class="pie-boton"><button class="boton-principal inactivo">Continuar</button></div>
+        </div>
+      </div>
+      <p class="decision"><b>Por qué:</b> si la persona desmarca todo, el contador cambia a "Elige al menos una comida" y "Continuar" se ve gris. Así sabe qué falta sin un mensaje de error.</p>
+    </div>
+
+    <!-- ========== 12 · Resultado ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>12 · Variante · eligió 2 comidas</strong>
+        <span>Cada comida tiene un tope; el resto queda fuera del plan.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:02</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="titulo" style="margin-top: 8px;">Tu plan de comidas está listo</div>
+            <div class="resumen-pref"><span>2 comidas · 1.200 de tus 2.000 kcal</span><span>Sin mariscos ni cerdo</span></div>
+            <div class="resultado">
+              <div class="comida-r"><div class="placeholder"></div><div class="info"><div class="m">Desayuno</div><div class="t">Huevos pericos con arepa y fruta</div><div class="s">2 huevos · 1 arepa mediana · 1 fruta</div></div><div class="der"><div class="k">500 kcal</div><span class="cambiar">Cambiar</span></div></div>
+              <div class="comida-r"><div class="placeholder"></div><div class="info"><div class="m">Almuerzo</div><div class="t">Arroz, pollo, frijoles y ensalada</div><div class="s">1 taza de arroz · 1 palma de pollo · ½ taza de frijoles</div></div><div class="der"><div class="k">700 kcal</div><span class="cambiar">Cambiar</span></div></div>
+              <div class="comida-r fuera"><div class="info"><div class="m">Fuera de tu plan</div><div class="t">Unas 800 kcal para lo que comas</div></div></div>
+            </div>
+            <div class="suma"><span>Puedes cambiarlo cuando quieras en Mi plan. Lo que comas fuera de tu plan también lo puedes registrar.</span></div>
+          </div>
+          <div class="pie-boton">
+            <button class="boton-principal">Guardar plan de comidas</button>
+            <span class="boton-texto">Editar mis respuestas</span>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Por qué:</b> cada comida tiene un tope realista (desayuno hasta 550 kcal, snacks hasta 300, almuerzo hasta 700 y cena hasta 600). Si elige pocas comidas, el plan no las infla: lo que falta para la meta aparece como "Fuera de tu plan", el espacio para lo que coma de más. Datos: 500 + 700 + 800 = 2.000 kcal.</p>
+    </div>
+
+    <!-- ========== 13 · Salir ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>13 · Salir a mitad del flujo</strong>
+        <span>La × pide confirmación para no perder respuestas.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:01</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="progreso solo">
+              <div class="segmentos" style="grid-template-columns: repeat(4, 1fr);"><i class="hecho"></i><i class="hecho"></i><i class="hecho"></i><i></i></div>
+              <span class="cerrar-flujo">×</span>
+            </div>
+            <div class="titulo">¿Qué te gusta comer?</div>
+          </div>
+        </div>
+        <div class="capa-guia"></div>
+        <div class="dialogo">
+          <div class="t">¿Salir sin armar tu plan?</div>
+          <div class="s">Tus respuestas no se guardan. Puedes armarlo después desde Mi plan.</div>
+          <button class="boton-principal" style="margin-top: 18px;">Seguir armando</button>
+          <span class="boton-texto">Salir</span>
+        </div>
+      </div>
+      <p class="decision"><b>Por qué:</b> la acción principal es seguir (no perder lo hecho) y "Salir" queda secundaria. Al salir, la persona llega a Hoy sin plan de comidas; lo puede crear después desde Mi plan, como dice el mensaje.</p>
+    </div>
+
+  </div>
+</body>
+</html>

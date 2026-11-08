@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe – Onboarding v4</title>
+  <style>
+    /* ===== Paleta de wireframe: solo grises, blanco y negro (igual a hoy-v69) ===== */
+    :root {
+      --negro: #111;
+      --gris-oscuro: #555;
+      --gris-medio: #999;
+      --gris-claro: #ddd;
+      --gris-fondo: #f2f2f2;
+      --blanco: #fff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--gris-claro);
+      color: var(--negro);
+      padding: 24px 16px;
+    }
+
+    .intro { max-width: 820px; margin: 0 auto 32px; font-size: 13px; color: var(--gris-oscuro); line-height: 1.5; }
+    .intro h1 { font-size: 17px; color: var(--negro); margin-bottom: 6px; }
+
+    .lienzo { display: flex; justify-content: center; align-items: flex-start; gap: 48px; flex-wrap: wrap; }
+
+    .etiqueta-vista { text-align: center; margin-bottom: 12px; max-width: 390px; }
+    .etiqueta-vista strong { display: block; font-size: 14px; }
+    .etiqueta-vista span { font-size: 12px; color: var(--gris-oscuro); }
+
+    /* ===== Marco del celular (390 px) ===== */
+    .telefono {
+      width: 390px; height: 844px; background: var(--blanco);
+      border: 2px solid var(--negro); border-radius: 32px;
+      position: relative; overflow: hidden;
+    }
+    .barra-estado {
+      height: 44px; display: flex; justify-content: space-between; align-items: center;
+      padding: 0 28px; font-size: 15px; font-weight: 600;
+    }
+    .barra-estado .indicadores { display: flex; gap: 4px; }
+    .barra-estado .indicadores i { width: 16px; height: 10px; border-radius: 2px; background: var(--negro); }
+
+    /* Pantalla de onboarding: contenido arriba, botón fijo abajo */
+    .pantalla { height: calc(100% - 44px); display: flex; flex-direction: column; padding: 8px 20px 32px; }
+    .pantalla .cuerpo { flex: 1; overflow: hidden; }
+    .pie-boton { padding-top: 12px; }
+
+    .placeholder { background: var(--gris-claro); border: 1px dashed var(--gris-medio); border-radius: 6px; flex-shrink: 0; }
+
+    /* Escala tipográfica: 28 título · 17 título de pantalla · 15 elemento · 13 secundario · 12 etiquetas */
+    .titulo { font-size: 28px; font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; }
+    .bajada { font-size: 15px; color: var(--gris-oscuro); line-height: 1.45; margin-top: 10px; }
+    .secundario { font-size: 13px; color: var(--gris-oscuro); line-height: 1.45; }
+    .etiqueta { font-size: 12px; color: var(--gris-oscuro); }
+
+    /* Progreso: atrás + 5 segmentos + paso */
+    .progreso { display: flex; align-items: center; gap: 12px; margin: 4px 0 24px; }
+    .progreso .atras { font-size: 22px; width: 20px; }
+    .progreso .segmentos { flex: 1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+    .progreso .segmentos i { height: 4px; border-radius: 2px; background: var(--gris-claro); }
+    .progreso .segmentos i.hecho { background: var(--negro); }
+    .progreso .paso { font-size: 12px; color: var(--gris-oscuro); white-space: nowrap; }
+
+    .boton-principal {
+      display: block; width: 100%; height: 50px; border: none; border-radius: 25px;
+      background: var(--negro); color: var(--blanco); font: inherit; font-size: 15px; font-weight: 600;
+    }
+    .boton-principal.inactivo { background: var(--gris-claro); color: var(--gris-medio); }
+    .boton-secundario {
+      display: block; width: 100%; height: 50px; border-radius: 25px; margin-top: 10px;
+      background: var(--blanco); color: var(--negro); border: 1.5px solid var(--negro); font: inherit; font-size: 15px; font-weight: 600;
+    }
+    .boton-texto { display: block; text-align: center; font-size: 13px; font-weight: 600; margin-top: 14px; color: var(--gris-oscuro); }
+
+    /* Opciones de una sola elección: toda la tarjeta es táctil */
+    .opciones { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+    .opcion {
+      display: flex; align-items: center; gap: 14px; padding: 16px;
+      border: 1.5px solid var(--gris-claro); border-radius: 16px;
+    }
+    .opcion .placeholder { width: 36px; height: 36px; }
+    .opcion .info { flex: 1; }
+    .opcion .t { font-size: 15px; font-weight: 600; }
+    .opcion .s { font-size: 13px; color: var(--gris-oscuro); margin-top: 2px; }
+    .opcion .radio { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--gris-medio); flex-shrink: 0; }
+    .opcion.activa { border: 2px solid var(--negro); background: var(--gris-fondo); }
+    .opcion.activa .radio { border: 7px solid var(--negro); }
+
+    /* Datos básicos */
+    .campos { margin-top: 20px; display: flex; flex-direction: column; gap: 14px; }
+    .campo .etiqueta { margin-bottom: 6px; display: block; }
+    .entrada {
+      height: 48px; border: 1.5px solid var(--gris-claro); border-radius: 12px; padding: 0 14px;
+      display: flex; align-items: center; justify-content: space-between; font-size: 15px; font-weight: 600;
+    }
+    .entrada span { font-size: 13px; font-weight: 400; color: var(--gris-oscuro); }
+    .dos-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .segmentado { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 4px; background: var(--gris-fondo); border-radius: 12px; }
+    .segmentado span { height: 40px; display: flex; align-items: center; justify-content: center; font-size: 15px; border-radius: 9px; color: var(--gris-oscuro); }
+    .segmentado span.activo { background: var(--blanco); color: var(--negro); font-weight: 600; border: 1.5px solid var(--negro); }
+    .ayuda { font-size: 12px; color: var(--gris-oscuro); margin-top: 6px; }
+
+    /* Bienvenida */
+    .bienvenida { height: calc(100% - 44px); display: flex; flex-direction: column; padding: 8px 20px 32px; }
+    .bienvenida .imagen { flex: 1; margin: 12px 0 28px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--gris-oscuro); }
+    .logo { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; }
+    .logo .placeholder { width: 28px; height: 28px; border-radius: 8px; }
+    .puntos { display: flex; flex-direction: column; gap: 8px; margin: 18px 0 24px; }
+    .puntos div { display: flex; gap: 10px; font-size: 13px; color: var(--gris-oscuro); align-items: center; }
+    .puntos i { width: 6px; height: 6px; border-radius: 50%; background: var(--negro); flex-shrink: 0; }
+
+    /* Tarjeta de la meta calculada */
+    .meta-tarjeta { background: var(--gris-fondo); border-radius: 20px; padding: 20px; margin-top: 22px; }
+    .meta-tarjeta .fila-meta { display: flex; justify-content: space-between; align-items: flex-end; }
+    .meta-tarjeta .cifra { font-size: 28px; font-weight: 700; line-height: 1; }
+    .meta-tarjeta .der { text-align: right; }
+    .linea-tiempo { margin: 18px 0 6px; position: relative; height: 10px; border-radius: 5px; background: var(--gris-claro); }
+    .linea-tiempo div { position: absolute; left: 0; top: 0; bottom: 0; width: 6%; border-radius: 5px; background: var(--negro); }
+    .linea-tiempo-etq { display: flex; justify-content: space-between; font-size: 12px; color: var(--gris-oscuro); }
+    .divisor { border: none; border-top: 1px solid var(--gris-claro); margin: 18px 0 14px; }
+    .recomendado .t { font-size: 13px; color: var(--gris-oscuro); }
+    .recomendado .kcal { font-size: 28px; font-weight: 700; margin: 4px 0 14px; }
+    .recomendado .kcal span { font-size: 13px; font-weight: 400; color: var(--gris-oscuro); }
+    .macros { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .macros .n { font-size: 13px; color: var(--gris-oscuro); }
+    .macros .v { font-size: 15px; font-weight: 600; margin-top: 2px; }
+    .nota { display: flex; gap: 10px; margin-top: 16px; font-size: 13px; color: var(--gris-oscuro); line-height: 1.45; }
+    .nota .placeholder { width: 20px; height: 20px; border-radius: 50%; }
+    .legal { font-size: 12px; color: var(--gris-medio); line-height: 1.4; margin-top: 12px; }
+    .link { font-size: 13px; font-weight: 600; text-decoration: underline; }
+
+    /* Variantes de la tarjeta de meta */
+    .variantes { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+    .variante { border: 1.5px solid var(--gris-claro); border-radius: 16px; padding: 14px 16px; }
+    .variante .etiqueta { margin-bottom: 4px; display: block; }
+    .variante .t { font-size: 15px; font-weight: 600; }
+    .variante .s { font-size: 13px; color: var(--gris-oscuro); margin-top: 4px; line-height: 1.4; }
+
+    /* ¿Quieres un plan? */
+    .beneficios { margin-top: 22px; display: flex; flex-direction: column; gap: 14px; }
+    .beneficio { display: flex; gap: 12px; align-items: flex-start; }
+    .beneficio .placeholder { width: 36px; height: 36px; border-radius: 10px; }
+    .beneficio .t { font-size: 15px; font-weight: 600; }
+    .beneficio .s { font-size: 13px; color: var(--gris-oscuro); margin-top: 2px; }
+    .vista-plan { margin-top: 22px; border: 1.5px solid var(--gris-claro); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .vista-plan .fila-p { display: flex; gap: 10px; align-items: center; }
+    .vista-plan .fila-p .placeholder { width: 40px; height: 40px; }
+    .vista-plan .fila-p .t { font-size: 13px; font-weight: 600; }
+    .vista-plan .fila-p .s { font-size: 12px; color: var(--gris-oscuro); }
+
+    /* Conversación con Milo */
+    .chat { height: calc(100% - 44px); display: flex; flex-direction: column; padding: 4px 16px 24px; }
+    .cab-chat { display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid var(--gris-fondo); }
+    .cab-chat .cerrar { font-size: 22px; width: 24px; }
+    .cab-chat .t { font-size: 17px; font-weight: 700; }
+    .cab-chat .s { font-size: 12px; color: var(--gris-oscuro); }
+    .cab-chat .paso { margin-left: auto; font-size: 12px; color: var(--gris-oscuro); }
+    .logo-m { width: 28px; height: 28px; border-radius: 8px; border: 1.5px solid var(--negro); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0; }
+    .burbujas { flex: 1; overflow: hidden; padding: 6px 0; }
+    .burbuja { display: flex; gap: 10px; align-items: flex-start; margin-top: 16px; }
+    .burbuja p { background: var(--gris-fondo); border-radius: 4px 16px 16px 16px; padding: 10px 14px; font-size: 15px; line-height: 1.4; }
+    .yo { margin: 12px 0 0 auto; width: fit-content; max-width: 78%; background: var(--negro); color: var(--blanco); border-radius: 16px 16px 4px 16px; padding: 10px 14px; font-size: 15px; }
+    .chips-resp { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0 38px; }
+    .chips-resp span { font-size: 13px; font-weight: 600; padding: 9px 14px; border-radius: 18px; border: 1.5px solid var(--negro); background: var(--blanco); }
+    .chips-resp span small { display: block; font-size: 12px; font-weight: 400; color: var(--gris-oscuro); }
+    .chips-resp.multiple span.activo { background: var(--negro); color: var(--blanco); }
+    .chips-resp.multiple span.activo small { color: var(--gris-claro); }
+    .campo-chat { display: flex; align-items: center; gap: 8px; border: 1.5px solid var(--gris-claro); border-radius: 24px; height: 48px; padding: 0 6px 0 16px; font-size: 15px; color: var(--gris-medio); }
+    .campo-chat .enviar { margin-left: auto; width: 36px; height: 36px; border-radius: 50%; background: var(--negro); color: var(--blanco); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+
+    /* Resumen del plan dentro del chat */
+    .resumen-plan { margin: 12px 0 0 38px; border: 1.5px solid var(--negro); border-radius: 16px; padding: 12px 14px; }
+    .resumen-plan .cab { display: flex; justify-content: space-between; font-size: 13px; color: var(--gris-oscuro); margin-bottom: 6px; }
+    .resumen-plan .linea { display: flex; justify-content: space-between; font-size: 13px; padding: 6px 0; border-bottom: 1px solid var(--gris-fondo); }
+    .resumen-plan .linea:last-of-type { border-bottom: none; }
+    .resumen-plan .linea b { font-weight: 600; }
+    .resumen-plan .linea.libre { color: var(--gris-oscuro); }
+
+    /* Primer día en Hoy */
+    .contenido { height: calc(100% - 44px); overflow: hidden; display: flex; flex-direction: column; }
+    .zona-superior { padding: 4px 20px 24px; }
+    .zona-inferior { flex: 1; background: var(--gris-fondo); border-top: 1px solid var(--gris-claro); padding: 20px 16px 130px; }
+    .cabecera { display: flex; justify-content: space-between; align-items: center; margin: 8px 0 18px; }
+    .cabecera h1 { font-size: 34px; line-height: 1.1; }
+    .perfil { width: 36px; height: 36px; border-radius: 50%; background: var(--gris-claro); border: 1.5px solid var(--negro); }
+    .eyebrow { font-size: 13px; font-weight: 500; color: var(--gris-oscuro); }
+    .fila-cifra { display: flex; align-items: baseline; gap: 6px; margin: 6px 0 14px; }
+    .fila-cifra .cifra { font-size: 28px; font-weight: 700; line-height: 1; }
+    .barra { height: 4px; border-radius: 2px; background: var(--gris-claro); overflow: hidden; }
+    .barra.grande { height: 10px; border-radius: 5px; }
+    .macros-col { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 24px; margin-top: 22px; }
+    .macros-col .n { font-size: 13px; color: var(--gris-oscuro); }
+    .macros-col .v { font-size: 15px; font-weight: 600; margin: 6px 0 10px; white-space: nowrap; }
+    .macros-col .v span { font-size: 12px; font-weight: 400; color: var(--gris-oscuro); }
+    .titulo-seccion { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+    .r3-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .r3 { background: var(--blanco); border-radius: 16px; padding: 10px; border: 1px solid var(--gris-claro); }
+    .r3-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .r3-top .placeholder { width: 24px; height: 24px; }
+    .mas-ic { width: 32px; height: 32px; border-radius: 50%; background: var(--negro); color: var(--blanco); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .r3 .t { font-size: 13px; font-weight: 500; color: var(--gris-oscuro); }
+    .r3 .v { font-size: 15px; font-weight: 700; margin-top: 2px; }
+    .bienvenida-hoy { background: var(--blanco); border-radius: 16px; border: 1.5px solid var(--negro); padding: 14px 16px; margin-bottom: 20px; display: flex; gap: 12px; }
+    .bienvenida-hoy .t { font-size: 15px; font-weight: 600; }
+    .bienvenida-hoy .s { font-size: 13px; color: var(--gris-oscuro); margin-top: 4px; line-height: 1.4; }
+    .bienvenida-hoy .x { margin-left: auto; color: var(--gris-medio); font-size: 15px; }
+    .vacio { margin-top: 20px; font-size: 13px; color: var(--gris-oscuro); text-align: center; padding: 18px; border: 1px dashed var(--gris-medio); border-radius: 16px; }
+
+    .nav { position: absolute; left: 16px; right: 16px; bottom: 24px; display: flex; align-items: center; gap: 10px; }
+    .capsula {
+      flex: 1; height: 64px; display: grid; grid-template-columns: repeat(3, 1fr); align-items: center; padding: 4px;
+      background: rgba(255, 255, 255, 0.92); border: 1.5px solid var(--negro); border-radius: 32px; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+    .nav-item { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 11px; color: var(--gris-oscuro); border-radius: 28px; }
+    .nav-item .placeholder { width: 22px; height: 22px; }
+    .nav-item.activo { color: var(--negro); font-weight: 700; background: var(--gris-claro); }
+    .nav-ia {
+      width: 64px; height: 64px; flex-shrink: 0; border-radius: 50%; background: rgba(255, 255, 255, 0.92);
+      border: 1.5px solid var(--negro); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 800;
+    }
+
+    /* Notas de decisión debajo de cada celular */
+    .decision { max-width: 390px; margin-top: 12px; font-size: 12px; color: var(--gris-oscuro); line-height: 1.45; }
+    .decision b { color: var(--negro); }
+
+    /* ===================== v2 ===================== */
+    /* Botonera inferior: atrás (borde) + continuar (negro). Sin flecha arriba */
+    .botonera { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; padding-top: 12px; }
+    .botonera .boton-secundario { margin-top: 0; }
+    .progreso.solo { margin-top: 8px; }
+
+    /* Bienvenida corta */
+    .bienvenida .imagen { flex: 1; margin: 20px 0 32px; }
+
+    /* Lista abierta (selector de rueda): la fila del centro es la elegida */
+    .rueda { position: relative; isolation: isolate; margin-top: 36px; }
+    .rueda .item { height: 52px; display: flex; align-items: center; justify-content: center; font-size: 17px; color: var(--gris-medio); }
+    .rueda .item.cerca { color: var(--gris-oscuro); }
+    .rueda .item.lejos { color: var(--gris-claro); }
+    .rueda .item.elegido { font-size: 28px; font-weight: 700; color: var(--negro); }
+    .rueda .item.elegido span { font-size: 15px; font-weight: 400; color: var(--gris-oscuro); margin-left: 6px; }
+    .rueda .marco { position: absolute; left: 0; right: 0; top: 104px; height: 52px; border-radius: 12px; background: var(--gris-fondo); border: 1.5px solid var(--negro); z-index: -1; }
+    .rueda-par { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .rueda-par .rueda { margin-top: 12px; }
+    .rueda-par .etiqueta { display: block; text-align: center; margin-top: 28px; }
+    .rueda-par .rueda .item.elegido span { font-size: 13px; }
+
+    /* Tu meta, versión corta */
+    .meta-corta { background: var(--gris-fondo); border-radius: 20px; padding: 20px; margin-top: 24px; }
+    .meta-corta .linea-meta { font-size: 15px; font-weight: 600; }
+    .meta-corta .linea-meta span { font-weight: 400; color: var(--gris-oscuro); }
+    .base { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; color: var(--gris-oscuro); margin-top: 12px; }
+    .base b { font-size: 15px; color: var(--negro); }
+
+    /* Walkthrough: capa oscura, el elemento explicado queda por encima */
+    .capa-guia { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.55); z-index: 4; }
+    .foco { position: relative; z-index: 5; background: var(--blanco); border-radius: 16px; box-shadow: 0 0 0 8px var(--blanco); }
+    .zona-inferior .foco { box-shadow: 0 0 0 8px var(--gris-fondo); background: var(--gris-fondo); }
+    .nav.foco-nav { z-index: 5; }
+    .globo {
+      position: absolute; left: 20px; right: 20px; z-index: 6; background: var(--blanco); border-radius: 16px;
+      border: 1.5px solid var(--negro); padding: 16px;
+    }
+    .globo .paso-g { font-size: 12px; color: var(--gris-oscuro); }
+    .globo .t { font-size: 15px; font-weight: 700; margin-top: 4px; }
+    .globo .s { font-size: 13px; color: var(--gris-oscuro); margin-top: 4px; line-height: 1.45; }
+    .globo .acc { display: flex; align-items: center; margin-top: 14px; }
+    .globo .acc .puntos-g { display: flex; gap: 5px; }
+    .globo .acc .puntos-g i { width: 6px; height: 6px; border-radius: 50%; background: var(--gris-claro); }
+    .globo .acc .puntos-g i.on { background: var(--negro); }
+    .globo .acc .sig { height: 36px; padding: 0 18px; border-radius: 18px; background: var(--negro); color: var(--blanco); font-size: 13px; font-weight: 600; display: flex; align-items: center; }
+    .globo .acc .omitir { font-size: 13px; font-weight: 600; color: var(--gris-oscuro); margin-left: auto; margin-right: 14px; }
+    .globo::after { content: ""; position: absolute; left: var(--flecha, 50%); width: 14px; height: 14px; background: var(--blanco); transform: rotate(45deg); }
+    .globo.arriba::after { top: -8.5px; border-left: 1.5px solid var(--negro); border-top: 1.5px solid var(--negro); }
+    .globo.abajo::after { bottom: -8.5px; border-right: 1.5px solid var(--negro); border-bottom: 1.5px solid var(--negro); }
+
+    /* ===================== v3 ===================== */
+    /* Patrón móvil: atrás (‹) arriba a la izquierda junto al progreso; un solo CTA a lo ancho abajo */
+    .progreso .atras.oculto { visibility: hidden; }
+
+    /* Bienvenida: imagen al 50 % */
+    .bienvenida-v3 { height: calc(100% - 44px); display: flex; flex-direction: column; }
+    .bienvenida-v3 .imagen { height: 50%; margin: 0 20px; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--gris-oscuro); }
+    .bienvenida-v3 .texto { flex: 1; display: flex; flex-direction: column; padding: 32px 20px 32px; }
+    .bienvenida-v3 .texto .pie-boton { margin-top: auto; }
+
+    /* Pregunta que se abre dentro de la opción elegida */
+    .opcion-abierta { border: 2px solid var(--negro); background: var(--gris-fondo); border-radius: 16px; overflow: hidden; }
+    .opcion-abierta .opcion { border: none; background: transparent; }
+    .opcion-abierta .opcion .radio { border: 7px solid var(--negro); }
+    .sub { margin: 0 16px 16px; padding-top: 14px; border-top: 1px solid var(--gris-claro); }
+    .sub .t { font-size: 13px; font-weight: 600; }
+    .stepper { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; background: var(--blanco); border-radius: 12px; border: 1.5px solid var(--gris-claro); padding: 6px; }
+    .stepper .btn { width: 40px; height: 40px; border-radius: 10px; background: var(--gris-fondo); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .stepper .valor { font-size: 28px; font-weight: 700; }
+    .stepper .valor span { font-size: 15px; font-weight: 400; color: var(--gris-oscuro); margin-left: 4px; }
+    .sub .ayuda { margin-top: 8px; }
+
+    /* Regla horizontal: mismo componente para estatura y peso, uno debajo del otro */
+    .medida { margin-top: 28px; }
+    .medida .cab-m { display: flex; justify-content: space-between; align-items: baseline; }
+    .medida .cab-m .t { font-size: 15px; font-weight: 600; }
+    .medida .cab-m .unidad { display: flex; gap: 4px; padding: 3px; background: var(--gris-fondo); border-radius: 8px; }
+    .medida .cab-m .unidad span { font-size: 12px; padding: 4px 10px; border-radius: 6px; color: var(--gris-oscuro); }
+    .medida .cab-m .unidad span.on { background: var(--blanco); color: var(--negro); font-weight: 600; border: 1px solid var(--negro); }
+    .medida .valor-m { text-align: center; font-size: 28px; font-weight: 700; margin: 14px 0 8px; }
+    .medida .valor-m span { font-size: 15px; font-weight: 400; color: var(--gris-oscuro); margin-left: 4px; }
+    .regla { position: relative; height: 56px; border-radius: 12px; background: var(--gris-fondo); overflow: hidden; }
+    .regla .marcas {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 100%;
+      background:
+        repeating-linear-gradient(to right, transparent 0 calc(10% - 1px), var(--gris-medio) calc(10% - 1px) calc(10% + 1px), transparent calc(10% + 1px) 20%) left bottom / 100% 24px no-repeat,
+        repeating-linear-gradient(to right, transparent 0 calc(2% - 0.5px), var(--gris-claro) calc(2% - 0.5px) calc(2% + 0.5px), transparent calc(2% + 0.5px) 4%) left bottom / 100% 12px no-repeat;
+    }
+    .regla .numeros { position: absolute; left: 0; right: 0; top: 6px; display: grid; grid-template-columns: repeat(5, 1fr); text-align: center; font-size: 12px; color: var(--gris-medio); }
+    .regla .aguja { position: absolute; left: 50%; top: 22px; bottom: 0; width: 3px; margin-left: -1.5px; background: var(--negro); border-radius: 2px; }
+    .separador-m { border: none; border-top: 1px solid var(--gris-claro); margin: 28px 0 0; }
+
+    /* Elegir ritmo: 2 opciones, una recomendada */
+    .ritmos { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+    .ritmo { border: 1.5px solid var(--gris-claro); border-radius: 16px; padding: 14px 16px; }
+    .ritmo.activa { border: 2px solid var(--negro); background: var(--gris-fondo); }
+    .ritmo .fila-r { display: flex; align-items: center; gap: 8px; }
+    .ritmo .fila-r .t { font-size: 15px; font-weight: 700; }
+    .ritmo .fila-r .radio { margin-left: auto; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--gris-medio); }
+    .ritmo.activa .fila-r .radio { border: 7px solid var(--negro); }
+    .etiqueta-rec { font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 10px; background: var(--negro); color: var(--blanco); }
+    .ritmo .s { font-size: 13px; color: var(--gris-oscuro); margin-top: 4px; }
+    .ritmo .kcal-r { display: flex; justify-content: space-between; align-items: baseline; margin-top: 12px; }
+    .ritmo .kcal-r b { font-size: 17px; }
+    .ritmo .kcal-r span { font-size: 12px; color: var(--gris-oscuro); }
+    .porque { margin-top: 16px; border-radius: 16px; padding: 14px 16px; border: 1px dashed var(--gris-medio); }
+    .porque .t { font-size: 13px; font-weight: 700; }
+    .porque .s { font-size: 13px; color: var(--gris-oscuro); margin-top: 4px; line-height: 1.45; }
+
+    /* Chips de varias respuestas en el chat */
+    .chips-resp.multiple span.activo { background: var(--negro); color: var(--blanco); }
+    .confirmar-chips { margin: 10px 0 0 38px; display: inline-block; font-size: 13px; font-weight: 600; text-decoration: underline; }
+    .generando { margin: 12px 0 0 38px; display: flex; flex-direction: column; gap: 8px; }
+    .generando div { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--gris-oscuro); }
+    .generando i { width: 14px; height: 14px; border-radius: 50%; background: var(--negro); flex-shrink: 0; }
+    .generando i.pend { background: transparent; border: 1.5px solid var(--gris-medio); }
+    .recetario { margin-top: 8px; font-size: 12px; color: var(--gris-oscuro); display: flex; gap: 6px; align-items: center; }
+    .recetario .placeholder { width: 16px; height: 16px; border-radius: 4px; }
+
+    /* Invitación al recorrido: hoja inferior sobre Hoy */
+    .hoja-inv { position: absolute; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--blanco); border-radius: 24px 24px 0 0; padding: 10px 20px 32px; }
+    .hoja-inv .agarradera { width: 40px; height: 5px; border-radius: 3px; background: var(--gris-claro); margin: 0 auto 18px; }
+    .hoja-inv .placeholder.ilus { height: 140px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--gris-oscuro); }
+    .hoja-inv .t { font-size: 17px; font-weight: 700; margin-top: 18px; }
+    .hoja-inv .s { font-size: 15px; color: var(--gris-oscuro); margin-top: 6px; line-height: 1.4; }
+    .hoja-inv .boton-principal { margin-top: 20px; }
+    .globo .cerrar-g { position: absolute; right: 14px; top: 12px; font-size: 15px; color: var(--gris-medio); }
+    .globo .acc .atras-g { font-size: 13px; font-weight: 600; color: var(--gris-oscuro); margin-left: auto; margin-right: 14px; }
+
+    /* ===================== v4 ===================== */
+    /* Botonera abajo: Atrás (borde) + Continuar (negro), desde el paso 2 */
+    .bienvenida-v3 .texto .titulo { margin-top: 4px; }
+
+    /* Selección múltiple en lista: casilla cuadrada */
+    .check-lista { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+    .check { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border: 1.5px solid var(--gris-claro); border-radius: 14px; }
+    .check .info { flex: 1; }
+    .check .t { font-size: 15px; font-weight: 600; }
+    .check .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .check .caja { width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--gris-medio); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--blanco); }
+    .check.on { border: 2px solid var(--negro); background: var(--gris-fondo); }
+    .check.on .caja { background: var(--negro); border-color: var(--negro); }
+    .check.on .caja::after { content: "✓"; }
+    .contador { font-size: 13px; color: var(--gris-oscuro); margin-top: 12px; }
+
+    /* Grupos de chips (varias respuestas) */
+    .grupo { margin-top: 22px; }
+    .grupo .t-grupo { font-size: 15px; font-weight: 600; }
+    .grupo .s-grupo { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .chips-sel { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .chips-sel span { font-size: 13px; font-weight: 600; padding: 9px 14px; border-radius: 18px; border: 1.5px solid var(--gris-claro); }
+    .chips-sel span.on { background: var(--negro); color: var(--blanco); border-color: var(--negro); }
+    .chips-sel span.mas { border-style: dashed; color: var(--gris-oscuro); }
+
+    /* Armando el plan */
+    .armando { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    .armando .placeholder { width: 120px; height: 120px; border-radius: 60px; margin-bottom: 28px; }
+    .armando .titulo { font-size: 17px; }
+    .armando .generando { margin: 20px 0 0; align-items: flex-start; }
+
+    /* Resultado del plan */
+    .resultado { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; }
+    .comida-r { display: flex; gap: 12px; align-items: center; padding: 10px; border: 1.5px solid var(--gris-claro); border-radius: 14px; }
+    .comida-r .placeholder { width: 52px; height: 52px; border-radius: 10px; }
+    .comida-r .info { flex: 1; }
+    .comida-r .m { font-size: 12px; color: var(--gris-oscuro); }
+    .comida-r .t { font-size: 15px; font-weight: 600; margin-top: 1px; }
+    .comida-r .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .comida-r .k { font-size: 13px; font-weight: 600; white-space: nowrap; align-self: flex-start; }
+    .comida-r.fuerte { border: 2px solid var(--negro); }
+    .comida-r.libre { border-style: dashed; }
+    .comida-r.libre .placeholder { visibility: hidden; width: 0; margin-right: -12px; }
+    .suma { display: flex; justify-content: space-between; font-size: 13px; color: var(--gris-oscuro); margin-top: 10px; padding: 0 4px; }
+    .suma b { color: var(--negro); }
+    .resumen-pref { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .resumen-pref span { font-size: 12px; padding: 4px 10px; border-radius: 12px; background: var(--gris-fondo); color: var(--gris-oscuro); }
+  </style>
+</head>
+<body>
+
+  <div class="intro">
+    <h1>Onboarding v4</h1>
+    La app se llama <b>Milo</b> y la IA, <b>Milo AI</b>. Cambios frente a v3: bienvenida con un solo texto; desde el paso 2, botonera Atrás / Continuar abajo;
+    "Sí, armar mi plan" abre un flujo de 4 pantallas (comidas, lo que no comes, lo que te gusta y comida más grande) en vez del chat; el recorrido no cambia.
+    Persona de ejemplo: hombre, 30 años, 170 cm, 75 kg, algo activo → mantenimiento de unas 2.500 kcal. Ritmo recomendado: 2.000 kcal (P 140 · C 215 · G 65).
+  </div>
+
+  <div class="lienzo">
+
+    <!-- ========== 0 · Bienvenida ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>0 · Bienvenida</strong>
+        <span>Imagen al 50 %, un solo texto y un CTA.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>8:55</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="bienvenida-v3">
+          <div class="placeholder imagen">Imagen · persona comiendo comida local</div>
+          <div class="texto">
+            <div class="titulo">Milo te dice qué y cuánto comer, y registrarlo te toma un toque.</div>
+            <div class="pie-boton"><button class="boton-principal">Comenzar</button></div>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Cambio:</b> un solo texto con la propuesta de valor: resuelve los dos problemas (no saber qué ni cuánto comer, y que registrar es complejo).</p>
+    </div>
+
+    <!-- ========== 1 · Objetivo ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>1 · ¿Qué quieres lograr?</strong>
+        <span>Al elegir "Perder peso", se abre "¿Cuánto?" en la misma tarjeta.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>8:56</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="progreso solo">
+              <div class="segmentos"><i class="hecho"></i><i></i><i></i><i></i><i></i></div>
+              <span class="paso">1 de 5</span>
+            </div>
+            <div class="titulo">¿Qué quieres lograr?</div>
+            <div class="opciones">
+              <div class="opcion-abierta">
+                <div class="opcion">
+                  <div class="placeholder"></div>
+                  <div class="info"><div class="t">Perder peso</div><div class="s">A un ritmo sano</div></div>
+                  <div class="radio"></div>
+                </div>
+                <div class="sub">
+                  <div class="t">¿Cuánto quieres perder?</div>
+                  <div class="stepper"><span class="btn">−</span><span class="valor">3<span>kg</span></span><span class="btn">+</span></div>
+                  <div class="ayuda">Te recomendamos empezar con una meta de hasta 5 kg.</div>
+                </div>
+              </div>
+              <div class="opcion">
+                <div class="placeholder"></div>
+                <div class="info"><div class="t">Mantener mi peso</div><div class="s">Comer mejor</div></div>
+                <div class="radio"></div>
+              </div>
+              <div class="opcion">
+                <div class="placeholder"></div>
+                <div class="info"><div class="t">Ganar masa muscular</div><div class="s">Sin exceso de grasa</div></div>
+                <div class="radio"></div>
+              </div>
+            </div>
+          </div>
+          <div class="pie-boton"><button class="boton-principal">Continuar</button></div>
+        </div>
+      </div>
+      <p class="decision"><b>Sin cambios:</b> un solo botón, sin atrás. Es el primer paso; la bienvenida no se repite.</p>
+    </div>
+
+    <!-- ========== 2 · Sexo ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>2 · Sexo</strong>
+        <span>Botonera Atrás / Continuar.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>8:56</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="progreso solo">
+              <div class="segmentos"><i class="hecho"></i><i class="hecho"></i><i></i><i></i><i></i></div>
+              <span class="paso">2 de 5</span>
+            </div>
+            <div class="titulo">¿Cuál es tu sexo?</div>
+            <div class="bajada">Cambia el cálculo de tus calorías.</div>
+            <div class="opciones">
+              <div class="opcion"><div class="info"><div class="t">Mujer</div></div><div class="radio"></div></div>
+              <div class="opcion activa"><div class="info"><div class="t">Hombre</div></div><div class="radio"></div></div>
+            </div>
+          </div>
+          <div class="botonera">
+            <button class="boton-secundario">Atrás</button>
+            <button class="boton-principal">Continuar</button>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Cambio:</b> desde aquí, Atrás y Continuar van juntos abajo, en la zona del pulgar. Se quita el ‹ de arriba para no tener dos formas de volver.</p>
+    </div>
+
+    <!-- ========== 3 · Edad ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>3 · Edad</strong>
+        <span>Se mantiene la lista abierta.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>8:57</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="progreso solo">
+              <div class="segmentos"><i class="hecho"></i><i class="hecho"></i><i class="hecho"></i><i></i><i></i></div>
+              <span class="paso">3 de 5</span>
+            </div>
+            <div class="titulo">¿Cuántos años tienes?</div>
+            <div class="rueda">
+              <div class="marco"></div>
+              <div class="item lejos">28</div>
+              <div class="item cerca">29</div>
+              <div class="item elegido">30<span>años</span></div>
+              <div class="item cerca">31</div>
+              <div class="item lejos">32</div>
+            </div>
+          </div>
+          <div class="botonera">
+            <button class="boton-secundario">Atrás</button>
+            <button class="boton-principal">Continuar</button>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Sin cambios</b>, salvo la botonera.</p>
+    </div>
+
+    <!-- ========== 4 · Estatura y peso ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>4 · Estatura y peso</strong>
+        <span>Mismo componente (regla), uno debajo del otro.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>8:57</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="progreso solo">
+              <div class="segmentos"><i class="hecho"></i><i class="hecho"></i><i class="hecho"></i><i class="hecho"></i><i></i></div>
+              <span class="paso">4 de 5</span>
+            </div>
+            <div class="titulo">¿Cuánto mides y pesas?</div>
+            <div class="medida">
+              <div class="cab-m"><span class="t">Estatura</span><span class="unidad"><span class="on">cm</span><span>pies</span></span></div>
+              <div class="valor-m">170<span>cm</span></div>
+              <div class="regla"><div class="marcas"></div><div class="numeros"><span>160</span><span>165</span><span></span><span>175</span><span>180</span></div><div class="aguja"></div></div>
+            </div>
+            <hr class="separador-m">
+            <div class="medida">
+              <div class="cab-m"><span class="t">Peso</span><span class="unidad"><span class="on">kg</span><span>lb</span></span></div>
+              <div class="valor-m">75<span>kg</span></div>
+              <div class="regla"><div class="marcas"></div><div class="numeros"><span>65</span><span>70</span><span></span><span>80</span><span>85</span></div><div class="aguja"></div></div>
+              <div class="ayuda" style="text-align: center; margin-top: 10px;">Si no lo sabes exacto, pon uno aproximado.</div>
+            </div>
+          </div>
+          <div class="botonera">
+            <button class="boton-secundario">Atrás</button>
+            <button class="boton-principal">Continuar</button>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Cambio:</b> ya no están lado a lado. Cada dato ocupa todo el ancho, con su cifra grande y una regla que se desliza con el dedo, así no se confunde cuál se está moviendo. Se agrega el cambio de unidad (lb) por los productos importados.</p>
+    </div>
+
+    <!-- ========== 5 · Actividad ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>5 · ¿Qué tanto te mueves?</strong>
+        <span>Se mantiene.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>8:58</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="progreso solo">
+              <div class="segmentos"><i class="hecho"></i><i class="hecho"></i><i class="hecho"></i><i class="hecho"></i><i class="hecho"></i></div>
+              <span class="paso">5 de 5</span>
+            </div>
+            <div class="titulo">¿Qué tanto te mueves en una semana normal?</div>
+            <div class="opciones">
+              <div class="opcion"><div class="placeholder"></div><div class="info"><div class="t">Poco</div><div class="s">Paso casi todo el día sentado y no entreno</div></div><div class="radio"></div></div>
+              <div class="opcion activa"><div class="placeholder"></div><div class="info"><div class="t">Algo</div><div class="s">Camino a diario o entreno 1 a 3 días</div></div><div class="radio"></div></div>
+              <div class="opcion"><div class="placeholder"></div><div class="info"><div class="t">Bastante</div><div class="s">Entreno 4 días o más, o mi trabajo es físico</div></div><div class="radio"></div></div>
+            </div>
+          </div>
+          <div class="botonera">
+            <button class="boton-secundario">Atrás</button>
+            <button class="boton-principal">Ver mi meta</button>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Sin cambios</b>, salvo la botonera.</p>
+    </div>
+
+    <!-- ========== 6 · Elige tu ritmo ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>6 · Elige tu ritmo</strong>
+        <span>2 opciones, una con etiqueta "Recomendado", y el porqué.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>8:58</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="titulo" style="margin-top: 8px;">¿A qué ritmo quieres perder 3 kg?</div>
+            <div class="ritmos">
+              <div class="ritmo activa">
+                <div class="fila-r"><span class="t">Constante</span><span class="etiqueta-rec">Recomendado</span><span class="radio"></span></div>
+                <div class="s">0,5 kg por semana · unas 6 semanas</div>
+                <div class="kcal-r"><b>2.000 kcal al día</b><span>P 140 · C 215 · G 65</span></div>
+              </div>
+              <div class="ritmo">
+                <div class="fila-r"><span class="t">Suave</span><span class="radio"></span></div>
+                <div class="s">0,25 kg por semana · unas 12 semanas</div>
+                <div class="kcal-r"><b>2.250 kcal al día</b><span>P 140 · C 265 · G 70</span></div>
+              </div>
+            </div>
+            <div class="porque">
+              <div class="t">¿Por qué te recomendamos este ritmo?</div>
+              <div class="s">Tu cuerpo usa unas 2.500 kcal al día. Comer 500 menos te ayuda a perder grasa sin perder músculo ni pasar hambre.</div>
+            </div>
+            <p class="legal">No reemplaza a un nutricionista.</p>
+          </div>
+          <div class="botonera">
+            <button class="boton-secundario">Atrás</button>
+            <button class="boton-principal">Continuar</button>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Por qué solo 2 ritmos:</b> no se ofrece uno más rápido para no invitar a un déficit fuerte. El "Suave" es para quien prefiere ir más tranquilo. En ganar masa: 0,25 kg (recomendado) o 0,15 kg por semana. En mantener no aparece esta pantalla y se pasa directo a la siguiente.</p>
+    </div>
+
+    <!-- ========== 7 · ¿Plan de comidas? ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>7 · ¿Quieres un plan de comidas?</strong>
+        <span>Sí → 4 preguntas del plan. No → entra a Milo (Hoy).</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>8:59</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="titulo" style="margin-top: 8px;">¿Quieres un plan de comidas?</div>
+            <div class="bajada">Te decimos qué y cuánto comer según tus gustos. Es opcional.</div>
+            <div class="vista-plan">
+              <div class="etiqueta">Así se vería un día de tu plan</div>
+              <div class="fila-p"><div class="placeholder"></div><div><div class="t">Desayuno · Huevos pericos con arepa</div><div class="s">450 kcal</div></div></div>
+              <div class="fila-p"><div class="placeholder"></div><div><div class="t">Almuerzo · Arroz, pollo, frijoles y ensalada</div><div class="s">650 kcal</div></div></div>
+              <div class="fila-p"><div class="placeholder"></div><div><div class="t">Cena · Tilapia con verduras al horno</div><div class="s">450 kcal</div></div></div>
+            </div>
+          </div>
+          <div class="pie-boton">
+            <button class="boton-principal">Sí, armar mi plan</button>
+            <span class="boton-texto">No, ir a Milo</span>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Sin cambios en los textos.</b> "Sí, armar mi plan" abre un flujo de 4 pantallas (no el chat de Milo AI). La conversación con Milo AI queda como otra forma de crear o ajustar el plan desde Mi plan.</p>
+    </div>
+
+    <!-- ========== 8 · Tu plan 1/4 · comidas ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>8 · Tu plan 1 de 4 · comidas</strong>
+        <span>Elige qué comidas tendrá el plan. Varias a la vez.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:00</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="progreso solo">
+              <div class="segmentos" style="grid-template-columns: repeat(4, 1fr);"><i class="hecho"></i><i></i><i></i><i></i></div>
+              <span class="paso">Tu plan · 1 de 4</span>
+            </div>
+            <div class="titulo">¿Qué comidas quieres en tu plan?</div>
+            <div class="check-lista">
+              <div class="check on"><div class="info"><div class="t">Desayuno</div></div><div class="caja"></div></div>
+              <div class="check"><div class="info"><div class="t">Media mañana</div></div><div class="caja"></div></div>
+              <div class="check on"><div class="info"><div class="t">Preentreno</div><div class="s">Algo ligero antes de entrenar</div></div><div class="caja"></div></div>
+              <div class="check on"><div class="info"><div class="t">Almuerzo</div></div><div class="caja"></div></div>
+              <div class="check"><div class="info"><div class="t">Snack</div><div class="s">Onces o algo entre comidas</div></div><div class="caja"></div></div>
+              <div class="check on"><div class="info"><div class="t">Cena</div></div><div class="caja"></div></div>
+            </div>
+            <div class="contador">4 comidas en tu plan. Las demás quedan libres.</div>
+          </div>
+          <div class="botonera">
+            <button class="boton-secundario">Atrás</button>
+            <button class="boton-principal">Continuar</button>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Por qué:</b> la persona elige sus comidas reales (con preentreno y snack), no un número. Lo que no elige queda libre, como en Mi plan. Te recomendamos empezar con 3 a 5 comidas.</p>
+    </div>
+
+    <!-- ========== 9 · Tu plan 2/4 · alergias y alimentación ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>9 · Tu plan 2 de 4 · lo que no comes</strong>
+        <span>Alergias y tipo de alimentación.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:00</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="progreso solo">
+              <div class="segmentos" style="grid-template-columns: repeat(4, 1fr);"><i class="hecho"></i><i class="hecho"></i><i></i><i></i></div>
+              <span class="paso">Tu plan · 2 de 4</span>
+            </div>
+            <div class="titulo">¿Hay algo que no comas?</div>
+            <div class="grupo">
+              <div class="t-grupo">Alergias o intolerancias</div>
+              <div class="chips-sel">
+                <span>Ninguna</span><span>Lácteos</span><span>Gluten</span><span>Huevo</span><span>Maní</span><span class="on">Mariscos</span><span class="mas">+ Otra</span>
+              </div>
+            </div>
+            <div class="grupo">
+              <div class="t-grupo">¿Cómo te alimentas?</div>
+              <div class="chips-sel">
+                <span class="on">Como de todo</span><span>Vegetariano</span><span>Vegano</span>
+              </div>
+            </div>
+            <div class="grupo">
+              <div class="t-grupo">Proteínas que no te gustan</div>
+              <div class="s-grupo">Opcional</div>
+              <div class="chips-sel">
+                <span>Res</span><span class="on">Cerdo</span><span>Pollo</span><span>Pescado</span><span>Huevo</span>
+              </div>
+            </div>
+          </div>
+          <div class="botonera">
+            <button class="boton-secundario">Atrás</button>
+            <button class="boton-principal">Continuar</button>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Por qué:</b> todo lo que excluye comida va en una pantalla. Si elige vegetariano o vegano, se ocultan las proteínas animales del tercer grupo.</p>
+    </div>
+
+    <!-- ========== 10 · Tu plan 3/4 · gustos ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>10 · Tu plan 3 de 4 · lo que te gusta</strong>
+        <span>Tipo de cocina y tiempo para cocinar.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:01</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="progreso solo">
+              <div class="segmentos" style="grid-template-columns: repeat(4, 1fr);"><i class="hecho"></i><i class="hecho"></i><i class="hecho"></i><i></i></div>
+              <span class="paso">Tu plan · 3 de 4</span>
+            </div>
+            <div class="titulo">¿Qué te gusta comer?</div>
+            <div class="grupo">
+              <div class="t-grupo">Tipo de comida</div>
+              <div class="s-grupo">Puedes elegir varias</div>
+              <div class="chips-sel">
+                <span class="on">Colombiana casera</span><span class="on">Mediterránea</span><span>Mexicana</span><span>Asiática</span><span>Sin preferencia</span>
+              </div>
+            </div>
+            <div class="grupo">
+              <div class="t-grupo">¿Cuánto tiempo tienes para cocinar?</div>
+              <div class="chips-sel">
+                <span>15 min</span><span class="on">30 min</span><span>Más de 30</span>
+              </div>
+            </div>
+          </div>
+          <div class="botonera">
+            <button class="boton-secundario">Atrás</button>
+            <button class="boton-principal">Continuar</button>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Por qué:</b> el tipo de comida define qué platos propone; el tiempo, qué tan cortas son las recetas (de 3 a 5 pasos).</p>
+    </div>
+
+    <!-- ========== 11 · Tu plan 4/4 · comida fuerte ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>11 · Tu plan 4 de 4 · comida más grande</strong>
+        <span>Solo muestra las comidas que eligió.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:01</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="progreso solo">
+              <div class="segmentos" style="grid-template-columns: repeat(4, 1fr);"><i class="hecho"></i><i class="hecho"></i><i class="hecho"></i><i class="hecho"></i></div>
+              <span class="paso">Tu plan · 4 de 4</span>
+            </div>
+            <div class="titulo">¿En qué comida te gusta comer más?</div>
+            <div class="bajada">Le daremos más calorías a esa comida.</div>
+            <div class="opciones">
+              <div class="opcion"><div class="info"><div class="t">Desayuno</div></div><div class="radio"></div></div>
+              <div class="opcion"><div class="info"><div class="t">Preentreno</div></div><div class="radio"></div></div>
+              <div class="opcion activa"><div class="info"><div class="t">Almuerzo</div></div><div class="radio"></div></div>
+              <div class="opcion"><div class="info"><div class="t">Cena</div></div><div class="radio"></div></div>
+            </div>
+          </div>
+          <div class="botonera">
+            <button class="boton-secundario">Atrás</button>
+            <button class="boton-principal">Armar mi plan</button>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Por qué:</b> en Colombia el almuerzo suele ser la comida fuerte. Si el plan lo respeta, es más fácil cumplirlo.</p>
+    </div>
+
+    <!-- ========== 12 · Armando ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>12 · Armando tu plan</strong>
+        <span>Espera corta que muestra qué se está haciendo.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:02</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="armando">
+            <div class="placeholder"></div>
+            <div class="titulo">Estamos armando tu plan</div>
+            <div class="generando">
+              <div><i></i>4 comidas para tus 2.000 kcal</div>
+              <div><i></i>Sin mariscos ni cerdo</div>
+              <div><i></i>Colombiana y mediterránea</div>
+              <div><i class="pend"></i>Recetas de 30 minutos o menos</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Por qué:</b> repetir sus respuestas le confirma que fue escuchado y hace que la espera se entienda.</p>
+    </div>
+
+    <!-- ========== 13 · Resultado ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>13 · Tu plan está listo</strong>
+        <span>Una comida por fila, la más grande resaltada.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:02</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="pantalla">
+          <div class="cuerpo">
+            <div class="titulo" style="margin-top: 8px;">Tu plan está listo</div>
+            <div class="resumen-pref"><span>2.000 kcal</span><span>Sin mariscos ni cerdo</span><span>Almuerzo fuerte</span></div>
+            <div class="resultado">
+              <div class="comida-r"><div class="placeholder"></div><div class="info"><div class="m">Desayuno</div><div class="t">Huevos pericos con arepa</div><div class="s">2 huevos · 1 arepa mediana</div></div><div class="k">450 kcal</div></div>
+              <div class="comida-r"><div class="placeholder"></div><div class="info"><div class="m">Preentreno</div><div class="t">Yogur griego con banano</div><div class="s">1 vaso de yogur · 1 banano</div></div><div class="k">200 kcal</div></div>
+              <div class="comida-r fuerte"><div class="placeholder"></div><div class="info"><div class="m">Almuerzo · comida más grande</div><div class="t">Arroz, pollo, frijoles y ensalada</div><div class="s">1 taza de arroz · 1 palma de pollo</div></div><div class="k">650 kcal</div></div>
+              <div class="comida-r"><div class="placeholder"></div><div class="info"><div class="m">Cena</div><div class="t">Tilapia con verduras al horno</div><div class="s">1 filete · 1 plato de verduras</div></div><div class="k">450 kcal</div></div>
+              <div class="comida-r libre"><div class="placeholder"></div><div class="info"><div class="m">Libre · media mañana o snack</div><div class="t" style="font-weight: 400; color: var(--gris-oscuro);">Lo que quieras</div></div><div class="k" style="font-weight: 400; color: var(--gris-oscuro);">~250 kcal</div></div>
+            </div>
+            <div class="suma"><span>Cada comida tiene 2 opciones y su receta en Mi plan.</span></div>
+          </div>
+          <div class="pie-boton">
+            <button class="boton-principal">Guardar mi plan</button>
+            <span class="boton-texto">Cambiar mis respuestas</span>
+          </div>
+        </div>
+      </div>
+      <p class="decision"><b>Datos:</b> 450 + 200 + 650 + 450 = 1.750 kcal del plan, más ~250 libres = 2.000. Al guardar, llega a Hoy con la invitación al recorrido.</p>
+    </div>
+
+    <!-- ========== 14 · Invitación al recorrido ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>14 · Hoy · invitación al recorrido</strong>
+        <span>Opcional: se ofrece, no se impone.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:00</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="contenido">
+          <div class="zona-superior">
+            <div class="cabecera"><h1>Hoy</h1><div class="perfil"></div></div>
+            <div class="eyebrow">Calorías consumidas</div>
+              <div class="fila-cifra"><span class="cifra">0</span><span class="secundario">/ 2.000 kcal</span></div>
+              <div class="barra grande"></div>
+              <div class="macros-col">
+                <div><div class="n">Proteína</div><div class="v">0 g <span>/ 140</span></div><div class="barra"></div></div>
+                <div><div class="n">Carbos</div><div class="v">0 g <span>/ 215</span></div><div class="barra"></div></div>
+                <div><div class="n">Grasa</div><div class="v">0 g <span>/ 65</span></div><div class="barra"></div></div>
+              </div>
+          </div>
+          <div class="zona-inferior">
+            <div class="titulo-seccion">¿Qué quieres registrar hoy?</div>
+              <div class="r3-grid">
+                <div class="r3"><div class="r3-top"><div class="placeholder"></div><div class="mas-ic">+</div></div><div class="t">Comidas</div><div class="v">0 de 5</div></div>
+                <div class="r3"><div class="r3-top"><div class="placeholder"></div><div class="mas-ic">+</div></div><div class="t">Agua</div><div class="v">0 de 2 L</div></div>
+                <div class="r3"><div class="r3-top"><div class="placeholder"></div><div class="mas-ic">+</div></div><div class="t">Suplementos</div><div class="v">0 de 2</div></div>
+              </div>
+          </div>
+        </div>
+        <div class="capa-guia"></div>
+        <div class="hoja-inv">
+          <div class="agarradera"></div>
+          <div class="placeholder ilus">Ilustración</div>
+          <div class="t">Bienvenido a Milo</div>
+          <div class="s">¿Te mostramos cómo funciona? Son 3 pasos, menos de 30 segundos.</div>
+          <button class="boton-principal">Ver recorrido</button>
+          <span class="boton-texto">Ahora no</span>
+        </div>
+        <nav class="nav">
+          <div class="capsula">
+            <div class="nav-item activo"><div class="placeholder"></div>Hoy</div>
+            <div class="nav-item"><div class="placeholder"></div>Mi plan</div>
+            <div class="nav-item"><div class="placeholder"></div>Estadísticas</div>
+          </div>
+          <div class="nav-ia" aria-label="Milo AI">M</div>
+        </nav>
+      </div>
+      <p class="decision"><b>Buenas prácticas:</b> (1) se pregunta antes de empezar y se dice cuánto dura, (2) "Ahora no" pesa menos pero está visible, (3) se puede volver a ver desde Perfil → "Ver recorrido". Llegan aquí quienes dijeron "No" y también quienes guardaron su plan.</p>
+    </div>
+
+    <!-- ========== 15 · Recorrido 1/3 ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>15 · Recorrido 1 de 3 · balance</strong>
+        <span>Un elemento a la vez, texto de 2 líneas.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:00</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="contenido">
+          <div class="zona-superior">
+            <div class="cabecera"><h1>Hoy</h1><div class="perfil"></div></div>
+            <div class="foco"><div class="eyebrow">Calorías consumidas</div>
+              <div class="fila-cifra"><span class="cifra">0</span><span class="secundario">/ 2.000 kcal</span></div>
+              <div class="barra grande"></div>
+              <div class="macros-col">
+                <div><div class="n">Proteína</div><div class="v">0 g <span>/ 140</span></div><div class="barra"></div></div>
+                <div><div class="n">Carbos</div><div class="v">0 g <span>/ 215</span></div><div class="barra"></div></div>
+                <div><div class="n">Grasa</div><div class="v">0 g <span>/ 65</span></div><div class="barra"></div></div>
+              </div></div>
+          </div>
+          <div class="zona-inferior">
+            <div class="titulo-seccion">¿Qué quieres registrar hoy?</div>
+              <div class="r3-grid">
+                <div class="r3"><div class="r3-top"><div class="placeholder"></div><div class="mas-ic">+</div></div><div class="t">Comidas</div><div class="v">0 de 5</div></div>
+                <div class="r3"><div class="r3-top"><div class="placeholder"></div><div class="mas-ic">+</div></div><div class="t">Agua</div><div class="v">0 de 2 L</div></div>
+                <div class="r3"><div class="r3-top"><div class="placeholder"></div><div class="mas-ic">+</div></div><div class="t">Suplementos</div><div class="v">0 de 2</div></div>
+              </div>
+          </div>
+        </div>
+        <div class="capa-guia"></div>
+        <div class="globo arriba" style="top: 330px; --flecha: 60px;">
+          <span class="cerrar-g">×</span>
+          <div class="paso-g">1 de 3</div>
+          <div class="t">Tu balance del día</div>
+          <div class="s">Lo que llevas frente a tu meta de 2.000 kcal y tus macros.</div>
+          <div class="acc">
+            <div class="puntos-g"><i class="on"></i><i></i><i></i></div>
+            <span class="sig" style="margin-left: auto;">Siguiente</span>
+          </div>
+        </div>
+        <nav class="nav">
+          <div class="capsula">
+            <div class="nav-item activo"><div class="placeholder"></div>Hoy</div>
+            <div class="nav-item"><div class="placeholder"></div>Mi plan</div>
+            <div class="nav-item"><div class="placeholder"></div>Estadísticas</div>
+          </div>
+          <div class="nav-ia" aria-label="Milo AI">M</div>
+        </nav>
+      </div>
+      <p class="decision"><b>Por qué:</b> la × cierra el recorrido en cualquier paso. Los puntos muestran cuánto falta.</p>
+    </div>
+
+    <!-- ========== 16 · Recorrido 2/3 ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>16 · Recorrido 2 de 3 · la barra</strong>
+        <span>Mi plan, Estadísticas y Milo AI.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:00</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="contenido">
+          <div class="zona-superior">
+            <div class="cabecera"><h1>Hoy</h1><div class="perfil"></div></div>
+            <div class="eyebrow">Calorías consumidas</div>
+              <div class="fila-cifra"><span class="cifra">0</span><span class="secundario">/ 2.000 kcal</span></div>
+              <div class="barra grande"></div>
+              <div class="macros-col">
+                <div><div class="n">Proteína</div><div class="v">0 g <span>/ 140</span></div><div class="barra"></div></div>
+                <div><div class="n">Carbos</div><div class="v">0 g <span>/ 215</span></div><div class="barra"></div></div>
+                <div><div class="n">Grasa</div><div class="v">0 g <span>/ 65</span></div><div class="barra"></div></div>
+              </div>
+          </div>
+          <div class="zona-inferior">
+            <div class="titulo-seccion">¿Qué quieres registrar hoy?</div>
+              <div class="r3-grid">
+                <div class="r3"><div class="r3-top"><div class="placeholder"></div><div class="mas-ic">+</div></div><div class="t">Comidas</div><div class="v">0 de 5</div></div>
+                <div class="r3"><div class="r3-top"><div class="placeholder"></div><div class="mas-ic">+</div></div><div class="t">Agua</div><div class="v">0 de 2 L</div></div>
+                <div class="r3"><div class="r3-top"><div class="placeholder"></div><div class="mas-ic">+</div></div><div class="t">Suplementos</div><div class="v">0 de 2</div></div>
+              </div>
+          </div>
+        </div>
+        <div class="capa-guia"></div>
+        <div class="globo abajo" style="bottom: 112px; --flecha: 150px;">
+          <span class="cerrar-g">×</span>
+          <div class="paso-g">2 de 3</div>
+          <div class="t">Tu plan, tu progreso y Milo AI</div>
+          <div class="s">En Mi plan ves tus comidas y recetas. En Estadísticas, tu semana. Milo AI responde tus dudas.</div>
+          <div class="acc">
+            <div class="puntos-g"><i></i><i class="on"></i><i></i></div>
+            <span class="atras-g">Atrás</span>
+            <span class="sig">Siguiente</span>
+          </div>
+        </div>
+        <nav class="nav foco-nav">
+          <div class="capsula">
+            <div class="nav-item activo"><div class="placeholder"></div>Hoy</div>
+            <div class="nav-item"><div class="placeholder"></div>Mi plan</div>
+            <div class="nav-item"><div class="placeholder"></div>Estadísticas</div>
+          </div>
+          <div class="nav-ia" aria-label="Milo AI">M</div>
+        </nav>
+      </div>
+      <p class="decision"><b>Variante sin plan:</b> "En Mi plan puedes crear tu plan cuando quieras."</p>
+    </div>
+
+    <!-- ========== 17 · Recorrido 3/3 ========== -->
+    <div>
+      <div class="etiqueta-vista">
+        <strong>17 · Recorrido 3 de 3 · registrar</strong>
+        <span>Termina en la primera acción real.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>9:00</span><span class="indicadores"><i></i><i></i></span></div>
+        <div class="contenido">
+          <div class="zona-superior">
+            <div class="cabecera"><h1>Hoy</h1><div class="perfil"></div></div>
+            <div class="eyebrow">Calorías consumidas</div>
+              <div class="fila-cifra"><span class="cifra">0</span><span class="secundario">/ 2.000 kcal</span></div>
+              <div class="barra grande"></div>
+              <div class="macros-col">
+                <div><div class="n">Proteína</div><div class="v">0 g <span>/ 140</span></div><div class="barra"></div></div>
+                <div><div class="n">Carbos</div><div class="v">0 g <span>/ 215</span></div><div class="barra"></div></div>
+                <div><div class="n">Grasa</div><div class="v">0 g <span>/ 65</span></div><div class="barra"></div></div>
+              </div>
+          </div>
+          <div class="zona-inferior">
+            <div class="foco"><div class="titulo-seccion">¿Qué quieres registrar hoy?</div>
+              <div class="r3-grid">
+                <div class="r3"><div class="r3-top"><div class="placeholder"></div><div class="mas-ic">+</div></div><div class="t">Comidas</div><div class="v">0 de 5</div></div>
+                <div class="r3"><div class="r3-top"><div class="placeholder"></div><div class="mas-ic">+</div></div><div class="t">Agua</div><div class="v">0 de 2 L</div></div>
+                <div class="r3"><div class="r3-top"><div class="placeholder"></div><div class="mas-ic">+</div></div><div class="t">Suplementos</div><div class="v">0 de 2</div></div>
+              </div></div>
+          </div>
+        </div>
+        <div class="capa-guia"></div>
+        <div class="globo arriba" style="top: 470px; --flecha: 60px;">
+          <span class="cerrar-g">×</span>
+          <div class="paso-g">3 de 3</div>
+          <div class="t">Registra desde aquí</div>
+          <div class="s">Toca Comidas, Agua o Suplementos. Con foto, búsqueda o tu voz.</div>
+          <div class="acc">
+            <div class="puntos-g"><i></i><i></i><i class="on"></i></div>
+            <span class="atras-g">Terminar</span>
+            <span class="sig">Registrar mi desayuno</span>
+          </div>
+        </div>
+        <nav class="nav">
+          <div class="capsula">
+            <div class="nav-item activo"><div class="placeholder"></div>Hoy</div>
+            <div class="nav-item"><div class="placeholder"></div>Mi plan</div>
+            <div class="nav-item"><div class="placeholder"></div>Estadísticas</div>
+          </div>
+          <div class="nav-ia" aria-label="Milo AI">M</div>
+        </nav>
+      </div>
+      <p class="decision"><b>Por qué:</b> el último paso es el más importante y lleva directo a la acción (abre el registro de comidas). "Terminar" cierra sin registrar.</p>
+    </div>
+
+  </div>
+</body>
+</html>
