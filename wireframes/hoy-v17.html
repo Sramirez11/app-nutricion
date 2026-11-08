@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe – Hoy v17</title>
+  <style>
+    /* ===== Paleta de wireframe: solo grises, blanco y negro ===== */
+    :root {
+      --negro: #111;
+      --gris-oscuro: #555;
+      --gris-medio: #999;
+      --gris-claro: #ddd;
+      --gris-fondo: #f2f2f2;
+      --blanco: #fff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--gris-claro);
+      color: var(--negro);
+      padding: 24px 16px;
+    }
+
+    /* ===== Cuatro celulares lado a lado ===== */
+    .lienzo {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .etiqueta-vista { text-align: center; margin-bottom: 12px; max-width: 390px; }
+    .etiqueta-vista strong { display: block; font-size: 14px; }
+    .etiqueta-vista span { font-size: 12px; color: var(--gris-oscuro); }
+
+    /* ===== Marco del celular (390 px) ===== */
+    .telefono {
+      width: 390px;
+      height: 844px;
+      background: var(--blanco);
+      border: 2px solid var(--negro);
+      border-radius: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .barra-estado {
+      height: 44px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 28px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .barra-estado .indicadores { display: flex; gap: 4px; }
+    .barra-estado .indicadores i { width: 16px; height: 10px; border-radius: 2px; background: var(--negro); }
+
+    .contenido {
+      height: calc(100% - 44px);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    /* La primera sección se separa por el cambio de fondo, no por un recuadro */
+    .zona-superior { padding: 4px 20px 28px; background: var(--blanco); }
+    .zona-inferior {
+      flex: 1;
+      background: var(--gris-fondo);
+      border-top: 1px solid var(--gris-claro);
+      padding: 20px 16px 130px; /* espacio para la barra de navegación */
+    }
+
+    section { margin-bottom: 20px; }
+
+    .placeholder {
+      background: var(--gris-claro);
+      border: 1px dashed var(--gris-medio);
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    /* Escala tipográfica de la tarjeta (4 tamaños):
+       28 px cifra principal · 15 px valores de macros · 13 px etiquetas · 12 px textos de apoyo.
+       Nivel 1 = calorías (cifra + barra gruesa). Nivel 2 = macros (valores medianos + barras finas). */
+    .eyebrow { font-size: 13px; font-weight: 500; color: var(--gris-oscuro); }
+    .cifra { font-size: 28px; font-weight: 700; line-height: 1; letter-spacing: -0.01em; }
+    .contexto { font-size: 13px; color: var(--gris-oscuro); }
+    .secundario { font-size: 12px; color: var(--gris-oscuro); }
+    .barra { height: 4px; border-radius: 2px; background: var(--gris-claro); overflow: hidden; }
+    .barra div { height: 100%; background: var(--negro); border-radius: 2px; }
+    .barra.grande { height: 10px; border-radius: 5px; }
+
+    .titulo-seccion { font-size: 13px; font-weight: 600; color: var(--gris-oscuro); margin-bottom: 8px; }
+
+    /* ===== Cabecera: solo "Hoy" y perfil (sin fecha) ===== */
+    .cabecera { display: flex; justify-content: space-between; align-items: center; margin: 8px 0 18px; }
+    .cabecera h1 { font-size: 34px; line-height: 1.1; }
+    .perfil { width: 36px; height: 36px; border-radius: 50%; background: var(--gris-claro); border: 1.5px solid var(--negro); }
+
+    /* ===== Balance (Opción 1 de la v10, solo con el porcentaje) ===== */
+    .tarjeta { margin-bottom: 0; }
+    .fila-cifra { display: flex; align-items: baseline; gap: 6px; margin: 6px 0 14px; }
+    /* El porcentaje sube a la línea de la cifra, alineado a la derecha */
+    .fila-cifra .porcentaje { margin-left: auto; font-size: 13px; font-weight: 600; }
+    .tarjeta .macros-col { margin-top: 28px; }
+    .pie { margin-top: 8px; }
+    .divisor { border: none; border-top: 1px solid var(--gris-claro); margin: 20px 0 16px; }
+    /* Macros: tres columnas iguales con el mismo espacio entre ellas.
+       La primera empieza donde empieza la barra de calorías y la última termina donde ella termina. */
+    .macros-col { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 24px; }
+    .macro-col .nombre-macro { font-size: 13px; color: var(--gris-oscuro); }
+    .macro-col .valor { font-size: 15px; font-weight: 600; margin: 6px 0 10px; white-space: nowrap; }
+    .macro-col .valor span { font-size: 12px; font-weight: 400; color: var(--gris-oscuro); }
+    .macro-col .barra { width: 100%; height: 5px; }
+    /* Aviso discreto: ícono + palabra debajo de la barra, sin bloque de fondo */
+    .baja { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; margin-top: 10px; }
+    .baja i {
+      font-style: normal; width: 13px; height: 13px; border-radius: 50%;
+      background: var(--negro); color: var(--blanco); font-size: 9px; line-height: 13px; text-align: center;
+    }
+
+    /* ===== Registro rápido · opción A: lista completa ===== */
+    .rapido { border: 1.5px solid var(--negro); border-radius: 16px; overflow: hidden; background: var(--blanco); }
+    .fila { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--gris-claro); }
+    .fila:last-child { border-bottom: none; }
+    .fila .placeholder { width: 28px; height: 28px; }
+    .fila .info { flex: 1; }
+    .fila .nombre { font-size: 15px; font-weight: 600; }
+    .fila .detalle { font-size: 12px; color: var(--gris-oscuro); }
+    .fila .accion { font-size: 13px; font-weight: 600; white-space: nowrap; }
+    .fila .chevron { color: var(--gris-medio); font-size: 18px; }
+    .fila.pendiente { background: var(--gris-fondo); }
+    .fila.pendiente .accion { text-decoration: underline; }
+    .fila.futura .nombre, .fila.futura .detalle { color: var(--gris-medio); }
+    .hecho {
+      width: 20px; height: 20px; border-radius: 50%; background: var(--negro);
+      color: var(--blanco); font-size: 12px; line-height: 20px; text-align: center; flex-shrink: 0;
+    }
+    .vacio { width: 20px; height: 20px; border-radius: 50%; border: 1.5px dashed var(--gris-medio); flex-shrink: 0; }
+
+    /* ===== Registro rápido · opción B: compacta ===== */
+    .compacto { border: 1.5px solid var(--negro); border-radius: 16px; padding: 14px 12px; background: var(--blanco); }
+    .linea-comidas { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-bottom: 12px; }
+    .comida {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      text-align: center;
+      color: var(--gris-oscuro);
+    }
+    .comida .punto {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 1.5px solid var(--negro);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .comida.hecha .punto { background: var(--negro); color: var(--blanco); }
+    .comida.siguiente { color: var(--negro); font-weight: 700; }
+    .comida.siguiente .punto { border-width: 3px; }
+    .comida.futura { opacity: 0.4; }
+    .comida.futura .punto { border-style: dashed; }
+    .siguiente-fila {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 10px;
+      background: var(--gris-fondo);
+      margin-bottom: 12px;
+    }
+    .siguiente-fila .info { flex: 1; }
+    .siguiente-fila .nombre { font-size: 15px; font-weight: 600; }
+    .siguiente-fila .detalle { font-size: 12px; color: var(--gris-oscuro); }
+    .siguiente-fila .accion { font-size: 13px; font-weight: 600; text-decoration: underline; }
+    .agua { display: flex; align-items: center; gap: 10px; }
+    .agua .info { width: 76px; }
+    .agua .nombre { font-size: 15px; font-weight: 600; }
+    .agua .detalle { font-size: 12px; color: var(--gris-oscuro); }
+    /* 8 vasos de 250 ml = 2 L; se toca el siguiente vaso para sumarlo */
+    .vasos { flex: 1; display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; }
+    .vaso { height: 26px; border-radius: 5px; border: 1.5px solid var(--negro); }
+    .vaso.lleno { background: var(--negro); }
+    .vaso.toca { border-style: dashed; }
+
+    /* ===== Navegación estilo iOS: cápsula con 3 secciones + botón "+" redondo aparte ===== */
+    .nav {
+      position: absolute;
+      left: 16px; right: 16px; bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .capsula {
+      flex: 1;
+      height: 64px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      align-items: center;
+      padding: 4px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1.5px solid var(--negro);
+      border-radius: 32px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+    .nav-item {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      font-size: 11px;
+      color: var(--gris-oscuro);
+      border-radius: 28px;
+    }
+    .nav-item .placeholder { width: 22px; height: 22px; }
+    /* Sección activa: fondo gris en forma de píldora dentro de la cápsula */
+    .nav-item.activo { color: var(--negro); font-weight: 700; background: var(--gris-claro); }
+    .nav-item.activo .placeholder { background: var(--gris-medio); }
+    .nav-mas {
+      width: 64px; height: 64px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1.5px solid var(--negro);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      color: var(--negro);
+      font-size: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ===================== v17 · Sección "Tu día" ===================== */
+    /* Misma escala que calorías: 15 px nombres · 13 px etiquetas · 12 px apoyo.
+       Tarjetas blancas con borde gris suave (no negro) para no competir con la barra de calorías. */
+    .zona-inferior { padding: 20px 16px 130px; }
+    .encabezado-seccion { display: flex; justify-content: space-between; align-items: baseline; margin: 0 4px 10px; }
+    .encabezado-seccion .titulo { font-size: 13px; font-weight: 500; color: var(--gris-oscuro); }
+    .encabezado-seccion a { font-size: 12px; font-weight: 600; color: var(--negro); }
+    .bloque { background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; }
+    .bloque + .encabezado-seccion { margin-top: 20px; }
+
+    /* Comidas: una fila por comida con lo registrado y sus calorías */
+    .comida-fila {
+      display: grid;
+      grid-template-columns: 1fr auto 12px;
+      align-items: center;
+      column-gap: 10px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--gris-fondo);
+    }
+    .comida-fila:last-child { border-bottom: none; }
+    .comida-fila .nombre { font-size: 15px; font-weight: 600; }
+    .comida-fila .nombre span { font-size: 12px; font-weight: 400; color: var(--gris-oscuro); margin-left: 4px; }
+    .comida-fila .items { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .comida-fila .kcal { font-size: 13px; font-weight: 600; text-align: right; }
+    .comida-fila .chevron { color: var(--gris-medio); font-size: 16px; }
+    .comida-fila.futura .nombre, .comida-fila.futura .kcal { color: var(--gris-medio); font-weight: 500; }
+
+    /* Comida siguiente: los métodos de registro a un toque, dentro de la misma fila */
+    .comida-fila.siguiente { display: block; background: var(--gris-fondo); }
+    .comida-fila.siguiente .cabeza { display: flex; justify-content: space-between; align-items: baseline; }
+    .comida-fila.siguiente .estado { font-size: 12px; font-weight: 600; }
+    .metodos-fila { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 8px; margin-top: 10px; }
+    .metodo-chip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 36px;
+      border-radius: 18px;
+      background: var(--blanco);
+      border: 1px solid var(--gris-medio);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .metodo-chip .placeholder { width: 14px; height: 14px; border-radius: 4px; }
+
+    /* Agua y suplementos: dos tarjetas a la mitad, misma altura */
+    .doble { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .doble .bloque { padding: 14px 16px; }
+    .doble .titulo-mini { font-size: 13px; font-weight: 500; color: var(--gris-oscuro); }
+    .doble .dato { font-size: 15px; font-weight: 600; margin: 4px 0 10px; }
+    .doble .dato span { font-size: 12px; font-weight: 400; color: var(--gris-oscuro); }
+    .vasos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+    .vaso { height: 18px; border-radius: 4px; border: 1.5px solid var(--gris-oscuro); }
+    .vaso.lleno { background: var(--negro); border-color: var(--negro); }
+    .vaso.siguiente-vaso { border-style: dashed; }
+    .ayuda { font-size: 11px; color: var(--gris-oscuro); margin-top: 8px; }
+    .suple { display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 4px 0; }
+    .check { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--gris-oscuro); flex-shrink: 0; font-size: 11px; line-height: 15px; text-align: center; }
+    .check.hecho { background: var(--negro); border-color: var(--negro); color: var(--blanco); }
+    .suple .hora { margin-left: auto; font-size: 11px; color: var(--gris-oscuro); }
+
+    /* ===================== Hojas inferiores (detalle y ajuste) ===================== */
+    .velo { position: absolute; inset: 0; background: rgba(17, 17, 17, 0.5); }
+    .hoja {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      background: var(--blanco); border-radius: 20px 20px 0 0;
+      border-top: 1.5px solid var(--negro); padding: 10px 20px 28px;
+    }
+    .agarradera { width: 40px; height: 5px; border-radius: 3px; background: var(--gris-medio); margin: 0 auto 16px; }
+    .hoja-cabeza { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+    .hoja h2 { font-size: 20px; }
+    .hoja .sub { font-size: 12px; color: var(--gris-oscuro); }
+    .hoja .total { font-size: 15px; font-weight: 600; text-align: right; }
+    .resumen-macros { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 24px; margin: 16px 0 18px; padding: 12px 0; border-top: 1px solid var(--gris-fondo); border-bottom: 1px solid var(--gris-fondo); }
+    .resumen-macros .n { font-size: 12px; color: var(--gris-oscuro); }
+    .resumen-macros .v { font-size: 15px; font-weight: 600; margin-top: 2px; }
+    .alimento {
+      display: grid;
+      grid-template-columns: 36px 1fr auto 12px;
+      align-items: center;
+      column-gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gris-fondo);
+    }
+    .alimento .placeholder { width: 36px; height: 36px; border-radius: 10px; }
+    .alimento .nombre { font-size: 15px; font-weight: 600; }
+    .alimento .porcion { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .alimento .kcal { font-size: 13px; font-weight: 600; }
+    .alimento .chevron { color: var(--gris-medio); }
+    .alimento.estimado .porcion::after { content: " · estimado con IA"; }
+    .acciones-texto { display: flex; justify-content: space-between; margin-top: 16px; font-size: 13px; font-weight: 600; }
+    .acciones-texto a { color: var(--negro); }
+
+    /* Ajustar un alimento: porciones caseras en chips, el resultado se recalcula */
+    .porciones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 18px 0; }
+    .porcion-chip {
+      padding: 12px; border-radius: 12px; border: 1px solid var(--gris-medio);
+      font-size: 13px; font-weight: 600;
+    }
+    .porcion-chip span { display: block; font-size: 11px; font-weight: 400; color: var(--gris-oscuro); margin-top: 2px; }
+    .porcion-chip.activa { border: 2px solid var(--negro); background: var(--gris-fondo); }
+    .recalculo { background: var(--gris-fondo); border-radius: 12px; padding: 14px 16px; margin-bottom: 18px; }
+    .recalculo .linea { display: flex; justify-content: space-between; font-size: 13px; padding: 3px 0; }
+    .recalculo .linea strong { font-weight: 600; }
+    .recalculo .cambio { font-size: 12px; color: var(--gris-oscuro); margin-top: 8px; }
+    .boton-principal {
+      display: block; width: 100%; height: 50px; border: none; border-radius: 25px;
+      background: var(--negro); color: var(--blanco); font: inherit; font-size: 15px; font-weight: 600;
+    }
+    .boton-texto { display: block; text-align: center; font-size: 13px; font-weight: 600; margin-top: 14px; color: var(--gris-oscuro); }
+  </style>
+</head>
+<body>
+  <!--
+    Momento: 14:30. Datos coherentes con la v16:
+      Desayuno 480 + Media mañana 270 + Almuerzo 600 = 1.350 de 2.000 kcal (68 %).
+      Almuerzo = Arroz blanco 1½ taza (310 kcal · P 6 · C 68 · G 1)
+               + Pollo guisado 1 muslo pequeño (130 kcal · P 10 · C 2 · G 8)
+               + Ensalada con aguacate (160 kcal · P 1 · C 10 · G 11)
+               = 600 kcal · P 17 · C 80 · G 20  (lo mismo que suma el día: 45 → 62 g de proteína).
+      Ajuste: 1 muslo grande = 215 kcal · P 18 → almuerzo 685 kcal, día 1.435 kcal.
+      Agua 1,5 / 2 L = 6 de 8 vasos. Suplementos: creatina 8:20 ✓, magnesio pendiente.
+  -->
+  <div class="lienzo">
+
+    <div>
+      <div class="etiqueta-vista">
+        <strong>1 · Hoy, parte de arriba</strong>
+        <span>Calorías y el inicio de las comidas.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>14:30</span><span class="indicadores"><i></i><i></i></span></div>
+        <main class="contenido">
+          <div class="zona-superior">
+          <header class="cabecera">
+            <h1>Hoy</h1>
+            <div class="perfil" aria-label="Perfil"></div>
+          </header>
+
+          <section class="tarjeta">
+            <p class="eyebrow">Calorías consumidas</p>
+            <div class="fila-cifra"><span class="cifra">1.350</span><span class="contexto">/ 2.000 kcal</span><span class="porcentaje">68 %</span></div>
+            <div class="barra grande"><div style="width: 67.5%;"></div></div>
+            <div class="macros-col">
+              <div class="macro-col alerta"><p class="nombre-macro">Proteína</p><p class="valor">62 g <span>/ 140</span></p><div class="barra"><div style="width: 44%;"></div></div><span class="baja"><i>!</i>Baja hoy</span></div>
+              <div class="macro-col"><p class="nombre-macro">Carbos</p><p class="valor">160 g <span>/ 215</span></p><div class="barra"><div style="width: 74%;"></div></div></div>
+              <div class="macro-col"><p class="nombre-macro">Grasa</p><p class="valor">45 g <span>/ 65</span></p><div class="barra"><div style="width: 69%;"></div></div></div>
+            </div>
+          </section>
+
+          </div>
+          <div class="zona-inferior">
+            <!-- Comidas: lo registrado se puede revisar y ajustar; la siguiente se registra aquí mismo -->
+            <div class="encabezado-seccion"><span class="titulo">Comidas de hoy</span><a href="#">Ver diario</a></div>
+            <div class="bloque">
+              <div class="comida-fila">
+                <div><p class="nombre">Desayuno <span>8:15</span></p><p class="items">Huevos pericos, arepa, café con leche</p></div>
+                <span class="kcal">480 kcal</span><span class="chevron">›</span>
+              </div>
+              <div class="comida-fila">
+                <div><p class="nombre">Media mañana <span>11:00</span></p><p class="items">Yogur griego, banano</p></div>
+                <span class="kcal">270 kcal</span><span class="chevron">›</span>
+              </div>
+              <div class="comida-fila">
+                <div><p class="nombre">Almuerzo <span>14:05</span></p><p class="items">Arroz blanco, pollo guisado, ensalada</p></div>
+                <span class="kcal">600 kcal</span><span class="chevron">›</span>
+              </div>
+              <div class="comida-fila siguiente">
+                <div class="cabeza"><p class="nombre">Onces</p><span class="estado">Siguiente</span></div>
+                <div class="metodos-fila">
+                  <span class="metodo-chip"><span class="placeholder"></span>Foto</span>
+                  <span class="metodo-chip"><span class="placeholder"></span>Buscar</span>
+                  <span class="metodo-chip"><span class="placeholder"></span>Lo de siempre</span>
+                </div>
+              </div>
+              <div class="comida-fila futura">
+                <div><p class="nombre">Cena</p></div>
+                <span class="kcal">Más tarde</span><span></span>
+              </div>
+            </div>
+
+            <!-- Agua y suplementos: un toque para marcar -->
+            <div class="encabezado-seccion"><span class="titulo">Agua y suplementos</span></div>
+            <div class="doble">
+              <div class="bloque">
+                <p class="titulo-mini">Agua</p>
+                <p class="dato">1,5 <span>/ 2 L</span></p>
+                <div class="vasos" aria-label="6 de 8 vasos">
+                  <span class="vaso lleno"></span><span class="vaso lleno"></span><span class="vaso lleno"></span><span class="vaso lleno"></span>
+                  <span class="vaso lleno"></span><span class="vaso lleno"></span><span class="vaso siguiente-vaso"></span><span class="vaso"></span>
+                </div>
+                <p class="ayuda">Toca un vaso para sumar o quitar</p>
+              </div>
+              <div class="bloque">
+                <p class="titulo-mini">Suplementos</p>
+                <p class="dato">1 <span>/ 2</span></p>
+                <div class="suple"><span class="check hecho">✓</span>Creatina<span class="hora">8:20</span></div>
+                <div class="suple"><span class="check"></span>Magnesio</div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <nav class="nav">
+          <div class="capsula">
+            <div class="nav-item activo"><div class="placeholder"></div>Hoy</div>
+            <div class="nav-item"><div class="placeholder"></div>Preparaciones</div>
+            <div class="nav-item"><div class="placeholder"></div>Estadísticas</div>
+          </div>
+          <div class="nav-mas" aria-label="Acciones">+</div>
+        </nav>
+      </div>
+    </div>
+
+    <div>
+      <div class="etiqueta-vista">
+        <strong>2 · Hoy, al bajar</strong>
+        <span>Comidas, agua y suplementos.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>14:30</span><span class="indicadores"><i></i><i></i></span></div>
+        <main class="contenido" id="bajado">
+          <div class="zona-superior">
+          <header class="cabecera">
+            <h1>Hoy</h1>
+            <div class="perfil" aria-label="Perfil"></div>
+          </header>
+
+          <section class="tarjeta">
+            <p class="eyebrow">Calorías consumidas</p>
+            <div class="fila-cifra"><span class="cifra">1.350</span><span class="contexto">/ 2.000 kcal</span><span class="porcentaje">68 %</span></div>
+            <div class="barra grande"><div style="width: 67.5%;"></div></div>
+            <div class="macros-col">
+              <div class="macro-col alerta"><p class="nombre-macro">Proteína</p><p class="valor">62 g <span>/ 140</span></p><div class="barra"><div style="width: 44%;"></div></div><span class="baja"><i>!</i>Baja hoy</span></div>
+              <div class="macro-col"><p class="nombre-macro">Carbos</p><p class="valor">160 g <span>/ 215</span></p><div class="barra"><div style="width: 74%;"></div></div></div>
+              <div class="macro-col"><p class="nombre-macro">Grasa</p><p class="valor">45 g <span>/ 65</span></p><div class="barra"><div style="width: 69%;"></div></div></div>
+            </div>
+          </section>
+
+          </div>
+          <div class="zona-inferior">
+            <!-- Comidas: lo registrado se puede revisar y ajustar; la siguiente se registra aquí mismo -->
+            <div class="encabezado-seccion"><span class="titulo">Comidas de hoy</span><a href="#">Ver diario</a></div>
+            <div class="bloque">
+              <div class="comida-fila">
+                <div><p class="nombre">Desayuno <span>8:15</span></p><p class="items">Huevos pericos, arepa, café con leche</p></div>
+                <span class="kcal">480 kcal</span><span class="chevron">›</span>
+              </div>
+              <div class="comida-fila">
+                <div><p class="nombre">Media mañana <span>11:00</span></p><p class="items">Yogur griego, banano</p></div>
+                <span class="kcal">270 kcal</span><span class="chevron">›</span>
+              </div>
+              <div class="comida-fila">
+                <div><p class="nombre">Almuerzo <span>14:05</span></p><p class="items">Arroz blanco, pollo guisado, ensalada</p></div>
+                <span class="kcal">600 kcal</span><span class="chevron">›</span>
+              </div>
+              <div class="comida-fila siguiente">
+                <div class="cabeza"><p class="nombre">Onces</p><span class="estado">Siguiente</span></div>
+                <div class="metodos-fila">
+                  <span class="metodo-chip"><span class="placeholder"></span>Foto</span>
+                  <span class="metodo-chip"><span class="placeholder"></span>Buscar</span>
+                  <span class="metodo-chip"><span class="placeholder"></span>Lo de siempre</span>
+                </div>
+              </div>
+              <div class="comida-fila futura">
+                <div><p class="nombre">Cena</p></div>
+                <span class="kcal">Más tarde</span><span></span>
+              </div>
+            </div>
+
+            <!-- Agua y suplementos: un toque para marcar -->
+            <div class="encabezado-seccion"><span class="titulo">Agua y suplementos</span></div>
+            <div class="doble">
+              <div class="bloque">
+                <p class="titulo-mini">Agua</p>
+                <p class="dato">1,5 <span>/ 2 L</span></p>
+                <div class="vasos" aria-label="6 de 8 vasos">
+                  <span class="vaso lleno"></span><span class="vaso lleno"></span><span class="vaso lleno"></span><span class="vaso lleno"></span>
+                  <span class="vaso lleno"></span><span class="vaso lleno"></span><span class="vaso siguiente-vaso"></span><span class="vaso"></span>
+                </div>
+                <p class="ayuda">Toca un vaso para sumar o quitar</p>
+              </div>
+              <div class="bloque">
+                <p class="titulo-mini">Suplementos</p>
+                <p class="dato">1 <span>/ 2</span></p>
+                <div class="suple"><span class="check hecho">✓</span>Creatina<span class="hora">8:20</span></div>
+                <div class="suple"><span class="check"></span>Magnesio</div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <nav class="nav">
+          <div class="capsula">
+            <div class="nav-item activo"><div class="placeholder"></div>Hoy</div>
+            <div class="nav-item"><div class="placeholder"></div>Preparaciones</div>
+            <div class="nav-item"><div class="placeholder"></div>Estadísticas</div>
+          </div>
+          <div class="nav-mas" aria-label="Acciones">+</div>
+        </nav>
+      </div>
+    </div>
+
+    <div>
+      <div class="etiqueta-vista">
+        <strong>3 · Al tocar Almuerzo</strong>
+        <span>Lo registrado, alimento por alimento.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>14:30</span><span class="indicadores"><i></i><i></i></span></div>
+        <main class="contenido">
+          <div class="zona-superior">
+          <header class="cabecera">
+            <h1>Hoy</h1>
+            <div class="perfil" aria-label="Perfil"></div>
+          </header>
+
+          <section class="tarjeta">
+            <p class="eyebrow">Calorías consumidas</p>
+            <div class="fila-cifra"><span class="cifra">1.350</span><span class="contexto">/ 2.000 kcal</span><span class="porcentaje">68 %</span></div>
+            <div class="barra grande"><div style="width: 67.5%;"></div></div>
+            <div class="macros-col">
+              <div class="macro-col alerta"><p class="nombre-macro">Proteína</p><p class="valor">62 g <span>/ 140</span></p><div class="barra"><div style="width: 44%;"></div></div><span class="baja"><i>!</i>Baja hoy</span></div>
+              <div class="macro-col"><p class="nombre-macro">Carbos</p><p class="valor">160 g <span>/ 215</span></p><div class="barra"><div style="width: 74%;"></div></div></div>
+              <div class="macro-col"><p class="nombre-macro">Grasa</p><p class="valor">45 g <span>/ 65</span></p><div class="barra"><div style="width: 69%;"></div></div></div>
+            </div>
+          </section>
+
+          </div>
+          <div class="zona-inferior">
+            <!-- Comidas: lo registrado se puede revisar y ajustar; la siguiente se registra aquí mismo -->
+            <div class="encabezado-seccion"><span class="titulo">Comidas de hoy</span><a href="#">Ver diario</a></div>
+            <div class="bloque">
+              <div class="comida-fila">
+                <div><p class="nombre">Desayuno <span>8:15</span></p><p class="items">Huevos pericos, arepa, café con leche</p></div>
+                <span class="kcal">480 kcal</span><span class="chevron">›</span>
+              </div>
+              <div class="comida-fila">
+                <div><p class="nombre">Media mañana <span>11:00</span></p><p class="items">Yogur griego, banano</p></div>
+                <span class="kcal">270 kcal</span><span class="chevron">›</span>
+              </div>
+              <div class="comida-fila">
+                <div><p class="nombre">Almuerzo <span>14:05</span></p><p class="items">Arroz blanco, pollo guisado, ensalada</p></div>
+                <span class="kcal">600 kcal</span><span class="chevron">›</span>
+              </div>
+              <div class="comida-fila siguiente">
+                <div class="cabeza"><p class="nombre">Onces</p><span class="estado">Siguiente</span></div>
+                <div class="metodos-fila">
+                  <span class="metodo-chip"><span class="placeholder"></span>Foto</span>
+                  <span class="metodo-chip"><span class="placeholder"></span>Buscar</span>
+                  <span class="metodo-chip"><span class="placeholder"></span>Lo de siempre</span>
+                </div>
+              </div>
+              <div class="comida-fila futura">
+                <div><p class="nombre">Cena</p></div>
+                <span class="kcal">Más tarde</span><span></span>
+              </div>
+            </div>
+
+            <!-- Agua y suplementos: un toque para marcar -->
+            <div class="encabezado-seccion"><span class="titulo">Agua y suplementos</span></div>
+            <div class="doble">
+              <div class="bloque">
+                <p class="titulo-mini">Agua</p>
+                <p class="dato">1,5 <span>/ 2 L</span></p>
+                <div class="vasos" aria-label="6 de 8 vasos">
+                  <span class="vaso lleno"></span><span class="vaso lleno"></span><span class="vaso lleno"></span><span class="vaso lleno"></span>
+                  <span class="vaso lleno"></span><span class="vaso lleno"></span><span class="vaso siguiente-vaso"></span><span class="vaso"></span>
+                </div>
+                <p class="ayuda">Toca un vaso para sumar o quitar</p>
+              </div>
+              <div class="bloque">
+                <p class="titulo-mini">Suplementos</p>
+                <p class="dato">1 <span>/ 2</span></p>
+                <div class="suple"><span class="check hecho">✓</span>Creatina<span class="hora">8:20</span></div>
+                <div class="suple"><span class="check"></span>Magnesio</div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <nav class="nav">
+          <div class="capsula">
+            <div class="nav-item activo"><div class="placeholder"></div>Hoy</div>
+            <div class="nav-item"><div class="placeholder"></div>Preparaciones</div>
+            <div class="nav-item"><div class="placeholder"></div>Estadísticas</div>
+          </div>
+          <div class="nav-mas" aria-label="Acciones">+</div>
+        </nav>
+        <div class="velo"></div>
+        <!-- Detalle del almuerzo: cada alimento se puede ajustar -->
+        <div class="hoja">
+          <div class="agarradera"></div>
+          <div class="hoja-cabeza">
+            <div><h2>Almuerzo</h2><p class="sub">Hoy · 14:05 · registrado con foto</p></div>
+            <p class="total">600 kcal</p>
+          </div>
+          <div class="resumen-macros">
+            <div><p class="n">Proteína</p><p class="v">17 g</p></div>
+            <div><p class="n">Carbos</p><p class="v">80 g</p></div>
+            <div><p class="n">Grasa</p><p class="v">20 g</p></div>
+          </div>
+          <div class="alimento estimado">
+            <div class="placeholder"></div>
+            <div><p class="nombre">Arroz blanco</p><p class="porcion">1½ taza</p></div>
+            <span class="kcal">310 kcal</span><span class="chevron">›</span>
+          </div>
+          <div class="alimento estimado">
+            <div class="placeholder"></div>
+            <div><p class="nombre">Pollo guisado</p><p class="porcion">1 muslo pequeño</p></div>
+            <span class="kcal">130 kcal</span><span class="chevron">›</span>
+          </div>
+          <div class="alimento estimado">
+            <div class="placeholder"></div>
+            <div><p class="nombre">Ensalada con aguacate</p><p class="porcion">1 plato pequeño</p></div>
+            <span class="kcal">160 kcal</span><span class="chevron">›</span>
+          </div>
+          <div class="acciones-texto"><a href="#">Agregar otro alimento</a><a href="#">Repetir esta comida</a></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="etiqueta-vista">
+        <strong>4 · Al tocar Pollo guisado</strong>
+        <span>Corregir la porción que estimó la IA.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>14:30</span><span class="indicadores"><i></i><i></i></span></div>
+        <main class="contenido">
+          <div class="zona-superior">
+          <header class="cabecera">
+            <h1>Hoy</h1>
+            <div class="perfil" aria-label="Perfil"></div>
+          </header>
+
+          <section class="tarjeta">
+            <p class="eyebrow">Calorías consumidas</p>
+            <div class="fila-cifra"><span class="cifra">1.350</span><span class="contexto">/ 2.000 kcal</span><span class="porcentaje">68 %</span></div>
+            <div class="barra grande"><div style="width: 67.5%;"></div></div>
+            <div class="macros-col">
+              <div class="macro-col alerta"><p class="nombre-macro">Proteína</p><p class="valor">62 g <span>/ 140</span></p><div class="barra"><div style="width: 44%;"></div></div><span class="baja"><i>!</i>Baja hoy</span></div>
+              <div class="macro-col"><p class="nombre-macro">Carbos</p><p class="valor">160 g <span>/ 215</span></p><div class="barra"><div style="width: 74%;"></div></div></div>
+              <div class="macro-col"><p class="nombre-macro">Grasa</p><p class="valor">45 g <span>/ 65</span></p><div class="barra"><div style="width: 69%;"></div></div></div>
+            </div>
+          </section>
+
+          </div>
+          <div class="zona-inferior">
+            <!-- Comidas: lo registrado se puede revisar y ajustar; la siguiente se registra aquí mismo -->
+            <div class="encabezado-seccion"><span class="titulo">Comidas de hoy</span><a href="#">Ver diario</a></div>
+            <div class="bloque">
+              <div class="comida-fila">
+                <div><p class="nombre">Desayuno <span>8:15</span></p><p class="items">Huevos pericos, arepa, café con leche</p></div>
+                <span class="kcal">480 kcal</span><span class="chevron">›</span>
+              </div>
+              <div class="comida-fila">
+                <div><p class="nombre">Media mañana <span>11:00</span></p><p class="items">Yogur griego, banano</p></div>
+                <span class="kcal">270 kcal</span><span class="chevron">›</span>
+              </div>
+              <div class="comida-fila">
+                <div><p class="nombre">Almuerzo <span>14:05</span></p><p class="items">Arroz blanco, pollo guisado, ensalada</p></div>
+                <span class="kcal">600 kcal</span><span class="chevron">›</span>
+              </div>
+              <div class="comida-fila siguiente">
+                <div class="cabeza"><p class="nombre">Onces</p><span class="estado">Siguiente</span></div>
+                <div class="metodos-fila">
+                  <span class="metodo-chip"><span class="placeholder"></span>Foto</span>
+                  <span class="metodo-chip"><span class="placeholder"></span>Buscar</span>
+                  <span class="metodo-chip"><span class="placeholder"></span>Lo de siempre</span>
+                </div>
+              </div>
+              <div class="comida-fila futura">
+                <div><p class="nombre">Cena</p></div>
+                <span class="kcal">Más tarde</span><span></span>
+              </div>
+            </div>
+
+            <!-- Agua y suplementos: un toque para marcar -->
+            <div class="encabezado-seccion"><span class="titulo">Agua y suplementos</span></div>
+            <div class="doble">
+              <div class="bloque">
+                <p class="titulo-mini">Agua</p>
+                <p class="dato">1,5 <span>/ 2 L</span></p>
+                <div class="vasos" aria-label="6 de 8 vasos">
+                  <span class="vaso lleno"></span><span class="vaso lleno"></span><span class="vaso lleno"></span><span class="vaso lleno"></span>
+                  <span class="vaso lleno"></span><span class="vaso lleno"></span><span class="vaso siguiente-vaso"></span><span class="vaso"></span>
+                </div>
+                <p class="ayuda">Toca un vaso para sumar o quitar</p>
+              </div>
+              <div class="bloque">
+                <p class="titulo-mini">Suplementos</p>
+                <p class="dato">1 <span>/ 2</span></p>
+                <div class="suple"><span class="check hecho">✓</span>Creatina<span class="hora">8:20</span></div>
+                <div class="suple"><span class="check"></span>Magnesio</div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <nav class="nav">
+          <div class="capsula">
+            <div class="nav-item activo"><div class="placeholder"></div>Hoy</div>
+            <div class="nav-item"><div class="placeholder"></div>Preparaciones</div>
+            <div class="nav-item"><div class="placeholder"></div>Estadísticas</div>
+          </div>
+          <div class="nav-mas" aria-label="Acciones">+</div>
+        </nav>
+        <div class="velo"></div>
+        <!-- Ajustar un alimento: la IA estimó 1 muslo pequeño, el usuario corrige a 1 muslo grande -->
+        <div class="hoja">
+          <div class="agarradera"></div>
+          <div class="hoja-cabeza">
+            <div><h2>Pollo guisado</h2><p class="sub">Almuerzo · estimado con IA</p></div>
+          </div>
+          <p class="sub" style="margin-top: 14px;">¿Qué porción comiste?</p>
+          <div class="porciones">
+            <div class="porcion-chip">½ muslo<span>30 g · 65 kcal</span></div>
+            <div class="porcion-chip">1 muslo pequeño<span>60 g · 130 kcal</span></div>
+            <div class="porcion-chip activa">1 muslo grande<span>100 g · 215 kcal</span></div>
+            <div class="porcion-chip">En gramos<span>Escribe la cantidad</span></div>
+          </div>
+          <div class="recalculo">
+            <div class="linea"><span>Calorías</span><strong>215 kcal</strong></div>
+            <div class="linea"><span>Proteína</span><strong>18 g</strong></div>
+            <div class="linea"><span>Carbos</span><strong>3 g</strong></div>
+            <div class="linea"><span>Grasa</span><strong>13 g</strong></div>
+            <p class="cambio">El almuerzo pasa de 600 a 685 kcal y tu día de 1.350 a 1.435 kcal.</p>
+          </div>
+          <button class="boton-principal">Guardar cambio</button>
+          <span class="boton-texto">Quitar este alimento</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script>
+    // El celular 2 se muestra ya desplazado hasta las comidas
+    document.getElementById('bajado').scrollTop = 290;
+  </script>
+</body>
+</html>

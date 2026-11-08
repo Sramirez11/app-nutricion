@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe – Hoy</title>
+  <style>
+    /* ===== Paleta de wireframe: solo grises, blanco y negro ===== */
+    :root {
+      --negro: #111;
+      --gris-oscuro: #555;
+      --gris-medio: #999;
+      --gris-claro: #ddd;
+      --gris-fondo: #f2f2f2;
+      --blanco: #fff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--gris-claro);
+      color: var(--negro);
+      display: flex;
+      justify-content: center;
+      padding: 24px 0;
+    }
+
+    /* ===== Marco del celular (390 px) ===== */
+    .telefono {
+      width: 390px;
+      min-height: 844px;
+      background: var(--blanco);
+      border: 2px solid var(--negro);
+      border-radius: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contenido {
+      height: 844px;
+      overflow-y: auto;
+      padding: 20px 16px 110px; /* espacio para la barra inferior */
+    }
+
+    section { margin-bottom: 16px; }
+
+    .tarjeta {
+      border: 1.5px solid var(--negro);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .titulo-seccion {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--gris-oscuro);
+      margin-bottom: 8px;
+    }
+
+    .texto-chico { font-size: 12px; color: var(--gris-oscuro); }
+
+    /* Caja gris que reemplaza íconos e imágenes */
+    .placeholder {
+      background: var(--gris-claro);
+      border: 1px dashed var(--gris-medio);
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .boton {
+      display: inline-block;
+      border: 1.5px solid var(--negro);
+      border-radius: 8px;
+      background: var(--negro);
+      color: var(--blanco);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 16px;
+      cursor: pointer;
+    }
+
+    /* ===== 1. Encabezado ===== */
+    .encabezado {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .encabezado h1 { font-size: 22px; }
+    .encabezado .placeholder { width: 40px; height: 40px; border-radius: 50%; }
+
+    /* ===== 2. Bloque principal: lo que te queda ===== */
+    .bloque-principal {
+      border: 2px solid var(--negro);
+      border-radius: 16px;
+      padding: 20px;
+      background: var(--gris-fondo);
+    }
+    .bloque-principal h2 { font-size: 20px; margin-bottom: 16px; }
+    .porciones { list-style: none; display: grid; gap: 12px; margin-bottom: 16px; }
+    .porciones li { display: flex; align-items: center; gap: 12px; }
+    .porciones .placeholder { width: 44px; height: 44px; }
+    .porciones .cantidad { font-size: 26px; font-weight: 700; line-height: 1; }
+    .porciones .nombre { font-size: 14px; color: var(--gris-oscuro); }
+
+    /* ===== 3. Próxima comida ===== */
+    .proxima h3 { font-size: 18px; margin-bottom: 4px; }
+    .proxima p { font-size: 14px; color: var(--gris-oscuro); margin-bottom: 12px; }
+    .proxima .boton { width: 100%; }
+
+    /* ===== 4. Comidas del día ===== */
+    .lista-comidas { list-style: none; }
+    .lista-comidas li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gris-claro);
+    }
+    .lista-comidas li:last-child { border-bottom: none; }
+    .lista-comidas .placeholder { width: 36px; height: 36px; }
+    .lista-comidas .info { flex: 1; }
+    .lista-comidas .comida { font-size: 15px; font-weight: 600; }
+    .estado {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-top: 2px;
+    }
+    .estado.registrada { background: var(--negro); color: var(--blanco); }
+    .estado.pendiente { border: 1px dashed var(--gris-oscuro); color: var(--gris-oscuro); }
+    .boton-mas {
+      width: 32px; height: 32px;
+      border: 1.5px solid var(--negro);
+      border-radius: 50%;
+      background: var(--blanco);
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    /* ===== 5. Suplementos ===== */
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      font: inherit;
+      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 16px;
+      border: 1.5px solid var(--negro);
+      background: var(--blanco);
+      cursor: pointer;
+    }
+    .chip.tomado { background: var(--negro); color: var(--blanco); }
+
+    /* ===== 6. Consistencia semanal ===== */
+    .semana { display: flex; justify-content: space-between; margin-bottom: 8px; }
+    .dia { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; }
+    .circulo {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: 1.5px solid var(--negro);
+    }
+    .circulo.marcado { background: var(--negro); }
+    .dia.hoy span { font-weight: 700; text-decoration: underline; }
+
+    /* ===== 7. Aviso ===== */
+    .aviso {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-style: dashed;
+      background: var(--gris-fondo);
+    }
+    .aviso .placeholder { width: 32px; height: 32px; }
+    .aviso p { flex: 1; font-size: 14px; font-weight: 600; }
+
+    /* ===== 8. Barra de navegación inferior fija ===== */
+    .nav-inferior {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 84px;
+      background: var(--blanco);
+      border-top: 1.5px solid var(--negro);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding-bottom: 12px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--gris-oscuro);
+      width: 64px;
+    }
+    .nav-item .placeholder { width: 24px; height: 24px; }
+    .nav-item.activo { color: var(--negro); font-weight: 700; }
+    .nav-item.activo .placeholder { background: var(--gris-medio); }
+    .nav-registrar .boton-central {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--negro);
+      color: var(--blanco);
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -28px;
+      border: 4px solid var(--blanco);
+      box-shadow: 0 0 0 1.5px var(--negro);
+    }
+    .nav-registrar { color: var(--negro); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="telefono">
+    <main class="contenido">
+
+      <!-- 1. Encabezado: saludo y fecha -->
+      <header class="encabezado">
+        <div>
+          <h1>Hola, Sebastián</h1>
+          <p class="texto-chico">Jueves 22 de octubre</p>
+        </div>
+        <div class="placeholder" aria-label="Foto de perfil"></div>
+      </header>
+
+      <!-- 2. Bloque principal: lo que te queda hoy -->
+      <section class="bloque-principal">
+        <h2>Lo que te queda hoy</h2>
+        <ul class="porciones">
+          <li>
+            <div class="placeholder"></div>
+            <div><div class="cantidad">2 palmas</div><div class="nombre">de proteína</div></div>
+          </li>
+          <li>
+            <div class="placeholder"></div>
+            <div><div class="cantidad">1 taza</div><div class="nombre">de carbohidratos</div></div>
+          </li>
+          <li>
+            <div class="placeholder"></div>
+            <div><div class="cantidad">1 pulgar</div><div class="nombre">de grasas saludables</div></div>
+          </li>
+          <li>
+            <div class="placeholder"></div>
+            <div><div class="cantidad">Libres</div><div class="nombre">verduras</div></div>
+          </li>
+        </ul>
+        <p class="texto-chico">Tu zona de hoy: 1.800 – 2.200 kcal</p>
+      </section>
+
+      <!-- 3. Próxima comida -->
+      <section class="tarjeta proxima">
+        <div class="titulo-seccion">Próxima comida</div>
+        <h3>Almuerzo</h3>
+        <p>1 palma de proteína · ½ taza de arroz o legumbres · verduras a gusto</p>
+        <button class="boton">Ver qué comer</button>
+      </section>
+
+      <!-- 4. Comidas del día -->
+      <section class="tarjeta">
+        <div class="titulo-seccion">Comidas del día</div>
+        <ul class="lista-comidas">
+          <li>
+            <div class="placeholder"></div>
+            <div class="info">
+              <div class="comida">Desayuno</div>
+              <span class="estado registrada">Registrado · 8:15</span>
+            </div>
+            <button class="boton-mas" aria-label="Agregar a desayuno">+</button>
+          </li>
+          <li>
+            <div class="placeholder"></div>
+            <div class="info">
+              <div class="comida">Almuerzo</div>
+              <span class="estado pendiente">Pendiente</span>
+            </div>
+            <button class="boton-mas" aria-label="Agregar a almuerzo">+</button>
+          </li>
+          <li>
+            <div class="placeholder"></div>
+            <div class="info">
+              <div class="comida">Cena</div>
+              <span class="estado pendiente">Pendiente</span>
+            </div>
+            <button class="boton-mas" aria-label="Agregar a cena">+</button>
+          </li>
+          <li>
+            <div class="placeholder"></div>
+            <div class="info">
+              <div class="comida">Snacks</div>
+              <span class="estado registrada">1 registrado · 11:00</span>
+            </div>
+            <button class="boton-mas" aria-label="Agregar snack">+</button>
+          </li>
+        </ul>
+      </section>
+
+      <!-- 5. Suplementos -->
+      <section class="tarjeta">
+        <div class="titulo-seccion">Suplementos</div>
+        <div class="chips">
+          <button class="chip tomado">✓ Creatina · ya lo tomé</button>
+          <button class="chip">Magnesio</button>
+        </div>
+      </section>
+
+      <!-- 6. Consistencia de la semana -->
+      <section class="tarjeta">
+        <div class="titulo-seccion">Consistencia de la semana</div>
+        <div class="semana">
+          <div class="dia"><div class="circulo marcado"></div><span>L</span></div>
+          <div class="dia"><div class="circulo marcado"></div><span>M</span></div>
+          <div class="dia"><div class="circulo"></div><span>M</span></div>
+          <div class="dia hoy"><div class="circulo marcado"></div><span>J</span></div>
+          <div class="dia"><div class="circulo"></div><span>V</span></div>
+          <div class="dia"><div class="circulo"></div><span>S</span></div>
+          <div class="dia"><div class="circulo marcado"></div><span>D</span></div>
+        </div>
+        <p class="texto-chico">4 de 7 días</p>
+      </section>
+
+      <!-- 7. Aviso -->
+      <section class="tarjeta aviso">
+        <div class="placeholder"></div>
+        <p>Tienes un ajuste semanal para revisar</p>
+        <span aria-hidden="true">›</span>
+      </section>
+
+    </main>
+
+    <!-- 8. Barra de navegación inferior fija -->
+    <nav class="nav-inferior">
+      <div class="nav-item activo"><div class="placeholder"></div>Hoy</div>
+      <div class="nav-item"><div class="placeholder"></div>Qué comer</div>
+      <div class="nav-item nav-registrar"><div class="boton-central">+</div>Registrar</div>
+      <div class="nav-item"><div class="placeholder"></div>Progreso</div>
+      <div class="nav-item"><div class="placeholder"></div>Perfil</div>
+    </nav>
+  </div>
+</body>
+</html>

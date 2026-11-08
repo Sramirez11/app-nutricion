@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe – Hoy v9</title>
+  <style>
+    /* ===== Paleta de wireframe: solo grises, blanco y negro ===== */
+    :root {
+      --negro: #111;
+      --gris-oscuro: #555;
+      --gris-medio: #999;
+      --gris-claro: #ddd;
+      --gris-fondo: #f2f2f2;
+      --blanco: #fff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--gris-claro);
+      color: var(--negro);
+      padding: 24px 16px;
+    }
+
+    /* ===== Cuatro celulares lado a lado ===== */
+    .lienzo {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .etiqueta-vista {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gris-oscuro);
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    /* ===== Marco del celular (390 px) ===== */
+    .telefono {
+      width: 390px;
+      height: 844px;
+      background: var(--blanco);
+      border: 2px solid var(--negro);
+      border-radius: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Barra de estado: la hora del momento vive aquí, no en el contenido */
+    .barra-estado {
+      height: 44px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 28px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .barra-estado .indicadores { display: flex; gap: 4px; }
+    .barra-estado .indicadores i { width: 16px; height: 10px; border-radius: 2px; background: var(--negro); }
+
+    .contenido {
+      height: calc(100% - 44px);
+      overflow-y: auto;
+      padding: 4px 16px 130px; /* espacio para la barra de navegación */
+    }
+
+    section { margin-bottom: 20px; }
+
+    .placeholder {
+      background: var(--gris-claro);
+      border: 1px dashed var(--gris-medio);
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .titulo-seccion {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gris-oscuro);
+      margin-bottom: 8px;
+    }
+
+    /* ===== 1. Cabecera estilo iOS: fecha pequeña, título grande, perfil a la derecha ===== */
+    .cabecera {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 18px;
+    }
+    .cabecera .fecha {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--gris-oscuro);
+    }
+    .cabecera h1 { font-size: 34px; line-height: 1.1; }
+    .perfil {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--gris-claro);
+      border: 1.5px solid var(--negro);
+      margin-bottom: 4px;
+    }
+
+    /* ===== 2. Balance del día (sin título: la tarjeta se explica sola) ===== */
+    .balance {
+      border: 2px solid var(--negro);
+      border-radius: 16px;
+      padding: 18px 16px;
+    }
+    .consumo { font-size: 15px; color: var(--gris-oscuro); margin-bottom: 10px; }
+    .consumo strong { font-size: 28px; color: var(--negro); }
+    .barra-kcal {
+      height: 14px;
+      border-radius: 7px;
+      background: var(--gris-claro);
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+    .barra-kcal div { height: 100%; background: var(--negro); border-radius: 7px; }
+
+    /* Macros: tres filas horizontales y compactas */
+    .macros { display: grid; gap: 12px; }
+    .macro {
+      display: grid;
+      grid-template-columns: 104px 1fr 86px;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+    .macro .barra {
+      height: 8px;
+      border-radius: 4px;
+      background: var(--gris-claro);
+      overflow: hidden;
+    }
+    .macro .barra div { height: 100%; background: var(--negro); }
+    .macro .valor { text-align: right; font-weight: 700; white-space: nowrap; }
+
+    /* Aviso sutil dentro de la tarjeta (ícono + texto, no depende del color) */
+    .aviso-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 14px;
+      padding: 6px 10px;
+      border-radius: 14px;
+      background: var(--gris-fondo);
+      border: 1px solid var(--gris-medio);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .aviso-tag .icono {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--negro);
+      color: var(--blanco);
+      font-size: 10px;
+      line-height: 14px;
+      text-align: center;
+    }
+
+    /* ===== 4. Registro rápido: tres filas táctiles, sin botones "+" ===== */
+    .rapido {
+      border: 1.5px solid var(--negro);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .fila {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--gris-claro);
+    }
+    .fila:last-child { border-bottom: none; }
+    .fila .placeholder { width: 32px; height: 32px; }
+    .fila .info { flex: 1; }
+    .fila .nombre { font-size: 15px; font-weight: 600; }
+    .fila .detalle { font-size: 12px; color: var(--gris-oscuro); }
+    .fila .accion { font-size: 13px; font-weight: 600; white-space: nowrap; }
+    .fila .chevron { color: var(--gris-medio); font-size: 18px; }
+    /* La comida pendiente es la fila destacada */
+    .fila.pendiente { background: var(--gris-fondo); }
+    .fila.pendiente .accion { text-decoration: underline; }
+    .hecho {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--negro);
+      color: var(--blanco);
+      font-size: 12px;
+      line-height: 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    /* ===== 5. Barra de navegación flotante estilo iOS ===== */
+    .nav {
+      position: absolute;
+      left: 16px; right: 16px; bottom: 24px;
+      height: 64px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 72px 2fr; /* el "+" queda exactamente al centro */
+      align-items: center;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1.5px solid var(--negro);
+      border-radius: 32px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      padding: 0 6px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 10px;
+      color: var(--gris-oscuro);
+    }
+    .nav-item .placeholder { width: 22px; height: 22px; }
+    .nav-item.activo {
+      color: var(--negro);
+      font-weight: 700;
+      background: var(--gris-claro);
+      border-radius: 24px;
+      padding: 6px 0;
+    }
+    .nav-item.activo .placeholder { background: var(--gris-medio); }
+    .nav-mas {
+      justify-self: center;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--negro);
+      color: var(--blanco);
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 0 var(--gris-medio);
+    }
+
+    /* ===== Menú del "+" (celular C) ===== */
+    .velo { position: absolute; inset: 0; background: rgba(17, 17, 17, 0.55); }
+    .menu-flotante {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 104px;
+      width: 300px;
+      background: var(--blanco);
+      border: 2px solid var(--negro);
+      border-radius: 16px;
+      padding: 8px;
+    }
+    .menu-titulo {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--gris-oscuro);
+      padding: 8px 10px 4px;
+    }
+    .menu-opcion { display: flex; align-items: center; gap: 12px; padding: 9px 10px; font-size: 15px; font-weight: 600; }
+    .menu-opcion .placeholder { width: 26px; height: 26px; }
+    .menu-separador { border: none; border-top: 1px solid var(--gris-claro); margin: 6px 10px; }
+    .metodos { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 4px 6px 6px; }
+    .metodo {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      padding: 10px 6px; border: 1.5px solid var(--negro); border-radius: 10px;
+      font-size: 13px; font-weight: 600; text-align: center;
+    }
+    .metodo .placeholder { width: 26px; height: 26px; }
+    .otros { display: flex; gap: 6px; padding: 2px 6px 4px; }
+    .otro { flex: 1; text-align: center; font-size: 12px; font-weight: 600; padding: 7px 4px; border: 1px solid var(--gris-medio); border-radius: 16px; }
+    .nav-mas.cerrar { position: absolute; left: 50%; transform: translateX(-50%); bottom: 28px; }
+
+    /* ===== Hoja de registro (celular D) ===== */
+    .hoja {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 640px;
+      background: var(--blanco); border-top: 2px solid var(--negro);
+      border-radius: 20px 20px 0 0; padding: 10px 16px 24px;
+    }
+    .agarradera { width: 40px; height: 5px; border-radius: 3px; background: var(--gris-medio); margin: 0 auto 14px; }
+    .hoja h2 { font-size: 20px; }
+    .hoja .sub { font-size: 12px; color: var(--gris-oscuro); margin-bottom: 14px; }
+    .buscador {
+      display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 14px;
+      border: 1.5px solid var(--negro); border-radius: 23px; background: var(--gris-fondo);
+      font-size: 14px; color: var(--gris-oscuro); margin-bottom: 10px;
+    }
+    .buscador .placeholder { width: 18px; height: 18px; border-radius: 50%; }
+    .atajos { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; }
+    .atajo { display: flex; align-items: center; gap: 10px; padding: 12px; border: 1.5px solid var(--negro); border-radius: 10px; font-size: 14px; font-weight: 600; }
+    .atajo .placeholder { width: 24px; height: 24px; }
+    .grupo-titulo { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--gris-oscuro); margin-bottom: 6px; }
+    .sugerencias { list-style: none; margin-bottom: 14px; }
+    .sugerencias li { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--gris-claro); }
+    .sugerencias li.ayer { border: 2px solid var(--negro); border-radius: 10px; padding: 10px 12px; background: var(--gris-fondo); }
+    .sugerencias .info { flex: 1; }
+    .sugerencias .nombre { font-size: 14px; font-weight: 600; }
+    .sugerencias .detalle { font-size: 12px; color: var(--gris-oscuro); }
+    .boton-mas {
+      width: 30px; height: 30px; border: 1.5px solid var(--negro); border-radius: 50%;
+      background: var(--blanco); font-size: 18px; line-height: 1;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <!--
+    Datos del día (meta 2.000 kcal):
+      Metas: 140 g proteína · 215 g carbohidratos · 65 g grasa (≈ 2.005 kcal) · 2 L agua.
+      A 13:30: 750 kcal (37,5 %) = desayuno 480 + snack 270. P 45 (32 %) · C 80 (37 %) · G 25 (38 %) · agua 1,2 L.
+      B 14:30: 1.350 kcal (67,5 %) = 750 + almuerzo 600.     P 62 (44 %) · C 160 (74 %) · G 45 (69 %) · agua 1,5 L.
+    Aviso (regla de CLAUDE.md): pasado el almuerzo, un macro bajo el 50 % de su meta.
+      A: el almuerzo aún no está registrado → sin aviso (el pendiente lo resuelve el registro rápido).
+      B: proteína al 44 % → "Proteína baja hoy".
+  -->
+  <div class="lienzo">
+
+    <!-- ================= A · 13:30, almuerzo sin registrar ================= -->
+    <div>
+      <p class="etiqueta-vista">A · 13:30 · almuerzo sin registrar</p>
+      <div class="telefono">
+        <div class="barra-estado"><span>13:30</span><span class="indicadores"><i></i><i></i></span></div>
+        <main class="contenido">
+
+          <!-- 1. Cabecera -->
+          <header class="cabecera">
+            <div>
+              <p class="fecha">Jueves 22 de octubre</p>
+              <h1>Hoy</h1>
+            </div>
+            <div class="perfil" aria-label="Perfil"></div>
+          </header>
+
+          <!-- 2. Balance del día -->
+          <section class="balance">
+            <p class="consumo">Has consumido <strong>750</strong> de 2.000 kcal</p>
+            <div class="barra-kcal"><div style="width: 37.5%;"></div></div>
+            <div class="macros">
+              <div class="macro"><span>Proteína</span><div class="barra"><div style="width: 32%;"></div></div><span class="valor">45 / 140 g</span></div>
+              <div class="macro"><span>Carbohidratos</span><div class="barra"><div style="width: 37%;"></div></div><span class="valor">80 / 215 g</span></div>
+              <div class="macro"><span>Grasa</span><div class="barra"><div style="width: 38%;"></div></div><span class="valor">25 / 65 g</span></div>
+            </div>
+          </section>
+
+          <!-- 4. Registro rápido: la última comida, la pendiente y el agua -->
+          <section>
+            <p class="titulo-seccion">Registro rápido</p>
+            <div class="rapido">
+              <div class="fila">
+                <div class="placeholder"></div>
+                <div class="info"><div class="nombre">Snack</div><div class="detalle">11:00 · 270 kcal</div></div>
+                <span class="hecho" aria-label="Registrado">✓</span>
+              </div>
+              <div class="fila pendiente">
+                <div class="placeholder"></div>
+                <div class="info"><div class="nombre">Almuerzo</div><div class="detalle">Sin registrar</div></div>
+                <span class="accion">Registrar</span><span class="chevron">›</span>
+              </div>
+              <div class="fila">
+                <div class="placeholder"></div>
+                <div class="info"><div class="nombre">Agua</div><div class="detalle">1,2 de 2 L</div></div>
+                <span class="accion">Sumar un vaso</span><span class="chevron">›</span>
+              </div>
+            </div>
+          </section>
+
+        </main>
+
+        <!-- 5. Navegación -->
+        <nav class="nav">
+          <div class="nav-item activo"><div class="placeholder"></div>Hoy</div>
+          <div class="nav-item"><div class="placeholder"></div>Estadísticas</div>
+          <div class="nav-mas" aria-label="Acciones">+</div>
+          <div class="nav-item"><div class="placeholder"></div>Preparaciones</div>
+        </nav>
+      </div>
+    </div>
+
+    <!-- ================= B · 14:30, almuerzo registrado ================= -->
+    <div>
+      <p class="etiqueta-vista">B · 14:30 · almuerzo registrado</p>
+      <div class="telefono">
+        <div class="barra-estado"><span>14:30</span><span class="indicadores"><i></i><i></i></span></div>
+        <main class="contenido">
+
+          <header class="cabecera">
+            <div>
+              <p class="fecha">Jueves 22 de octubre</p>
+              <h1>Hoy</h1>
+            </div>
+            <div class="perfil" aria-label="Perfil"></div>
+          </header>
+
+          <section class="balance">
+            <p class="consumo">Has consumido <strong>1.350</strong> de 2.000 kcal</p>
+            <div class="barra-kcal"><div style="width: 67.5%;"></div></div>
+            <div class="macros">
+              <div class="macro"><span>Proteína</span><div class="barra"><div style="width: 44%;"></div></div><span class="valor">62 / 140 g</span></div>
+              <div class="macro"><span>Carbohidratos</span><div class="barra"><div style="width: 74%;"></div></div><span class="valor">160 / 215 g</span></div>
+              <div class="macro"><span>Grasa</span><div class="barra"><div style="width: 69%;"></div></div><span class="valor">45 / 65 g</span></div>
+            </div>
+            <span class="aviso-tag"><span class="icono" aria-hidden="true">!</span>Proteína baja hoy</span>
+          </section>
+
+          <section>
+            <p class="titulo-seccion">Registro rápido</p>
+            <div class="rapido">
+              <div class="fila">
+                <div class="placeholder"></div>
+                <div class="info"><div class="nombre">Almuerzo</div><div class="detalle">14:05 · 600 kcal</div></div>
+                <span class="hecho" aria-label="Registrado">✓</span>
+              </div>
+              <div class="fila pendiente">
+                <div class="placeholder"></div>
+                <div class="info"><div class="nombre">Cena</div><div class="detalle">Pendiente</div></div>
+                <span class="accion">Registrar</span><span class="chevron">›</span>
+              </div>
+              <div class="fila">
+                <div class="placeholder"></div>
+                <div class="info"><div class="nombre">Agua</div><div class="detalle">1,5 de 2 L</div></div>
+                <span class="accion">Sumar un vaso</span><span class="chevron">›</span>
+              </div>
+            </div>
+          </section>
+
+        </main>
+
+        <nav class="nav">
+          <div class="nav-item activo"><div class="placeholder"></div>Hoy</div>
+          <div class="nav-item"><div class="placeholder"></div>Estadísticas</div>
+          <div class="nav-mas" aria-label="Acciones">+</div>
+          <div class="nav-item"><div class="placeholder"></div>Preparaciones</div>
+        </nav>
+      </div>
+    </div>
+
+    <!-- ================= C · menú del botón "+" abierto (sobre B) ================= -->
+    <div>
+      <p class="etiqueta-vista">C · menú del botón + abierto</p>
+      <div class="telefono">
+        <div class="barra-estado"><span>14:30</span><span class="indicadores"><i></i><i></i></span></div>
+        <main class="contenido">
+          <header class="cabecera">
+            <div>
+              <p class="fecha">Jueves 22 de octubre</p>
+              <h1>Hoy</h1>
+            </div>
+            <div class="perfil"></div>
+          </header>
+          <section class="balance">
+            <p class="consumo">Has consumido <strong>1.350</strong> de 2.000 kcal</p>
+            <div class="barra-kcal"><div style="width: 67.5%;"></div></div>
+            <div class="macros">
+              <div class="macro"><span>Proteína</span><div class="barra"><div style="width: 44%;"></div></div><span class="valor">62 / 140 g</span></div>
+              <div class="macro"><span>Carbohidratos</span><div class="barra"><div style="width: 74%;"></div></div><span class="valor">160 / 215 g</span></div>
+              <div class="macro"><span>Grasa</span><div class="barra"><div style="width: 69%;"></div></div><span class="valor">45 / 65 g</span></div>
+            </div>
+            <span class="aviso-tag"><span class="icono" aria-hidden="true">!</span>Proteína baja hoy</span>
+          </section>
+        </main>
+        <nav class="nav">
+          <div class="nav-item activo"><div class="placeholder"></div>Hoy</div>
+          <div class="nav-item"><div class="placeholder"></div>Estadísticas</div>
+          <div></div>
+          <div class="nav-item"><div class="placeholder"></div>Preparaciones</div>
+        </nav>
+
+        <div class="velo"></div>
+        <div class="menu-flotante">
+          <div class="menu-titulo">¿Qué como?</div>
+          <div class="menu-opcion"><div class="placeholder"></div>Armar mi plato</div>
+          <div class="menu-opcion"><div class="placeholder"></div>Con lo que tengo</div>
+          <div class="menu-opcion"><div class="placeholder"></div>Voy a comer fuera</div>
+          <div class="menu-opcion"><div class="placeholder"></div>Antes de entrenar</div>
+          <hr class="menu-separador">
+          <div class="menu-titulo">Registrar comida</div>
+          <div class="metodos">
+            <div class="metodo"><div class="placeholder"></div>Foto con IA</div>
+            <div class="metodo"><div class="placeholder"></div>Buscar alimento</div>
+            <div class="metodo"><div class="placeholder"></div>Lo de siempre</div>
+            <div class="metodo"><div class="placeholder"></div>Etiqueta</div>
+          </div>
+          <div class="otros">
+            <div class="otro">Agua</div>
+            <div class="otro">Peso</div>
+            <div class="otro">Suplemento</div>
+          </div>
+        </div>
+        <!-- El "+" central se convierte en "×" para cerrar -->
+        <div class="nav-mas cerrar" aria-label="Cerrar menú">×</div>
+      </div>
+    </div>
+
+    <!-- ================= D · al tocar "Almuerzo · Registrar" en A ================= -->
+    <div>
+      <p class="etiqueta-vista">D · al tocar "Almuerzo · Registrar"</p>
+      <div class="telefono">
+        <div class="barra-estado"><span>13:30</span><span class="indicadores"><i></i><i></i></span></div>
+        <main class="contenido">
+          <header class="cabecera">
+            <div>
+              <p class="fecha">Jueves 22 de octubre</p>
+              <h1>Hoy</h1>
+            </div>
+            <div class="perfil"></div>
+          </header>
+          <section class="balance">
+            <p class="consumo">Has consumido <strong>750</strong> de 2.000 kcal</p>
+            <div class="barra-kcal"><div style="width: 37.5%;"></div></div>
+          </section>
+        </main>
+
+        <div class="velo"></div>
+        <div class="hoja">
+          <div class="agarradera"></div>
+          <h2>Registrar almuerzo</h2>
+          <p class="sub">Jueves 22 de octubre · 13:30</p>
+          <div class="buscador"><div class="placeholder"></div>Busca un alimento o una marca</div>
+          <div class="atajos">
+            <div class="atajo"><div class="placeholder"></div>Foto con IA</div>
+            <div class="atajo"><div class="placeholder"></div>Etiqueta</div>
+          </div>
+          <div class="grupo-titulo">Lo de siempre</div>
+          <ul class="sugerencias">
+            <li class="ayer">
+              <div class="info"><div class="nombre">Lo mismo que ayer</div><div class="detalle">Arroz, pollo asado y ensalada · 600 kcal</div></div>
+              <span class="boton-mas">+</span>
+            </li>
+          </ul>
+          <div class="grupo-titulo">Recientes</div>
+          <ul class="sugerencias">
+            <li><div class="info"><div class="nombre">Ajiaco</div><div class="detalle">1 plato · 480 kcal</div></div><span class="boton-mas">+</span></li>
+            <li><div class="info"><div class="nombre">Arroz con pollo</div><div class="detalle">1 plato · 560 kcal</div></div><span class="boton-mas">+</span></li>
+            <li><div class="info"><div class="nombre">Yogur griego natural</div><div class="detalle">1 vaso · 150 kcal</div></div><span class="boton-mas">+</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

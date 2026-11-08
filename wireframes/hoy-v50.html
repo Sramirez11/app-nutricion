@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe – Hoy v50</title>
+  <style>
+    /* ===== Paleta de wireframe: solo grises, blanco y negro ===== */
+    :root {
+      --negro: #111;
+      --gris-oscuro: #555;
+      --gris-medio: #999;
+      --gris-claro: #ddd;
+      --gris-fondo: #f2f2f2;
+      --blanco: #fff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--gris-claro);
+      color: var(--negro);
+      padding: 24px 16px;
+    }
+
+    /* ===== Cuatro celulares lado a lado ===== */
+    .lienzo {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .etiqueta-vista { text-align: center; margin-bottom: 12px; max-width: 390px; }
+    .etiqueta-vista strong { display: block; font-size: 14px; }
+    .etiqueta-vista span { font-size: 12px; color: var(--gris-oscuro); }
+
+    /* ===== Marco del celular (390 px) ===== */
+    .telefono {
+      width: 390px;
+      height: 844px;
+      background: var(--blanco);
+      border: 2px solid var(--negro);
+      border-radius: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .barra-estado {
+      height: 44px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 28px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .barra-estado .indicadores { display: flex; gap: 4px; }
+    .barra-estado .indicadores i { width: 16px; height: 10px; border-radius: 2px; background: var(--negro); }
+
+    .contenido {
+      height: calc(100% - 44px);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    /* La primera sección se separa por el cambio de fondo, no por un recuadro */
+    .zona-superior { padding: 4px 20px 28px; background: var(--blanco); }
+    .zona-inferior {
+      flex: 1;
+      background: var(--gris-fondo);
+      border-top: 1px solid var(--gris-claro);
+      padding: 20px 16px 130px; /* espacio para la barra de navegación */
+    }
+
+    section { margin-bottom: 20px; }
+
+    .placeholder {
+      background: var(--gris-claro);
+      border: 1px dashed var(--gris-medio);
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    /* Escala tipográfica de la tarjeta (4 tamaños):
+       28 px cifra principal · 15 px valores de macros · 13 px etiquetas · 12 px textos de apoyo.
+       Nivel 1 = calorías (cifra + barra gruesa). Nivel 2 = macros (valores medianos + barras finas). */
+    .eyebrow { font-size: 13px; font-weight: 500; color: var(--gris-oscuro); }
+    .cifra { font-size: 28px; font-weight: 700; line-height: 1; letter-spacing: -0.01em; }
+    .contexto { font-size: 13px; color: var(--gris-oscuro); }
+    .secundario { font-size: 12px; color: var(--gris-oscuro); }
+    .barra { height: 4px; border-radius: 2px; background: var(--gris-claro); overflow: hidden; }
+    .barra div { height: 100%; background: var(--negro); border-radius: 2px; }
+    .barra.grande { height: 10px; border-radius: 5px; }
+
+    .titulo-seccion { font-size: 13px; font-weight: 600; color: var(--gris-oscuro); margin-bottom: 8px; }
+
+    /* ===== Cabecera: solo "Hoy" y perfil (sin fecha) ===== */
+    .cabecera { display: flex; justify-content: space-between; align-items: center; margin: 8px 0 18px; }
+    .cabecera h1 { font-size: 34px; line-height: 1.1; }
+    .perfil { width: 36px; height: 36px; border-radius: 50%; background: var(--gris-claro); border: 1.5px solid var(--negro); }
+
+    /* ===== Balance (Opción 1 de la v10, solo con el porcentaje) ===== */
+    .tarjeta { margin-bottom: 0; }
+    .fila-cifra { display: flex; align-items: baseline; gap: 6px; margin: 6px 0 14px; }
+    /* El porcentaje sube a la línea de la cifra, alineado a la derecha */
+    .fila-cifra .porcentaje { margin-left: auto; font-size: 13px; font-weight: 600; }
+    .tarjeta .macros-col { margin-top: 28px; }
+    .pie { margin-top: 8px; }
+    .divisor { border: none; border-top: 1px solid var(--gris-claro); margin: 20px 0 16px; }
+    /* Macros: tres columnas iguales con el mismo espacio entre ellas.
+       La primera empieza donde empieza la barra de calorías y la última termina donde ella termina. */
+    .macros-col { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 24px; }
+    .macro-col .nombre-macro { font-size: 13px; color: var(--gris-oscuro); }
+    .macro-col .valor { font-size: 15px; font-weight: 600; margin: 6px 0 10px; white-space: nowrap; }
+    .macro-col .valor span { font-size: 12px; font-weight: 400; color: var(--gris-oscuro); }
+    .macro-col .barra { width: 100%; height: 5px; }
+    /* Aviso discreto: ícono + palabra debajo de la barra, sin bloque de fondo */
+    .baja { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; margin-top: 10px; }
+    .baja i {
+      font-style: normal; width: 13px; height: 13px; border-radius: 50%;
+      background: var(--negro); color: var(--blanco); font-size: 9px; line-height: 13px; text-align: center;
+    }
+
+    /* ===== Registro rápido · opción A: lista completa ===== */
+    .rapido { border: 1.5px solid var(--negro); border-radius: 16px; overflow: hidden; background: var(--blanco); }
+    .fila { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--gris-claro); }
+    .fila:last-child { border-bottom: none; }
+    .fila .placeholder { width: 28px; height: 28px; }
+    .fila .info { flex: 1; }
+    .fila .nombre { font-size: 15px; font-weight: 600; }
+    .fila .detalle { font-size: 12px; color: var(--gris-oscuro); }
+    .fila .accion { font-size: 13px; font-weight: 600; white-space: nowrap; }
+    .fila .chevron { color: var(--gris-medio); font-size: 18px; }
+    .fila.pendiente { background: var(--gris-fondo); }
+    .fila.pendiente .accion { text-decoration: underline; }
+    .fila.futura .nombre, .fila.futura .detalle { color: var(--gris-medio); }
+    .hecho {
+      width: 20px; height: 20px; border-radius: 50%; background: var(--negro);
+      color: var(--blanco); font-size: 12px; line-height: 20px; text-align: center; flex-shrink: 0;
+    }
+    .vacio { width: 20px; height: 20px; border-radius: 50%; border: 1.5px dashed var(--gris-medio); flex-shrink: 0; }
+
+    /* ===== Registro rápido · opción B: compacta ===== */
+    .compacto { border: 1.5px solid var(--negro); border-radius: 16px; padding: 14px 12px; background: var(--blanco); }
+    .linea-comidas { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-bottom: 12px; }
+    .comida {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      text-align: center;
+      color: var(--gris-oscuro);
+    }
+    .comida .punto {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 1.5px solid var(--negro);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .comida.hecha .punto { background: var(--negro); color: var(--blanco); }
+    .comida.siguiente { color: var(--negro); font-weight: 700; }
+    .comida.siguiente .punto { border-width: 3px; }
+    .comida.futura { opacity: 0.4; }
+    .comida.futura .punto { border-style: dashed; }
+    .siguiente-fila {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 10px;
+      background: var(--gris-fondo);
+      margin-bottom: 12px;
+    }
+    .siguiente-fila .info { flex: 1; }
+    .siguiente-fila .nombre { font-size: 15px; font-weight: 600; }
+    .siguiente-fila .detalle { font-size: 12px; color: var(--gris-oscuro); }
+    .siguiente-fila .accion { font-size: 13px; font-weight: 600; text-decoration: underline; }
+    .agua { display: flex; align-items: center; gap: 10px; }
+    .agua .info { width: 76px; }
+    .agua .nombre { font-size: 15px; font-weight: 600; }
+    .agua .detalle { font-size: 12px; color: var(--gris-oscuro); }
+    /* 8 vasos de 250 ml = 2 L; se toca el siguiente vaso para sumarlo */
+    .vasos { flex: 1; display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; }
+    .vaso { height: 26px; border-radius: 5px; border: 1.5px solid var(--negro); }
+    .vaso.lleno { background: var(--negro); }
+    .vaso.toca { border-style: dashed; }
+
+    /* ===== Navegación estilo iOS: cápsula con 3 secciones + botón "+" redondo aparte ===== */
+    .nav {
+      position: absolute;
+      left: 16px; right: 16px; bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .capsula {
+      flex: 1;
+      height: 64px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      align-items: center;
+      padding: 4px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1.5px solid var(--negro);
+      border-radius: 32px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+    .nav-item {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      font-size: 11px;
+      color: var(--gris-oscuro);
+      border-radius: 28px;
+    }
+    .nav-item .placeholder { width: 22px; height: 22px; }
+    /* Sección activa: fondo gris en forma de píldora dentro de la cápsula */
+    .nav-item.activo { color: var(--negro); font-weight: 700; background: var(--gris-claro); }
+    .nav-item.activo .placeholder { background: var(--gris-medio); }
+    .nav-mas {
+      width: 64px; height: 64px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1.5px solid var(--negro);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      color: var(--negro);
+      font-size: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ===================== v17 · Sección "Tu día" ===================== */
+    /* Misma escala que calorías: 15 px nombres · 13 px etiquetas · 12 px apoyo.
+       Tarjetas blancas con borde gris suave (no negro) para no competir con la barra de calorías. */
+    .zona-inferior { padding: 20px 16px 130px; }
+    .encabezado-seccion { display: flex; justify-content: space-between; align-items: baseline; margin: 0 4px 10px; }
+    .encabezado-seccion .titulo { font-size: 13px; font-weight: 500; color: var(--gris-oscuro); }
+    .encabezado-seccion a { font-size: 12px; font-weight: 600; color: var(--negro); }
+    .bloque { background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; }
+    .bloque + .encabezado-seccion { margin-top: 20px; }
+
+    /* Comidas: una fila por comida con lo registrado y sus calorías */
+    .comida-fila {
+      display: grid;
+      grid-template-columns: 1fr auto 12px;
+      align-items: center;
+      column-gap: 10px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--gris-fondo);
+    }
+    .comida-fila:last-child { border-bottom: none; }
+    .comida-fila .nombre { font-size: 15px; font-weight: 600; }
+    .comida-fila .nombre span { font-size: 12px; font-weight: 400; color: var(--gris-oscuro); margin-left: 4px; }
+    .comida-fila .items { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .comida-fila .kcal { font-size: 13px; font-weight: 600; text-align: right; }
+    .comida-fila .chevron { color: var(--gris-medio); font-size: 16px; }
+    .comida-fila.futura .nombre, .comida-fila.futura .kcal { color: var(--gris-medio); font-weight: 500; }
+
+    /* Comida siguiente: los métodos de registro a un toque, dentro de la misma fila */
+    .comida-fila.siguiente { display: block; background: var(--gris-fondo); }
+    .comida-fila.siguiente .cabeza { display: flex; justify-content: space-between; align-items: baseline; }
+    .comida-fila.siguiente .estado { font-size: 12px; font-weight: 600; }
+    .metodos-fila { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 8px; margin-top: 10px; }
+    .metodo-chip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 36px;
+      border-radius: 18px;
+      background: var(--blanco);
+      border: 1px solid var(--gris-medio);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .metodo-chip .placeholder { width: 14px; height: 14px; border-radius: 4px; }
+
+    /* Agua y suplementos: dos tarjetas a la mitad, misma altura */
+    .doble { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .doble .bloque { padding: 14px 16px; }
+    .doble .titulo-mini { font-size: 13px; font-weight: 500; color: var(--gris-oscuro); }
+    .doble .dato { font-size: 15px; font-weight: 600; margin: 4px 0 10px; }
+    .doble .dato span { font-size: 12px; font-weight: 400; color: var(--gris-oscuro); }
+    .vasos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+    .vaso { height: 18px; border-radius: 4px; border: 1.5px solid var(--gris-oscuro); }
+    .vaso.lleno { background: var(--negro); border-color: var(--negro); }
+    .vaso.siguiente-vaso { border-style: dashed; }
+    .ayuda { font-size: 11px; color: var(--gris-oscuro); margin-top: 8px; }
+    .suple { display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 4px 0; }
+    .check { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--gris-oscuro); flex-shrink: 0; font-size: 11px; line-height: 15px; text-align: center; }
+    .check.hecho { background: var(--negro); border-color: var(--negro); color: var(--blanco); }
+    .suple .hora { margin-left: auto; font-size: 11px; color: var(--gris-oscuro); }
+
+    /* ===================== Hojas inferiores (detalle y ajuste) ===================== */
+    .velo { position: absolute; inset: 0; background: rgba(17, 17, 17, 0.5); }
+    .hoja {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      background: var(--blanco); border-radius: 20px 20px 0 0;
+      border-top: 1.5px solid var(--negro); padding: 10px 20px 28px;
+    }
+    .agarradera { width: 40px; height: 5px; border-radius: 3px; background: var(--gris-medio); margin: 0 auto 16px; }
+    .hoja-cabeza { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+    .hoja h2 { font-size: 20px; }
+    .hoja .sub { font-size: 12px; color: var(--gris-oscuro); }
+    .hoja .total { font-size: 15px; font-weight: 600; text-align: right; }
+    .resumen-macros { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 24px; margin: 16px 0 18px; padding: 12px 0; border-top: 1px solid var(--gris-fondo); border-bottom: 1px solid var(--gris-fondo); }
+    .resumen-macros .n { font-size: 12px; color: var(--gris-oscuro); }
+    .resumen-macros .v { font-size: 15px; font-weight: 600; margin-top: 2px; }
+    .alimento {
+      display: grid;
+      grid-template-columns: 36px 1fr auto 12px;
+      align-items: center;
+      column-gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gris-fondo);
+    }
+    .alimento .placeholder { width: 36px; height: 36px; border-radius: 10px; }
+    .alimento .nombre { font-size: 15px; font-weight: 600; }
+    .alimento .porcion { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .alimento .kcal { font-size: 13px; font-weight: 600; }
+    .alimento .chevron { color: var(--gris-medio); }
+    .alimento.estimado .porcion::after { content: " · estimado con IA"; }
+    .acciones-texto { display: flex; justify-content: space-between; margin-top: 16px; font-size: 13px; font-weight: 600; }
+    .acciones-texto a { color: var(--negro); }
+
+    /* Ajustar un alimento: porciones caseras en chips, el resultado se recalcula */
+    .porciones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 18px 0; }
+    .porcion-chip {
+      padding: 12px; border-radius: 12px; border: 1px solid var(--gris-medio);
+      font-size: 13px; font-weight: 600;
+    }
+    .porcion-chip span { display: block; font-size: 11px; font-weight: 400; color: var(--gris-oscuro); margin-top: 2px; }
+    .porcion-chip.activa { border: 2px solid var(--negro); background: var(--gris-fondo); }
+    .recalculo { background: var(--gris-fondo); border-radius: 12px; padding: 14px 16px; margin-bottom: 18px; }
+    .recalculo .linea { display: flex; justify-content: space-between; font-size: 13px; padding: 3px 0; }
+    .recalculo .linea strong { font-weight: 600; }
+    .recalculo .cambio { font-size: 12px; color: var(--gris-oscuro); margin-top: 8px; }
+    .boton-principal {
+      display: block; width: 100%; height: 50px; border: none; border-radius: 25px;
+      background: var(--negro); color: var(--blanco); font: inherit; font-size: 15px; font-weight: 600;
+    }
+    .boton-texto { display: block; text-align: center; font-size: 13px; font-weight: 600; margin-top: 14px; color: var(--gris-oscuro); }
+
+    /* ===================== v18 · Cuatro formas de "Comidas de hoy" sin scroll ===================== */
+    .zona-inferior { padding: 18px 16px 120px; }
+    .encabezado-seccion { margin: 0 4px 10px; }
+
+    /* Fila compartida de agua + suplementos en una sola tarjeta (propuestas 1 y 3) */
+    .extras { display: grid; grid-template-columns: 1.3fr 1fr; background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; margin-top: 12px; }
+    .extras > div { padding: 12px 16px; }
+    .extras > div + div { border-left: 1px solid var(--gris-fondo); }
+    .extras .titulo-mini { font-size: 12px; color: var(--gris-oscuro); }
+    .extras .dato { font-size: 15px; font-weight: 600; margin: 2px 0 8px; }
+    .extras .dato span { font-size: 12px; font-weight: 400; color: var(--gris-oscuro); }
+    .vasos-linea { display: grid; grid-template-columns: repeat(8, 1fr); gap: 3px; }
+    .vasos-linea .vaso { height: 16px; border-radius: 3px; }
+    .suple-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+    .suple-chip { font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 12px; border: 1px solid var(--gris-medio); }
+    .suple-chip.tomado { background: var(--negro); color: var(--blanco); border-color: var(--negro); }
+
+    /* ---------- Propuesta 1 · Línea del día ---------- */
+    .linea-dia { display: grid; grid-template-columns: repeat(5, 1fr); padding: 16px 8px 12px; position: relative; }
+    .linea-dia::before { content: ""; position: absolute; left: 12%; right: 12%; top: 32px; border-top: 1.5px solid var(--gris-claro); }
+    .paso { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; position: relative; }
+    .paso .punto { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--negro); background: var(--blanco); font-size: 13px; display: flex; align-items: center; justify-content: center; }
+    .paso.listo .punto { background: var(--negro); color: var(--blanco); }
+    .paso.siguiente .punto { border-width: 3px; }
+    .paso.futuro { opacity: 0.4; }
+    .paso.futuro .punto { border-style: dashed; }
+    .paso .n { font-size: 11px; color: var(--gris-oscuro); line-height: 1.2; }
+    .paso .k { font-size: 12px; font-weight: 600; }
+    .paso.siguiente .n { color: var(--negro); font-weight: 700; }
+    .registrar-fila { display: flex; align-items: center; gap: 8px; padding: 10px 12px; margin: 0 12px 12px; border-radius: 12px; background: var(--gris-fondo); }
+    .registrar-fila .t { font-size: 13px; font-weight: 600; margin-right: auto; }
+    .mini-chip { font-size: 11px; font-weight: 600; padding: 6px 10px; border-radius: 14px; background: var(--blanco); border: 1px solid var(--gris-medio); white-space: nowrap; }
+
+    /* ---------- Propuesta 2 · Carrusel de tarjetas ---------- */
+    .carrusel { display: flex; gap: 10px; overflow: hidden; margin: 0 -16px; padding: 0 16px; }
+    .tarjeta-comida { flex: 0 0 132px; height: 128px; background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; }
+    .tarjeta-comida .placeholder { width: 100%; height: 40px; border-radius: 8px; margin-bottom: 8px; }
+    .tarjeta-comida .n { font-size: 13px; font-weight: 600; }
+    .tarjeta-comida .k { font-size: 12px; color: var(--gris-oscuro); margin-top: auto; }
+    .tarjeta-comida.siguiente { border: 2px solid var(--negro); }
+    .tarjeta-comida.siguiente .k { color: var(--negro); font-weight: 600; text-decoration: underline; }
+    .puntos-carrusel { display: flex; justify-content: center; gap: 5px; margin: 10px 0 2px; }
+    .puntos-carrusel i { width: 6px; height: 6px; border-radius: 50%; background: var(--gris-claro); }
+    .puntos-carrusel i.activo { background: var(--negro); }
+    .franja { display: flex; align-items: center; gap: 12px; background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; padding: 12px 16px; margin-top: 12px; }
+    .franja .bloque-mini { flex: 1; }
+    .franja .titulo-mini { font-size: 12px; color: var(--gris-oscuro); }
+    .franja .dato { font-size: 15px; font-weight: 600; }
+    .franja .dato span { font-size: 12px; font-weight: 400; color: var(--gris-oscuro); }
+    .franja .sep { width: 1px; align-self: stretch; background: var(--gris-fondo); }
+    .franja .toque { font-size: 12px; font-weight: 600; text-decoration: underline; white-space: nowrap; }
+
+    /* ---------- Propuesta 3 · Resumen plegable ---------- */
+    .resumen { background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; }
+    .resumen-fila { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--gris-fondo); }
+    .resumen-fila:last-child { border-bottom: none; }
+    .resumen-fila .t { font-size: 15px; font-weight: 600; }
+    .resumen-fila .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .resumen-fila .der { margin-left: auto; font-size: 13px; font-weight: 600; white-space: nowrap; }
+    .resumen-fila .chevron { color: var(--gris-medio); }
+    .segmentos { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; width: 80px; margin-top: 6px; }
+    .segmentos i { height: 4px; border-radius: 2px; background: var(--gris-claro); }
+    .segmentos i.lleno { background: var(--negro); }
+    .resumen-fila.siguiente { display: block; background: var(--gris-fondo); }
+    .resumen-fila.siguiente .arriba { display: flex; justify-content: space-between; align-items: baseline; }
+    .chips-3 { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 8px; margin-top: 10px; }
+    .chips-3 .mini-chip { text-align: center; padding: 8px 6px; font-size: 12px; }
+
+    /* ---------- Propuesta 4 · Tablero en cuadrícula ---------- */
+    .cuadricula { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .celda { background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 14px; padding: 12px; height: 86px; display: flex; flex-direction: column; }
+    .celda .n { font-size: 12px; color: var(--gris-oscuro); }
+    .celda .k { font-size: 15px; font-weight: 600; margin-top: 4px; }
+    .celda .k span { font-size: 11px; font-weight: 400; color: var(--gris-oscuro); }
+    .celda .estado { margin-top: auto; display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--gris-oscuro); }
+    .celda .check { width: 14px; height: 14px; font-size: 9px; line-height: 11px; }
+    .celda.siguiente { border: 2px solid var(--negro); background: var(--gris-fondo); }
+    .celda.siguiente .estado { color: var(--negro); font-weight: 700; text-decoration: underline; }
+    .celda.futura { opacity: 0.45; border-style: dashed; }
+    .celda .vasos-linea { margin-top: auto; grid-template-columns: repeat(8, 1fr); gap: 2px; }
+    .celda .vasos-linea .vaso { height: 12px; border-width: 1px; border-radius: 2px; }
+    .linea-suple { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 10px 14px; background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 14px; font-size: 12px; color: var(--gris-oscuro); }
+    .linea-suple strong { color: var(--negro); font-weight: 600; margin-right: auto; }
+
+    /* ===================== v19 · "Comidas de hoy" (aparte de agua y suplementos) ===================== */
+    .zona-inferior { padding: 14px 16px 120px; }
+    .encabezado-seccion { margin: 0 4px 8px; }
+    .encabezado-seccion .estado-dia { font-size: 12px; color: var(--gris-oscuro); }
+
+    /* Aviso de la próxima comida: la tarjeta que más destaca de la sección */
+    .proxima { background: var(--blanco); border: 1.5px solid var(--negro); border-radius: 16px; padding: 14px 16px; }
+    .proxima .arriba { display: flex; justify-content: space-between; align-items: baseline; }
+    .proxima .etq { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gris-oscuro); }
+    .proxima .hora { font-size: 12px; color: var(--gris-oscuro); }
+    .proxima .nombre { font-size: 15px; font-weight: 600; margin-top: 2px; }
+    .proxima .consejo { font-size: 12px; color: var(--gris-oscuro); margin-top: 4px; line-height: 1.4; }
+    .proxima .chips-3 { margin-top: 10px; }
+
+    /* Propuesta A · tarjetas de comidas registradas debajo del aviso */
+    .registradas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+    .reg { background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 14px; padding: 10px 12px; }
+    .reg .n { font-size: 12px; color: var(--gris-oscuro); display: flex; justify-content: space-between; }
+    .reg .k { font-size: 15px; font-weight: 600; margin-top: 4px; }
+    .reg .k span { font-size: 11px; font-weight: 400; color: var(--gris-oscuro); }
+    .reg .h { font-size: 11px; color: var(--gris-oscuro); margin-top: 2px; }
+    .reg .editar { font-size: 11px; color: var(--gris-medio); }
+    .despues { font-size: 12px; color: var(--gris-oscuro); margin: 8px 4px 0; }
+
+    /* Propuesta B · línea de tiempo vertical */
+    .timeline { background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; padding: 6px 16px; }
+    .t-fila { display: grid; grid-template-columns: 16px 1fr auto 12px; align-items: center; column-gap: 12px; padding: 9px 0; position: relative; }
+    .t-fila .dot { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--negro); background: var(--blanco); justify-self: center; z-index: 1; }
+    .t-fila.lista .dot { background: var(--negro); }
+    .t-fila.futura { opacity: 0.45; }
+    .t-fila.futura .dot { border-style: dashed; }
+    .t-fila .n { font-size: 13px; font-weight: 600; }
+    .t-fila .n span { font-weight: 400; color: var(--gris-oscuro); font-size: 12px; margin-left: 4px; }
+    .t-fila .k { font-size: 13px; font-weight: 600; }
+    .t-fila .chevron { color: var(--gris-medio); }
+    /* Línea vertical que une los puntos */
+    .timeline .t-cuerpo { position: relative; }
+    .timeline .t-cuerpo::before { content: ""; position: absolute; left: 7.5px; top: 18px; bottom: 18px; border-left: 1.5px solid var(--gris-claro); }
+    .t-fila.siguiente { grid-template-columns: 16px 1fr; align-items: start; }
+    .t-fila.siguiente .dot { border-width: 3px; width: 14px; height: 14px; margin-top: 2px; }
+    .t-fila.siguiente .caja { background: var(--gris-fondo); border-radius: 12px; padding: 10px 12px; }
+    .t-fila.siguiente .caja .arriba { display: flex; justify-content: space-between; align-items: baseline; }
+    .t-fila.siguiente .caja .consejo { font-size: 12px; color: var(--gris-oscuro); margin-top: 3px; line-height: 1.4; }
+    .t-fila.siguiente .chips-3 { margin-top: 8px; }
+
+    /* Detalle desplegado dentro de la línea de tiempo (propuesta B, edición en el mismo home) */
+    .t-fila.abierta { grid-template-columns: 16px 1fr; align-items: start; }
+    .t-fila.abierta .caja { border: 1.5px solid var(--negro); border-radius: 12px; padding: 10px 12px; }
+    .t-fila.abierta .caja .arriba { display: flex; justify-content: space-between; }
+    .item { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-top: 1px solid var(--gris-fondo); font-size: 13px; }
+    .item:first-of-type { margin-top: 8px; }
+    .selector { font-size: 12px; font-weight: 600; padding: 5px 10px; border-radius: 14px; border: 1px solid var(--gris-medio); white-space: nowrap; }
+    .selector.cambiado { border: 2px solid var(--negro); background: var(--gris-fondo); }
+    .item .nom { font-weight: 600; }
+    .item .nom span { display: block; font-size: 11px; font-weight: 400; color: var(--gris-oscuro); }
+    .nota-cambio { font-size: 11px; color: var(--gris-oscuro); margin-top: 6px; }
+    .acciones-mini { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; font-weight: 600; }
+
+    /* Agua y suplementos: sección aparte, compacta */
+    .extras { margin-top: 0; }
+    .extras > div { padding: 10px 16px; }
+
+    .linea-extra { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+    .linea-extra .dato { margin: 0; }
+    .zona-superior { padding-bottom: 22px; }
+    .t-fila { padding: 7px 0; }
+
+    /* Hoja de edición (propuesta A): porciones editables en la misma lista */
+    .hoja .lista-edicion .item { padding: 12px 0; font-size: 14px; }
+    .opciones-porcion { display: flex; gap: 6px; flex-wrap: wrap; padding: 4px 0 12px; }
+    .opciones-porcion .selector.activa { border: 2px solid var(--negro); background: var(--gris-fondo); }
+    .total-nuevo { display: flex; justify-content: space-between; font-size: 13px; padding: 12px 0; border-top: 1px solid var(--gris-claro); margin-bottom: 14px; }
+    .total-nuevo strong { font-size: 15px; }
+
+    /* ===================== v20 · "Tu próxima comida" + "Comidas de hoy" ===================== */
+    .zona-inferior { padding: 14px 16px 120px; }
+    .seccion + .seccion { margin-top: 14px; }
+
+    /* Tu próxima comida: la tarjeta protagonista de la zona gris */
+    .proxima { background: var(--blanco); border: 1.5px solid var(--negro); border-radius: 16px; padding: 14px 16px; }
+    .proxima .arriba { display: flex; justify-content: space-between; align-items: baseline; }
+    .proxima .nombre { font-size: 17px; font-weight: 600; }
+    .proxima .hora { font-size: 12px; color: var(--gris-oscuro); }
+    .proxima .consejo { font-size: 12px; color: var(--gris-oscuro); margin-top: 4px; line-height: 1.4; }
+    .boton-registrar {
+      display: block; width: 100%; height: 42px; margin-top: 12px; border: none; border-radius: 21px;
+      background: var(--negro); color: var(--blanco); font: inherit; font-size: 14px; font-weight: 600;
+    }
+    .boton-registrar.claro { background: var(--blanco); color: var(--negro); border: 1.5px solid var(--negro); }
+    .enlace-que-como { display: block; text-align: center; font-size: 12px; font-weight: 600; margin-top: 10px; text-decoration: underline; }
+    .dos-botones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .dos-botones .boton-registrar { margin-top: 12px; }
+    /* Día completo: la sección se reduce a una línea */
+    .proxima.lista { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-color: var(--gris-claro); border-width: 1px; }
+    .proxima.lista .check { width: 22px; height: 22px; font-size: 12px; line-height: 19px; }
+    .proxima.lista .t { font-size: 14px; font-weight: 600; }
+    .proxima.lista .s { font-size: 12px; color: var(--gris-oscuro); }
+
+    /* Comidas de hoy: solo lo registrado, una fila por comida */
+    .consumidas { background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; padding: 2px 16px; }
+    .c-fila { display: grid; grid-template-columns: 1fr auto 12px; align-items: center; column-gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--gris-fondo); }
+    .c-fila:last-child { border-bottom: none; }
+    .c-fila .n { font-size: 14px; font-weight: 600; }
+    .c-fila .n span { font-size: 12px; font-weight: 400; color: var(--gris-oscuro); margin-left: 6px; }
+    .c-fila .k { font-size: 13px; font-weight: 600; }
+    .c-fila .chevron { color: var(--gris-medio); }
+
+    /* Ajustes de espacio para que todo quepa sobre la barra */
+    .extras { grid-template-columns: 1fr 1fr; }
+    .extras > div { padding: 10px 12px; }
+    .suple-chips { flex-wrap: nowrap; gap: 4px; }
+    .suple-chip { white-space: nowrap; padding: 4px 7px; }
+    .c-fila { padding: 8px 0; }
+    .seccion + .seccion { margin-top: 12px; }
+    .boton-registrar { height: 40px; }
+    .zona-superior { padding-bottom: 18px; }
+    .zona-inferior { padding-top: 12px; }
+    .proxima { padding: 12px 16px; }
+    .enlace-que-como { margin-top: 8px; }
+
+    /* Drawer de registro */
+    .opcion-registro { display: grid; grid-template-columns: 40px 1fr 12px; align-items: center; column-gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--gris-fondo); }
+    .opcion-registro .placeholder { width: 40px; height: 40px; border-radius: 12px; }
+    .opcion-registro .t { font-size: 15px; font-weight: 600; }
+    .opcion-registro .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .opcion-registro .chevron { color: var(--gris-medio); }
+    .sugerencia-rapida { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px; padding: 10px 12px; border-radius: 10px; background: var(--gris-fondo); font-size: 13px; }
+    .sugerencia-rapida b { font-weight: 600; }
+    .sugerencia-rapida .accion { font-size: 12px; font-weight: 600; text-decoration: underline; white-space: nowrap; }
+
+    /* ===================== v21 · Próxima comida solo con "Registrar" + drawer con porción ajustada ===================== */
+    .proxima .tipo-dia { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .chip-dia { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 10px; background: var(--gris-fondo); border: 1px solid var(--gris-claro); margin-left: 8px; vertical-align: middle; }
+
+    /* v22 · Tu próxima comida en una sola fila */
+    .fila-proxima { display: flex; align-items: center; gap: 12px; padding: 14px 16px; }
+    .info-proxima { flex: 1; }
+    .info-proxima .nombre { font-size: 17px; font-weight: 600; }
+    .meta-proxima { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .mas-proxima {
+      width: 40px; height: 40px; flex-shrink: 0; border: none; border-radius: 50%;
+      background: var(--negro); color: var(--blanco); font: inherit; font-size: 22px; line-height: 1;
+    }
+    .pill-proxima {
+      height: 34px; padding: 0 16px; flex-shrink: 0; border: none; border-radius: 17px;
+      background: var(--negro); color: var(--blanco); font: inherit; font-size: 13px; font-weight: 600;
+    }
+
+    /* Drawer */
+    .hoja { padding-bottom: 24px; }
+    .aviso-drawer { display: flex; gap: 10px; align-items: flex-start; background: var(--gris-fondo); border-radius: 12px; padding: 10px 12px; margin: 12px 0 14px; font-size: 12px; line-height: 1.4; }
+    .aviso-drawer .icono { flex-shrink: 0; width: 16px; height: 16px; border-radius: 50%; background: var(--negro); color: var(--blanco); font-size: 10px; line-height: 16px; text-align: center; margin-top: 1px; }
+    .aviso-drawer b { font-weight: 600; }
+    .etq-drawer { font-size: 12px; font-weight: 600; color: var(--gris-oscuro); margin: 0 0 8px; }
+    .principal-opcion { border: 2px solid var(--negro); border-radius: 14px; padding: 12px 14px; }
+    .principal-opcion .cab { display: flex; justify-content: space-between; align-items: baseline; }
+    .principal-opcion .t { font-size: 15px; font-weight: 600; }
+    .principal-opcion .tot { font-size: 13px; font-weight: 600; }
+    .ing { display: flex; justify-content: space-between; font-size: 13px; padding: 6px 0; border-bottom: 1px solid var(--gris-fondo); }
+    .ing:first-of-type { margin-top: 8px; }
+    .ing .antes { font-size: 11px; color: var(--gris-oscuro); text-decoration: line-through; margin-right: 6px; }
+    .ing .sube { font-weight: 600; }
+    .principal-opcion .macro-linea { font-size: 12px; color: var(--gris-oscuro); margin-top: 8px; }
+    .principal-opcion .macro-linea b { color: var(--negro); font-weight: 600; }
+    .principal-opcion .boton-registrar { margin-top: 10px; }
+    .reemplazos { display: grid; gap: 8px; margin-bottom: 14px; }
+    .reemplazo { display: grid; grid-template-columns: 1fr auto 12px; align-items: center; column-gap: 10px; padding: 10px 14px; border: 1px solid var(--gris-claro); border-radius: 12px; }
+    .reemplazo .t { font-size: 14px; font-weight: 600; }
+    .reemplazo .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .reemplazo .k { font-size: 13px; font-weight: 600; }
+    .reemplazo .chevron { color: var(--gris-medio); }
+    .buscar-drawer { display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px; border: 1.5px solid var(--negro); border-radius: 22px; background: var(--gris-fondo); font-size: 13px; color: var(--gris-oscuro); }
+    .buscar-drawer .placeholder { width: 16px; height: 16px; border-radius: 50%; }
+    .buscar-drawer .camara { margin-left: auto; width: 22px; height: 22px; border-radius: 6px; }
+
+    /* ===================== v23 · Sin redundancias ===================== */
+    /* Menú del "+": solo lo que el home no cubre */
+    .velo { z-index: 2; }
+    .menu-mas {
+      position: absolute; right: 16px; bottom: 100px; width: 270px; z-index: 3;
+      background: var(--blanco); border: 1.5px solid var(--negro); border-radius: 18px; padding: 8px;
+    }
+    .menu-mas .grupo { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gris-oscuro); padding: 8px 10px 4px; }
+    .menu-mas .op { display: grid; grid-template-columns: 32px 1fr; align-items: center; column-gap: 12px; padding: 9px 10px; }
+    .menu-mas .op .placeholder { width: 32px; height: 32px; border-radius: 10px; }
+    .menu-mas .op .t { font-size: 15px; font-weight: 600; }
+    .menu-mas .op .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 1px; }
+    .menu-mas hr { border: none; border-top: 1px solid var(--gris-fondo); margin: 4px 10px; }
+    .nav-mas.cerrar-menu { position: absolute; right: 16px; bottom: 24px; z-index: 3; }
+
+    /* Drawer de comida extra: mismo componente, con selector de comida */
+    .selector-comida { display: flex; gap: 6px; overflow: hidden; margin: 12px 0 16px; }
+    .selector-comida span { flex-shrink: 0; font-size: 12px; font-weight: 600; padding: 7px 12px; border-radius: 16px; border: 1px solid var(--gris-medio); white-space: nowrap; }
+    .selector-comida span.hecha { color: var(--gris-oscuro); border-color: var(--gris-claro); }
+    .selector-comida span.activa { border: 2px solid var(--negro); background: var(--gris-fondo); }
+    .recientes .reemplazo { margin-bottom: 8px; }
+
+    /* Hoja de peso */
+    .peso-valor { text-align: center; margin: 22px 0 6px; }
+    .peso-valor .num { font-size: 40px; font-weight: 700; letter-spacing: -0.01em; }
+    .peso-valor .u { font-size: 17px; color: var(--gris-oscuro); margin-left: 4px; }
+    .peso-ajuste { display: flex; justify-content: center; gap: 12px; margin-bottom: 14px; }
+    .peso-ajuste span { width: 56px; height: 40px; border-radius: 20px; border: 1px solid var(--gris-medio); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; }
+    .peso-ultimo { text-align: center; font-size: 12px; color: var(--gris-oscuro); margin-bottom: 20px; }
+
+    /* ===================== v24 · "+" con 3 opciones, flujo ¿Qué como? y mapa de accionables ===================== */
+    .menu-mas .op { grid-template-columns: 32px 1fr; }
+    .menu-mas .op.destacada .t { font-weight: 700; }
+
+    /* ¿Qué como?: hoja casi completa */
+    .hoja.alta { top: 64px; overflow: hidden; }
+    .plato { display: flex; align-items: center; gap: 14px; margin: 14px 0 12px; }
+    .plato .circulo {
+      width: 84px; height: 84px; border-radius: 50%; flex-shrink: 0;
+      border: 1.5px solid var(--negro);
+      background: conic-gradient(var(--gris-oscuro) 0 60%, var(--gris-claro) 60% 100%);
+    }
+    .plato .resumen-plato .t { font-size: 15px; font-weight: 600; }
+    .plato .resumen-plato .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; line-height: 1.4; }
+    .porcion-casera { display: grid; grid-template-columns: 36px 1fr auto; align-items: center; column-gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--gris-fondo); }
+    .porcion-casera .placeholder { width: 36px; height: 36px; border-radius: 10px; }
+    .porcion-casera .t { font-size: 14px; font-weight: 600; }
+    .porcion-casera .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 1px; }
+    .porcion-casera .k { font-size: 12px; color: var(--gris-oscuro); }
+    .por-que { font-size: 12px; color: var(--gris-oscuro); background: var(--gris-fondo); border-radius: 10px; padding: 10px 12px; margin: 14px 0; line-height: 1.4; }
+    .por-que b { color: var(--negro); font-weight: 600; }
+    .usar-lo-que-tengo { display: flex; justify-content: center; gap: 6px; font-size: 13px; font-weight: 600; margin-top: 14px; text-decoration: underline; }
+    .ver-preparacion { font-size: 12px; font-weight: 600; text-decoration: underline; }
+
+    /* Con lo que tengo: elegir ingredientes */
+    .ingredientes { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 6px; }
+    .ingredientes span { font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 18px; border: 1px solid var(--gris-medio); }
+    .ingredientes span.sel { border: 2px solid var(--negro); background: var(--gris-fondo); }
+    .resultado { border: 1.5px solid var(--negro); border-radius: 14px; padding: 4px 14px 12px; margin-top: 14px; }
+    .resultado .cab { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 0 4px; }
+    .resultado .cab .t { font-size: 15px; font-weight: 600; }
+    .resultado .cab .k { font-size: 13px; font-weight: 600; }
+
+    /* Mapa de accionables */
+    .marca-num {
+      position: absolute; z-index: 5; width: 22px; height: 22px; border-radius: 50%;
+      background: var(--negro); color: var(--blanco); font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 2px var(--blanco);
+    }
+    .leyenda { max-width: 1100px; margin: 40px auto 0; background: var(--blanco); border: 1.5px solid var(--negro); border-radius: 16px; padding: 24px; }
+    .leyenda h2 { font-size: 18px; margin-bottom: 4px; }
+    .leyenda .intro { font-size: 13px; color: var(--gris-oscuro); margin-bottom: 16px; }
+    .leyenda table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .leyenda th, .leyenda td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--gris-claro); vertical-align: top; }
+    .leyenda th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gris-oscuro); }
+    .leyenda td.n { font-weight: 700; width: 32px; }
+    .leyenda .reglas { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 18px; }
+    .leyenda .regla { background: var(--gris-fondo); border-radius: 12px; padding: 12px 14px; font-size: 13px; line-height: 1.45; }
+    .leyenda .regla strong { display: block; margin-bottom: 2px; }
+
+    /* ===================== v25 · Lo registrado complementa a "Tu próxima comida" ===================== */
+    /* Propuesta A: una sola tarjeta. Arriba lo que sigue; abajo el recorrido del día */
+    .dia-comidas { background: var(--blanco); border: 1.5px solid var(--negro); border-radius: 16px; overflow: hidden; }
+    .dia-comidas .fila-proxima { border: none; border-radius: 0; }
+    .recorrido { display: grid; grid-template-columns: repeat(5, 1fr); border-top: 1px solid var(--gris-fondo); background: var(--gris-fondo); padding: 10px 6px 12px; }
+    .etapa { display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center; }
+    .etapa .punto { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--gris-oscuro); background: var(--blanco); font-size: 11px; display: flex; align-items: center; justify-content: center; }
+    .etapa.lista .punto { background: var(--negro); border-color: var(--negro); color: var(--blanco); }
+    .etapa.ahora .punto { border: 3px solid var(--negro); }
+    .etapa.despues { opacity: 0.4; }
+    .etapa.despues .punto { border-style: dashed; }
+    .etapa .n { font-size: 10px; color: var(--gris-oscuro); line-height: 1.2; }
+    .etapa.ahora .n { color: var(--negro); font-weight: 700; }
+    .etapa .k { font-size: 11px; font-weight: 600; }
+    .ayuda-recorrido { font-size: 11px; color: var(--gris-oscuro); text-align: center; padding: 0 0 10px; background: var(--gris-fondo); }
+
+    /* Propuesta B: secciones separadas; lo registrado en chips de una línea */
+    .ya-registrado { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip-comida { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 18px; background: var(--blanco); border: 1px solid var(--gris-claro); font-size: 13px; font-weight: 600; }
+    .chip-comida span { font-weight: 400; color: var(--gris-oscuro); font-size: 12px; }
+    .chip-comida .chevron { color: var(--gris-medio); font-size: 13px; }
+
+    /* ===================== v27 · Home solo de estado; registrar vive en el "+" ===================== */
+    .estado-comidas { background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; overflow: hidden; }
+    .estado-comidas .recorrido { background: var(--blanco); border-top: none; padding: 14px 6px 12px; }
+    .estado-agua-suple { display: grid; grid-template-columns: 1fr 1fr; background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; }
+    .estado-agua-suple > div { padding: 12px 16px; }
+    .estado-agua-suple > div + div { border-left: 1px solid var(--gris-fondo); }
+    .estado-agua-suple .titulo-mini { font-size: 12px; color: var(--gris-oscuro); }
+    .estado-agua-suple .dato { font-size: 15px; font-weight: 600; margin: 2px 0 8px; }
+    .estado-agua-suple .dato span { font-size: 12px; font-weight: 400; color: var(--gris-oscuro); }
+    .estado-agua-suple .barra { height: 5px; }
+    .estado-agua-suple .detalle { font-size: 12px; color: var(--gris-oscuro); }
+
+    /* Menú del "+" ordenado por frecuencia */
+    .menu-mas { width: 300px; }
+    .menu-mas .op.principal { background: var(--gris-fondo); border-radius: 12px; }
+    .menu-mas .op .lado { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--gris-oscuro); }
+    .menu-mas .op { grid-template-columns: 32px 1fr auto; }
+
+    /* ===================== v28 · Editar meta + detalle de agua y suplementos ===================== */
+    .fila-titulo { display: flex; justify-content: space-between; align-items: baseline; }
+    .editar-meta { font-size: 12px; font-weight: 600; color: var(--negro); text-decoration: underline; }
+
+    /* Agua y suplementos: dos tarjetas que llevan a su detalle */
+    .doble-estado { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .estado-card { background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; padding: 12px 14px; }
+    .estado-card .cab { display: flex; justify-content: space-between; align-items: center; }
+    .estado-card .titulo-mini { font-size: 12px; color: var(--gris-oscuro); }
+    .estado-card .chevron { color: var(--gris-medio); font-size: 16px; }
+    .estado-card .dato { font-size: 15px; font-weight: 600; margin: 2px 0 8px; }
+    .estado-card .dato span { font-size: 12px; font-weight: 400; color: var(--gris-oscuro); }
+    .estado-card .barra { height: 5px; }
+    .estado-card .detalle { font-size: 12px; color: var(--gris-oscuro); }
+
+    /* Pantallas de detalle (navegación hacia adentro) */
+    .detalle-pantalla { padding: 4px 20px 130px; height: calc(100% - 44px); overflow: hidden; }
+    .volver { font-size: 15px; font-weight: 500; margin: 6px 0 14px; }
+    .detalle-pantalla h1 { font-size: 28px; margin-bottom: 4px; }
+    .detalle-pantalla .subtitulo-detalle { font-size: 13px; color: var(--gris-oscuro); margin-bottom: 14px; }
+    .grande { display: flex; align-items: baseline; gap: 6px; margin-bottom: 10px; }
+    .grande .num { font-size: 28px; font-weight: 700; }
+    .grande .de { font-size: 13px; color: var(--gris-oscuro); }
+    .lista-registros { margin-top: 18px; background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; padding: 2px 16px; }
+    .registro { display: grid; grid-template-columns: 52px 1fr auto; align-items: center; column-gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--gris-fondo); font-size: 14px; }
+    .registro:last-child { border-bottom: none; }
+    .registro .h { font-size: 12px; color: var(--gris-oscuro); }
+    .registro .accion { font-size: 12px; font-weight: 600; color: var(--gris-oscuro); text-decoration: underline; }
+    .registro .estado-sup { font-size: 12px; color: var(--gris-oscuro); }
+    .etq-lista { font-size: 12px; font-weight: 600; color: var(--gris-oscuro); margin: 18px 4px 8px; }
+    .nota-detalle { font-size: 12px; color: var(--gris-oscuro); margin-top: 14px; line-height: 1.4; }
+    .semana-mini { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; align-items: end; height: 70px; margin-top: 6px; }
+    .semana-mini .col { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; color: var(--gris-oscuro); }
+    .semana-mini .b { width: 14px; background: var(--negro); border-radius: 3px; }
+    .semana-mini .b.hoy { background: var(--gris-oscuro); }
+    .semana-mini .b.futuro { background: var(--gris-claro); }
+
+    /* Hoja de editar meta */
+    .opcion-meta { border: 1px solid var(--gris-medio); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; }
+    .opcion-meta.activa { border: 2px solid var(--negro); background: var(--gris-fondo); }
+    .opcion-meta .t { font-size: 15px; font-weight: 600; display: flex; justify-content: space-between; }
+    .opcion-meta .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 3px; line-height: 1.4; }
+    .valor-meta { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 10px; }
+    .valor-meta .ajuste { width: 44px; height: 36px; border-radius: 18px; border: 1px solid var(--gris-medio); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; }
+    .valor-meta .num { font-size: 22px; font-weight: 700; color: var(--gris-medio); }
+    .macros-meta { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 24px; padding: 12px 0; border-top: 1px solid var(--gris-fondo); border-bottom: 1px solid var(--gris-fondo); margin: 6px 0 12px; }
+    .macros-meta .n { font-size: 12px; color: var(--gris-oscuro); }
+    .macros-meta .v { font-size: 15px; font-weight: 600; margin-top: 2px; }
+
+    /* ===================== v29 ===================== */
+    .flecha-meta { font-size: 18px; color: var(--gris-medio); line-height: 1; }
+
+    /* 3) Cumplimiento del plan por comida: barra con marca de la meta de cada comida */
+    .plan-comidas { background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; padding: 14px 12px 12px; }
+    .plan-grid { display: grid; grid-template-columns: repeat(5, 1fr); column-gap: 10px; }
+    .pc { display: flex; flex-direction: column; gap: 5px; }
+    .pc .n { font-size: 11px; color: var(--gris-oscuro); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pc .v { font-size: 13px; font-weight: 600; }
+    .pc .v span { font-size: 10px; font-weight: 400; color: var(--gris-oscuro); }
+    /* La barra mide hasta 150 % de la meta; la línea vertical marca el 100 % */
+    .pc .medidor { position: relative; height: 6px; border-radius: 3px; background: var(--gris-claro); }
+    .pc .medidor i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; background: var(--negro); }
+    .pc .medidor b { position: absolute; left: 66.7%; top: -3px; bottom: -3px; width: 2px; background: var(--negro); }
+    .pc .estado { font-size: 10px; font-weight: 600; display: flex; align-items: center; gap: 3px; white-space: nowrap; }
+    .pc .estado .ic { width: 12px; height: 12px; border-radius: 50%; font-size: 8px; line-height: 12px; text-align: center; background: var(--negro); color: var(--blanco); flex-shrink: 0; }
+    .pc .estado .ic.vacio { background: var(--blanco); border: 1px dashed var(--gris-medio); color: var(--gris-medio); }
+    .pc.pendiente .n, .pc.pendiente .v, .pc.pendiente .estado { color: var(--gris-medio); }
+    .pc.siguiente .n { color: var(--negro); font-weight: 700; }
+    /* Versión en filas: nombre · barra con marca de la meta · registrado / meta · estado */
+    .plan-filas { display: grid; gap: 2px; }
+    .pf { display: grid; grid-template-columns: 96px 1fr 76px 16px; align-items: center; column-gap: 10px; padding: 6px 4px; }
+    .pf .n { font-size: 13px; font-weight: 600; }
+    .pf .v { font-size: 12px; font-weight: 600; text-align: right; white-space: nowrap; }
+    .pf .v span { font-weight: 400; color: var(--gris-oscuro); }
+    .pf .medidor { position: relative; height: 6px; border-radius: 3px; background: var(--gris-claro); }
+    .pf .medidor i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; background: var(--negro); }
+    .pf .medidor b { position: absolute; left: 66.7%; top: -4px; bottom: -4px; width: 2px; background: var(--negro); }
+    .pf .ic { width: 16px; height: 16px; border-radius: 50%; font-size: 9px; line-height: 16px; text-align: center; background: var(--negro); color: var(--blanco); }
+    .pf .ic.vacio { background: var(--blanco); border: 1.5px dashed var(--gris-medio); line-height: 13px; }
+    .pf.pendiente .n, .pf.pendiente .v { color: var(--gris-medio); font-weight: 500; }
+    .pf.pendiente .medidor i { display: none; }
+    .pf.siguiente .n { color: var(--negro); font-weight: 600; }
+    .pf.siguiente .v { color: var(--negro); }
+    .leyenda-plan { font-size: 11px; color: var(--gris-oscuro); margin-top: 10px; display: flex; gap: 12px; }
+    .leyenda-plan i { display: inline-block; width: 2px; height: 10px; background: var(--negro); vertical-align: -1px; margin-right: 4px; }
+
+    /* 2) Agua y suplementos con el mismo tratamiento */
+    .estado-card .barra { margin-top: 0; }
+    .estado-card .detalle { margin-top: 6px; }
+
+    /* Detalle de la meta */
+    .meta-explica { font-size: 12px; color: var(--gris-oscuro); background: var(--gris-fondo); border-radius: 12px; padding: 10px 12px; margin: 12px 0 0; line-height: 1.4; }
+    .reparto .registro { grid-template-columns: 1fr auto; }
+    .reparto .registro .k { font-weight: 600; }
+
+    /* ===================== v30 · "Comidas de tu plan" con el mismo módulo que agua y suplementos ===================== */
+    .estado-card.ancha { margin-bottom: 12px; }
+    .segmentos-comidas { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+    .segmentos-comidas i { height: 5px; border-radius: 3px; background: var(--gris-claro); }
+    .segmentos-comidas i.lleno { background: var(--negro); }
+    .segmentos-comidas i.siguiente { background: var(--blanco); border: 1.5px solid var(--negro); height: 5px; box-sizing: border-box; }
+    .nombres-seg { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-top: 4px; }
+    .nombres-seg span { font-size: 10px; color: var(--gris-oscuro); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .nombres-seg span.hecha { color: var(--negro); }
+    .nombres-seg span.siguiente { color: var(--negro); font-weight: 700; }
+
+    /* Detalle de comidas: las filas de la v29, cada una lleva a su comida */
+    .detalle-pantalla .plan-comidas { padding: 6px 12px; }
+    .detalle-pantalla .pf { grid-template-columns: 96px 1fr 76px 16px 10px; padding: 10px 2px; border-bottom: 1px solid var(--gris-fondo); }
+    .detalle-pantalla .pf:last-child { border-bottom: none; }
+    .detalle-pantalla .pf .chev { color: var(--gris-medio); font-size: 14px; }
+
+    /* Detalle de una comida */
+    .alimento-fila { display: grid; grid-template-columns: 1fr auto 10px; align-items: center; column-gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--gris-fondo); }
+    .alimento-fila:last-child { border-bottom: none; }
+    .alimento-fila .t { font-size: 14px; font-weight: 600; }
+    .alimento-fila .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .alimento-fila .k { font-size: 13px; font-weight: 600; }
+    .alimento-fila .chev { color: var(--gris-medio); }
+
+    /* ===================== v31 · Tres propuestas para "Comidas de tu plan" ===================== */
+    /* Anillo de progreso por comida (gris + negro); --p = % de su meta, tope 100 */
+    .anillo {
+      --p: 0; width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+      background: conic-gradient(var(--negro) calc(var(--p) * 1%), var(--gris-claro) 0);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .anillo::after { content: ""; width: 18px; height: 18px; border-radius: 50%; background: var(--blanco); }
+    .anillo.siguiente { background: var(--gris-claro); outline: 2px solid var(--negro); outline-offset: 1px; }
+    .anillo.luego { background: repeating-conic-gradient(var(--gris-claro) 0 10deg, var(--blanco) 10deg 20deg); }
+
+    /* A · Lista compacta con anillo por comida (Yazio / Lifesum) */
+    .lista-plan { margin-top: 4px; }
+    .lp { display: grid; grid-template-columns: 26px 1fr auto 12px; align-items: center; column-gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--gris-fondo); }
+    .lp:last-child { border-bottom: none; padding-bottom: 0; }
+    .lp .n { font-size: 14px; font-weight: 600; }
+    .lp .s { font-size: 11px; color: var(--gris-oscuro); margin-top: 1px; }
+    .lp .v { font-size: 13px; font-weight: 600; text-align: right; }
+    .lp .v span { font-weight: 400; color: var(--gris-oscuro); font-size: 12px; }
+    .lp .chev { color: var(--gris-medio); font-size: 14px; }
+    .lp.luego .n, .lp.luego .v { color: var(--gris-medio); }
+
+    /* B · Fila horizontal de anillos (widget de Yazio) */
+    .fila-anillos { display: grid; grid-template-columns: repeat(5, 1fr); margin: 6px 0 2px; }
+    .fa { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+    .fa .anillo { width: 40px; height: 40px; }
+    .fa .anillo::after { width: 30px; height: 30px; }
+    .fa .n { font-size: 11px; color: var(--gris-oscuro); line-height: 1.2; min-height: 26px; }
+    .fa .k { font-size: 12px; font-weight: 600; }
+    .fa .k span { font-size: 10px; font-weight: 400; color: var(--gris-oscuro); }
+    .fa.siguiente .n { color: var(--negro); font-weight: 700; }
+    .fa.luego .n, .fa.luego .k { color: var(--gris-medio); }
+    .marca-mas { font-size: 10px; font-weight: 700; }
+
+    /* C · Snacks agrupados: 4 filas (Lifesum / MyFitnessPal) */
+    .agrupada .lp .s b { color: var(--negro); font-weight: 600; }
+
+    /* Notas del benchmark */
+    .notas { max-width: 1260px; margin: 36px auto 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .nota { background: var(--blanco); border: 1.5px solid var(--negro); border-radius: 14px; padding: 16px; font-size: 13px; line-height: 1.45; }
+    .nota h3 { font-size: 15px; margin-bottom: 6px; }
+    .nota .ref { font-size: 12px; color: var(--gris-oscuro); margin-bottom: 8px; }
+    .nota ul { padding-left: 16px; }
+    .nota li { margin-bottom: 3px; }
+
+    /* ===================== v32 · Comidas: estado legible + un solo accionable para la comida que toca ===================== */
+    .fila-comidas { display: grid; grid-template-columns: repeat(5, 1fr); margin: 8px 0 4px; }
+    .fc { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+    .fc .punto { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--negro); display: flex; align-items: center; justify-content: center; font-size: 14px; background: var(--blanco); }
+    .fc.hecha .punto { background: var(--negro); color: var(--blanco); }
+    .fc.ahora .punto { border-width: 3px; }
+    .fc.luego .punto { border: 1.5px dashed var(--gris-medio); }
+    .fc .n { font-size: 11px; color: var(--gris-oscuro); line-height: 1.2; white-space: nowrap; }
+    .fc .k { font-size: 12px; font-weight: 600; }
+    .fc .k span { font-size: 10px; font-weight: 700; }
+    .fc.ahora .n { color: var(--negro); font-weight: 700; }
+    .fc.ahora .k, .fc.luego .k, .fc.luego .n { color: var(--gris-medio); font-weight: 500; }
+    .boton-comida { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; height: 40px; margin-top: 12px; border: none; border-radius: 20px; background: var(--negro); color: var(--blanco); font: inherit; font-size: 14px; font-weight: 600; }
+    .boton-comida span { font-weight: 400; opacity: 0.75; font-size: 12px; }
+    .listo-dia { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; height: 40px; border-radius: 20px; background: var(--gris-fondo); font-size: 13px; font-weight: 600; }
+    .listo-dia .check { width: 18px; height: 18px; font-size: 10px; line-height: 15px; }
+    .menu-mas { width: 290px; }
+
+    /* ===================== v33 · Tres diagramaciones de "Comidas de tu plan" sin redundancias ===================== */
+    /* Línea de acción común: la comida que toca a la izquierda, "Registrar" pequeño a la derecha */
+    .accion-linea { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+    .accion-linea .txt { flex: 1; font-size: 12px; color: var(--gris-oscuro); }
+    .accion-linea .txt b { color: var(--negro); font-weight: 600; }
+    .pill { height: 32px; padding: 0 14px; border: none; border-radius: 16px; background: var(--negro); color: var(--blanco); font: inherit; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+
+    /* A · Módulo estándar: barra en 5 partes, igual de fina que la de agua */
+    .seg5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+    .seg5 i { height: 5px; border-radius: 3px; background: var(--gris-claro); }
+    .seg5 i.lleno { background: var(--negro); }
+
+    /* B · Puntos con nombre: el estado se reconoce sin cifra */
+    .puntos5 { display: grid; grid-template-columns: repeat(5, 1fr); margin-top: 6px; }
+    .p5 { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .p5 .d { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--negro); font-size: 10px; line-height: 15px; text-align: center; }
+    .p5.hecha .d { background: var(--negro); color: var(--blanco); }
+    .p5.ahora .d { border-width: 3px; }
+    .p5.luego .d { border: 1.5px dashed var(--gris-medio); }
+    .p5 .n { font-size: 11px; color: var(--gris-oscuro); }
+    .p5.ahora .n { color: var(--negro); font-weight: 600; }
+    .p5.luego .n { color: var(--gris-medio); }
+
+    /* C · Siguiente primero: la acción arriba, el progreso debajo */
+    .prox-fila { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+    .prox-fila .info { flex: 1; }
+    .prox-fila .n { font-size: 15px; font-weight: 600; }
+    .prox-fila .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 1px; }
+    .progreso-pie { display: flex; align-items: center; gap: 10px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--gris-fondo); }
+    .progreso-pie .seg5 { flex: 1; }
+    .progreso-pie .t { font-size: 12px; color: var(--gris-oscuro); white-space: nowrap; }
+
+    /* ===================== v35 · Cinco diagramaciones espaciadas de "Comidas de tu plan" ===================== */
+    .mod { background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; padding: 16px; }
+    .mod .cab { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .mod .cab .titulo-mini { font-size: 12px; color: var(--gris-oscuro); }
+    .mod .cab .chevron { color: var(--gris-medio); }
+    .est { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--negro); font-size: 11px; line-height: 17px; text-align: center; flex-shrink: 0; }
+    .est.hecha { background: var(--negro); color: var(--blanco); }
+    .est.ahora { border-width: 3px; line-height: 14px; }
+    .est.luego { border: 1.5px dashed var(--gris-medio); }
+
+    /* 1 · Lista amplia (Lifesum, MyFitnessPal) */
+    .l1 { display: grid; grid-template-columns: 20px 1fr auto; align-items: center; column-gap: 14px; padding: 11px 0; border-bottom: 1px solid var(--gris-fondo); }
+    .l1:first-of-type { padding-top: 0; }
+    .l1:last-child { border-bottom: none; padding-bottom: 0; }
+    .l1 .n { font-size: 14px; font-weight: 600; }
+    .l1 .k { font-size: 13px; color: var(--gris-oscuro); }
+    .l1.luego .n { color: var(--gris-medio); font-weight: 500; }
+    .l1 .pill { height: 30px; font-size: 12px; padding: 0 12px; }
+
+    /* 2 · Puntos amplios (widget de Yazio) */
+    .p2 { display: grid; grid-template-columns: repeat(5, 1fr); padding: 4px 0 16px; }
+    .p2 > div { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .p2 .est { width: 24px; height: 24px; line-height: 21px; }
+    .p2 .est.ahora { line-height: 18px; }
+    .p2 .n { font-size: 11px; color: var(--gris-oscuro); }
+    .p2 .ahora-n { color: var(--negro); font-weight: 700; }
+    .p2 .luego-n { color: var(--gris-medio); }
+    .accion2 { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid var(--gris-fondo); }
+    .accion2 .txt { font-size: 13px; color: var(--gris-oscuro); }
+    .accion2 .txt b { color: var(--negro); font-weight: 600; }
+
+    /* 3 · Carrusel de tarjetas (Cal AI, Centr) */
+    .carr { display: flex; gap: 12px; overflow: hidden; margin: 0 -16px; padding: 0 16px; }
+    .tc { flex: 0 0 116px; height: 124px; border: 1px solid var(--gris-claro); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; background: var(--blanco); }
+    .tc .n { font-size: 13px; font-weight: 600; margin-top: 10px; }
+    .tc .k { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .tc .pill { margin-top: auto; height: 28px; font-size: 12px; padding: 0 10px; }
+    .tc.ahora { border: 1.5px solid var(--negro); }
+    .tc.luego .n, .tc.luego .k { color: var(--gris-medio); }
+    .carr-puntos { display: flex; justify-content: center; gap: 5px; margin-top: 12px; }
+    .carr-puntos i { width: 6px; height: 6px; border-radius: 50%; background: var(--gris-claro); }
+    .carr-puntos i.on { background: var(--negro); }
+
+    /* 4 · Siguiente destacada + chips de lo registrado (MyFitnessPal + Cal AI) */
+    .dest { display: flex; align-items: center; gap: 14px; padding-bottom: 16px; border-bottom: 1px solid var(--gris-fondo); }
+    .dest .info { flex: 1; }
+    .dest .n { font-size: 15px; font-weight: 600; }
+    .dest .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .chips4 { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 14px; }
+    .chip4 { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 16px; border: 1px solid var(--gris-claro); font-size: 12px; font-weight: 600; }
+    .chip4 .est { width: 14px; height: 14px; font-size: 8px; line-height: 11px; }
+    .chip4.luego { color: var(--gris-medio); font-weight: 500; border-style: dashed; }
+
+    /* 5 · Cuadrícula de mosaicos (Yazio, Bevel) */
+    .grid5 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .tile { border: 1px solid var(--gris-claro); border-radius: 14px; padding: 12px; min-height: 76px; display: flex; flex-direction: column; justify-content: space-between; }
+    .tile .arriba { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+    .tile .arriba .n { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tile .n { font-size: 12px; color: var(--gris-oscuro); }
+    .tile .k { font-size: 14px; font-weight: 600; }
+    .tile .est { width: 16px; height: 16px; font-size: 9px; line-height: 13px; }
+    .tile.ahora { border: 1.5px solid var(--negro); }
+    .tile.ahora .k { font-size: 12px; text-decoration: underline; }
+    .tile.luego .n, .tile.luego .k { color: var(--gris-medio); }
+    .tile.ver { justify-content: center; align-items: center; border-style: dashed; font-size: 12px; font-weight: 600; color: var(--gris-oscuro); }
+
+    /* ===================== v36 · Carrusel de comidas sin contenedor ===================== */
+    .titulo-carrusel { display: flex; justify-content: space-between; align-items: baseline; margin: 0 4px 10px; }
+    .titulo-carrusel .t { font-size: 13px; font-weight: 500; color: var(--gris-oscuro); }
+    .titulo-carrusel .t b { color: var(--negro); font-weight: 600; }
+    .titulo-carrusel .chevron { color: var(--gris-medio); }
+    /* Las tarjetas salen hasta el borde del celular: se nota que el carrusel continúa */
+    .carrusel-libre {
+      display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory;
+      margin: 0 -16px; padding: 2px 16px 4px; scrollbar-width: none;
+      scroll-padding-left: 56px; /* al acomodarse deja asomar la tarjeta anterior */
+    }
+    .carrusel-libre::-webkit-scrollbar { display: none; }
+    .cc {
+      flex: 0 0 128px; height: 140px; scroll-snap-align: start;
+      background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px;
+      padding: 12px; display: flex; flex-direction: column;
+    }
+    .cc .n { font-size: 14px; font-weight: 600; margin-top: 10px; }
+    .cc .k { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .cc .pill { margin-top: auto; height: 30px; font-size: 12px; padding: 0 12px; align-self: flex-start; }
+    .cc .no { margin-top: 6px; font-size: 11px; font-weight: 600; color: var(--gris-oscuro); text-decoration: underline; }
+    .cc .ver { margin-top: auto; font-size: 11px; color: var(--gris-medio); }
+    .cc.ahora { border: 1.5px solid var(--negro); }
+    .cc.luego { background: transparent; border-style: dashed; }
+    .cc.luego .n, .cc.luego .k { color: var(--gris-medio); }
+    .cc.olvidada { border: 1.5px dashed var(--negro); }
+    .cc.olvidada .pill { margin-top: 8px; }
+    .est.olvidada { border: 1.5px dashed var(--negro); font-weight: 700; line-height: 17px; }
+    .cc.resumen-dia { flex-basis: 150px; background: var(--negro); color: var(--blanco); border-color: var(--negro); }
+    .cc.resumen-dia .k { color: var(--gris-claro); }
+    .cc.resumen-dia .est { border-color: var(--blanco); background: var(--blanco); color: var(--negro); }
+    .puntos-carr { display: flex; justify-content: center; gap: 5px; margin-top: 10px; }
+    .puntos-carr i { width: 6px; height: 6px; border-radius: 50%; background: var(--gris-claro); }
+    .puntos-carr i.on { background: var(--negro); }
+
+    /* ===================== v37 · Aprendizajes de Fitia + mejoras ===================== */
+    /* Calorías con zona (Fitia), en barra lineal y sin colores de alarma */
+    .fila-cifra .estado-zona { margin-left: auto; font-size: 12px; color: var(--gris-oscuro); }
+    .barra-zona { position: relative; height: 10px; border-radius: 5px; background: var(--gris-claro); }
+    .barra-zona .relleno-z { position: absolute; left: 0; top: 0; bottom: 0; background: var(--negro); border-radius: 5px; }
+    .barra-zona .franja-z { position: absolute; left: 75%; width: 16.7%; top: -3px; bottom: -3px; border: 1.5px solid var(--negro); border-radius: 4px; background: repeating-linear-gradient(45deg, transparent 0 3px, rgba(17,17,17,.18) 3px 4.5px); }
+    .escala-z { position: relative; height: 14px; margin-top: 4px; font-size: 10px; color: var(--gris-oscuro); }
+    .escala-z span { position: absolute; transform: translateX(-50%); }
+    .tarjeta .macros-col { margin-top: 18px; }
+
+    /* Un solo componente para marcar: el mismo círculo en comidas, agua y suplementos */
+    .marca { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--negro); background: var(--blanco); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+    .marca.si { background: var(--negro); color: var(--blanco); }
+    .marca.toca { border-width: 3px; }
+    .marca.luego { border: 1.5px dashed var(--gris-medio); }
+
+    .lista-marcar { background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; padding: 4px 14px; }
+    .lm { display: grid; grid-template-columns: 26px 1fr auto 10px; align-items: center; column-gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--gris-fondo); }
+    .lm:last-child { border-bottom: none; }
+    .lm .n { font-size: 14px; font-weight: 600; }
+    .lm .n span { font-size: 11px; font-weight: 400; color: var(--gris-oscuro); margin-left: 4px; }
+    .lm .p { font-size: 12px; color: var(--gris-oscuro); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .lm .k { font-size: 12px; font-weight: 600; text-align: right; white-space: nowrap; }
+    .lm .k span { display: block; font-weight: 400; color: var(--gris-oscuro); font-size: 10px; }
+    .lm .chev { color: var(--gris-medio); font-size: 13px; }
+    .lm.toca { background: var(--gris-fondo); margin: 0 -14px; padding: 8px 14px; }
+    .lm.luego .n, .lm.luego .k { color: var(--gris-medio); }
+    .lm.sin .n { color: var(--gris-oscuro); }
+
+    /* Agua y suplementos con el mismo círculo */
+    .doble-marcar { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    .bloque-marcar { background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; padding: 12px 14px; }
+    .bloque-marcar .cab { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+    .bloque-marcar .cab .t { font-size: 12px; color: var(--gris-oscuro); }
+    .bloque-marcar .cab .d { font-size: 13px; font-weight: 600; }
+    .bloque-marcar .cab .d span { font-weight: 400; color: var(--gris-oscuro); font-size: 11px; }
+    .vasos-marcar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; justify-items: center; }
+    .vasos-marcar .marca { width: 22px; height: 22px; font-size: 11px; }
+    .sup-fila { display: flex; align-items: center; gap: 8px; font-size: 12px; padding: 3px 0; }
+    .sup-fila .marca { width: 22px; height: 22px; font-size: 11px; }
+    .sup-fila .h { margin-left: auto; font-size: 10px; color: var(--gris-oscuro); }
+
+    /* Detalle de una comida del plan (Fitia: cada alimento se marca) */
+    .detalle-pantalla .lista-marcar { padding: 4px 14px; }
+    .ali { display: grid; grid-template-columns: 26px 1fr auto; align-items: center; column-gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--gris-fondo); }
+    .ali:last-child { border-bottom: none; }
+    .ali .n { font-size: 14px; font-weight: 600; }
+    .ali .p { font-size: 12px; color: var(--gris-oscuro); margin-top: 1px; }
+    .ali .k { font-size: 12px; font-weight: 600; }
+    .sugerencia-plan { display: flex; gap: 10px; align-items: flex-start; background: var(--gris-fondo); border-radius: 12px; padding: 10px 12px; margin: 14px 0; font-size: 12px; line-height: 1.4; }
+    .sugerencia-plan b { font-weight: 600; }
+    .sugerencia-plan .aplicar { margin-left: auto; font-weight: 600; text-decoration: underline; white-space: nowrap; }
+    .otra-cosa { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+    .otra-cosa span { text-align: center; padding: 10px 4px; border: 1px solid var(--gris-medio); border-radius: 12px; font-size: 12px; font-weight: 600; }
+
+    /* ===================== v38 · Ícono informativo + registrar explícito; caminos para cambiar la comida ===================== */
+    /* El ícono solo informa (pequeño, sin forma de botón) */
+    .info-ic { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--negro); font-size: 9px; line-height: 13px; text-align: center; flex-shrink: 0; }
+    .info-ic.si { background: var(--negro); color: var(--blanco); }
+    .info-ic.toca { border-width: 3px; line-height: 10px; }
+    .info-ic.pend { border-style: dashed; }
+    .info-ic.luego { border: 1.5px dashed var(--gris-medio); }
+
+    .lr { display: grid; grid-template-columns: 16px 1fr auto; align-items: center; column-gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--gris-fondo); }
+    .lr:last-child { border-bottom: none; }
+    .lr .n { font-size: 14px; font-weight: 600; }
+    .lr .n span { font-size: 11px; font-weight: 400; color: var(--gris-oscuro); margin-left: 4px; }
+    .lr .q { font-size: 12px; color: var(--gris-oscuro); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .lr .q b { font-weight: 500; color: var(--negro); }
+    .lr .der { font-size: 12px; font-weight: 600; text-align: right; white-space: nowrap; }
+    .lr .der.gris { color: var(--gris-medio); font-weight: 500; }
+    .lr.toca { background: var(--gris-fondo); margin: 0 -14px; padding: 9px 14px; }
+    .lr.luego .n { color: var(--gris-oscuro); font-weight: 500; }
+
+    /* Acciones: negra = la que toca; con borde = las demás */
+    .pill { height: 30px; padding: 0 12px; font-size: 12px; }
+    .pill.borde { background: var(--blanco); color: var(--negro); border: 1.5px solid var(--negro); }
+
+    /* Agua y suplementos: estado informativo + "Registrar" */
+    .modulo-dos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    .md { background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+    .md .cab { display: flex; justify-content: space-between; align-items: baseline; }
+    .md .cab .t { font-size: 12px; color: var(--gris-oscuro); }
+    .md .cab .d { font-size: 13px; font-weight: 600; }
+    .md .cab .d span { font-weight: 400; color: var(--gris-oscuro); font-size: 11px; }
+    .md .barra { height: 5px; }
+    .md .det { font-size: 11px; color: var(--gris-oscuro); }
+    .md .pill { align-self: flex-start; height: 28px; }
+
+    /* Drawer de registro de comida: cuatro caminos */
+    .camino { border: 1px solid var(--gris-claro); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; }
+    .camino.sugerido { border: 2px solid var(--negro); }
+    .camino .cab { display: flex; justify-content: space-between; align-items: baseline; }
+    .camino .t { font-size: 14px; font-weight: 600; }
+    .camino .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .camino .k { font-size: 13px; font-weight: 600; }
+    .camino .fila-acc { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+    .camino .link { font-size: 12px; font-weight: 600; text-decoration: underline; }
+    .tres-botones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+    .tres-botones span { text-align: center; padding: 9px 4px; border: 1px solid var(--gris-medio); border-radius: 12px; font-size: 12px; font-weight: 600; }
+    .camino.fila { display: flex; align-items: center; justify-content: space-between; }
+    .camino.fila .chev { color: var(--gris-medio); }
+
+    /* Comí fuera */
+    .chips-lugar { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 16px; }
+    .chips-lugar span { font-size: 12px; font-weight: 600; padding: 8px 12px; border-radius: 16px; border: 1px solid var(--gris-medio); }
+    .chips-lugar span.sel { border: 2px solid var(--negro); background: var(--gris-fondo); }
+    .entrada { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px 14px; border: 1.5px solid var(--negro); border-radius: 14px; font-size: 13px; }
+    .entrada .placeholder { width: 18px; height: 18px; border-radius: 50%; }
+    .estimado { border: 1.5px solid var(--negro); border-radius: 14px; padding: 12px 14px; margin: 14px 0; }
+    .estimado .cab { display: flex; justify-content: space-between; align-items: baseline; }
+    .estimado .t { font-size: 14px; font-weight: 600; }
+    .estimado .k { font-size: 13px; font-weight: 600; }
+    .estimado .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 4px; line-height: 1.4; }
+    .tam { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; }
+    .tam span { text-align: center; padding: 7px 4px; border-radius: 10px; border: 1px solid var(--gris-medio); font-size: 12px; font-weight: 600; }
+    .tam span.sel { border: 2px solid var(--negro); background: var(--gris-fondo); }
+
+    /* Antes de comer: cambiar la comida */
+    .opcion-cambio { display: grid; grid-template-columns: 1fr auto; align-items: center; padding: 12px 14px; border: 1px solid var(--gris-claro); border-radius: 14px; margin-bottom: 8px; }
+    .opcion-cambio .t { font-size: 14px; font-weight: 600; }
+    .opcion-cambio .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .opcion-cambio .chev { color: var(--gris-medio); }
+    .opcion-cambio.sel { border: 2px solid var(--negro); }
+    .consejo-fuera { background: var(--gris-fondo); border-radius: 12px; padding: 10px 12px; font-size: 12px; line-height: 1.5; margin: 6px 0 8px; }
+    .consejo-fuera b { font-weight: 600; }
+
+    /* Registrar agua / suplemento */
+    .cantidades { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 16px 0; }
+    .cantidades span { text-align: center; padding: 14px 4px; border: 1px solid var(--gris-medio); border-radius: 14px; font-size: 13px; font-weight: 600; }
+    .cantidades span small { display: block; font-size: 11px; font-weight: 400; color: var(--gris-oscuro); margin-top: 2px; }
+    .cantidades span.sel { border: 2px solid var(--negro); background: var(--gris-fondo); }
+    .sup-reg { display: grid; grid-template-columns: 16px 1fr auto; align-items: center; column-gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--gris-fondo); }
+    .sup-reg .t { font-size: 14px; font-weight: 600; }
+    .sup-reg .s { font-size: 12px; color: var(--gris-oscuro); }
+
+    /* ===================== v39 · Comidas compactas: una línea por comida, solo la que toca se expande ===================== */
+    .lista-compacta { background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; padding: 2px 14px; }
+    .fc1 { display: grid; grid-template-columns: 16px 1fr auto; align-items: center; column-gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--gris-fondo); }
+    .fc1:last-child { border-bottom: none; }
+    .fc1 .txt { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--gris-oscuro); }
+    .fc1 .txt b { font-weight: 600; color: var(--negro); }
+    .fc1 .der { font-size: 12px; font-weight: 600; white-space: nowrap; }
+    .fc1 .der.gris { color: var(--gris-medio); font-weight: 500; }
+    .fc1 .der.link { text-decoration: underline; }
+    .fc1.luego .txt b { color: var(--gris-oscuro); font-weight: 500; }
+    .fc1.luego .txt { color: var(--gris-medio); }
+    /* La que toca: dos líneas, más aire y el único botón negro */
+    .fc-toca { display: grid; grid-template-columns: 16px 1fr auto; align-items: center; column-gap: 12px; margin: 0 -14px; padding: 12px 14px; background: var(--gris-fondo); border-bottom: 1px solid var(--gris-fondo); }
+    .fc-toca .n { font-size: 15px; font-weight: 600; }
+    .fc-toca .n span { font-size: 12px; font-weight: 400; color: var(--gris-oscuro); margin-left: 6px; }
+    .fc-toca .p { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+
+    /* Variante B: la que toca va primero, separada; el resto del día debajo */
+    .toca-primero { background: var(--blanco); border: 1.5px solid var(--negro); border-radius: 16px; padding: 14px; display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 12px; margin-bottom: 10px; }
+    .toca-primero .etq { font-size: 11px; color: var(--gris-oscuro); }
+    .toca-primero .n { font-size: 15px; font-weight: 600; margin-top: 2px; }
+    .toca-primero .n span { font-size: 12px; font-weight: 400; color: var(--gris-oscuro); margin-left: 6px; }
+    .toca-primero .p { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+
+    /* ===================== v40 · Milo: la IA compañera ===================== */
+    .milo-ava { width: 28px; height: 28px; border-radius: 50%; background: var(--negro); color: var(--blanco); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    /* Aviso proactivo: uno a la vez, con acción */
+    .milo-card { display: grid; grid-template-columns: 28px 1fr; column-gap: 10px; background: var(--blanco); border: 1.5px solid var(--negro); border-radius: 16px; padding: 10px 14px; margin-bottom: 12px; }
+    .milo-card .msg { font-size: 13px; line-height: 1.4; }
+    .milo-card .msg b { font-weight: 600; }
+    .milo-card .acc { display: flex; align-items: center; gap: 12px; margin-top: 6px; }
+    .zona-inferior .seccion + .seccion { margin-top: 12px; }
+    .zona-inferior { padding-top: 12px; }
+    .milo-card .acc .no { font-size: 12px; font-weight: 600; color: var(--gris-oscuro); text-decoration: underline; }
+    .milo-card .acc .pulgares { margin-left: auto; font-size: 13px; color: var(--gris-medio); letter-spacing: 6px; }
+
+    /* Conversación */
+    .chat { position: absolute; left: 0; right: 0; bottom: 0; top: 54px; background: var(--blanco); border-radius: 20px 20px 0 0; border-top: 1.5px solid var(--negro); padding: 10px 16px 0; display: flex; flex-direction: column; }
+    .chat .agarradera { margin-bottom: 10px; }
+    .chat .cab-chat { display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid var(--gris-fondo); }
+    .chat .cab-chat .t { font-size: 16px; font-weight: 700; }
+    .chat .cab-chat .s { font-size: 11px; color: var(--gris-oscuro); }
+    .burbujas { flex: 1; overflow: hidden; padding: 14px 0; display: flex; flex-direction: column; gap: 10px; }
+    .yo { align-self: flex-end; max-width: 78%; background: var(--gris-claro); border-radius: 16px 16px 4px 16px; padding: 9px 12px; font-size: 13px; }
+    .el { align-self: flex-start; max-width: 86%; font-size: 13px; line-height: 1.45; }
+    .tarjeta-accion { border: 1.5px solid var(--negro); border-radius: 14px; padding: 12px; margin-top: 8px; }
+    .tarjeta-accion .cab { display: flex; justify-content: space-between; align-items: baseline; }
+    .tarjeta-accion .t { font-size: 14px; font-weight: 600; }
+    .tarjeta-accion .k { font-size: 13px; font-weight: 600; }
+    .tarjeta-accion .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 3px; }
+    .tarjeta-accion .acc { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
+    .tarjeta-accion .acc .link { font-size: 12px; font-weight: 600; text-decoration: underline; }
+    .tarjeta-accion .acc .pulgares { margin-left: auto; font-size: 13px; color: var(--gris-medio); letter-spacing: 6px; }
+    .sugeridos { display: flex; gap: 6px; overflow: hidden; padding: 8px 0; }
+    .sugeridos span { flex-shrink: 0; font-size: 12px; font-weight: 600; padding: 7px 11px; border-radius: 16px; border: 1px solid var(--gris-medio); }
+    .entrada-chat { display: flex; align-items: center; gap: 8px; padding: 10px 0 30px; }
+    .entrada-chat .campo { flex: 1; height: 44px; border-radius: 22px; border: 1.5px solid var(--negro); background: var(--gris-fondo); display: flex; align-items: center; padding: 0 14px; font-size: 13px; color: var(--gris-oscuro); }
+    .entrada-chat .bot { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--negro); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+    .entrada-chat .bot.negro { background: var(--negro); color: var(--blanco); }
+    .limite { font-size: 10px; color: var(--gris-oscuro); text-align: center; margin-top: -24px; padding-bottom: 8px; }
+
+    /* Memoria editable */
+    .memoria { background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; padding: 2px 14px; }
+    .mem { display: grid; grid-template-columns: 1fr auto; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--gris-fondo); font-size: 13px; }
+    .mem:last-child { border-bottom: none; }
+    .mem .s { font-size: 11px; color: var(--gris-oscuro); margin-top: 1px; }
+    .mem .ed { font-size: 12px; font-weight: 600; text-decoration: underline; color: var(--gris-oscuro); }
+    .tono { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .tono span { padding: 12px; border: 1px solid var(--gris-medio); border-radius: 12px; font-size: 13px; font-weight: 600; }
+    .tono span small { display: block; font-size: 11px; font-weight: 400; color: var(--gris-oscuro); margin-top: 2px; }
+    .tono span.sel { border: 2px solid var(--negro); background: var(--gris-fondo); }
+    .agregar-mem { margin-top: 10px; font-size: 13px; font-weight: 600; text-decoration: underline; }
+    /* v40 · ajustes finales de espacio para que el home quepa sobre la barra */
+    .zona-inferior { padding-top: 12px; }
+    .zona-inferior .seccion + .seccion { margin-top: 12px; }
+    .md { padding: 10px 14px; gap: 6px; }
+    .md .pill { height: 26px; }
+    .fc1 { padding: 8px 0; }
+    .fc-toca { padding: 10px 14px; }
+    .chat { z-index: 3; }
+    .pulgares { filter: grayscale(1); }
+
+    /* ===================== v41 · "+" = Hacer algo (atajos + Milo); voz manteniendo el "+"; Milo en contexto ===================== */
+    .hacer { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; background: var(--blanco); border-radius: 20px 20px 0 0; border-top: 1.5px solid var(--negro); padding: 10px 16px 104px; }
+    .hacer h2 { font-size: 18px; margin-bottom: 12px; }
+    .atajos4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 18px; }
+    .at { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 4px; border: 1px solid var(--gris-claro); border-radius: 14px; font-size: 12px; font-weight: 600; }
+    .at .placeholder { width: 26px; height: 26px; border-radius: 8px; }
+    .at small { font-size: 10px; font-weight: 400; color: var(--gris-oscuro); }
+    .separa { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--gris-oscuro); margin-bottom: 10px; }
+    .separa::before, .separa::after { content: ""; flex: 1; border-top: 1px solid var(--gris-claro); }
+    .pidele { border: 1.5px solid var(--negro); border-radius: 16px; padding: 12px; }
+    .pidele .fila { display: flex; align-items: center; gap: 10px; }
+    .pidele .campo { flex: 1; font-size: 13px; color: var(--gris-oscuro); }
+    .pidele .bot { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--negro); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+    .pidele .bot.negro { background: var(--negro); color: var(--blanco); }
+    .pidele .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .pidele .chips span { font-size: 11px; font-weight: 600; padding: 6px 10px; border-radius: 14px; border: 1px solid var(--gris-medio); }
+    .nav-mas.cerrar-menu { z-index: 4; }
+
+    /* Voz: mantener presionado el "+" */
+    .escucha { position: absolute; inset: 0; z-index: 3; background: rgba(17,17,17,.6); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 0 24px 120px; }
+    .escucha .burbuja-voz { background: var(--blanco); border-radius: 18px; padding: 14px 16px; font-size: 15px; line-height: 1.4; max-width: 300px; margin-bottom: 26px; border: 1.5px solid var(--negro); }
+    .escucha .burbuja-voz .etq { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--gris-oscuro); margin-bottom: 6px; }
+    .ondas { display: flex; align-items: center; gap: 4px; height: 36px; margin-bottom: 14px; }
+    .ondas i { width: 5px; border-radius: 3px; background: var(--blanco); }
+    .escucha .pista-voz { font-size: 12px; color: var(--blanco); text-align: center; }
+    .mas-presionado { position: absolute; right: 16px; bottom: 24px; z-index: 4; width: 76px; height: 76px; margin: -6px -6px 0 0; border-radius: 50%; background: var(--negro); color: var(--blanco); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; box-shadow: 0 0 0 8px rgba(255,255,255,.35); }
+
+    /* Milo en contexto, dentro del detalle de una comida */
+    .contexto-milo { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1.5px solid var(--negro); border-radius: 14px; margin-top: 14px; }
+    .contexto-milo .t { font-size: 13px; font-weight: 600; }
+    .contexto-milo .s { font-size: 11px; color: var(--gris-oscuro); margin-top: 1px; }
+    .contexto-milo .chev { margin-left: auto; color: var(--gris-medio); }
+    .preguntas { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .preguntas span { font-size: 11px; font-weight: 600; padding: 6px 10px; border-radius: 14px; border: 1px solid var(--gris-medio); }
+    .ali2 { display: grid; grid-template-columns: 1fr auto; padding: 11px 0; border-bottom: 1px solid var(--gris-fondo); font-size: 14px; }
+    .ali2:last-child { border-bottom: none; }
+    .ali2 .p { font-size: 12px; color: var(--gris-oscuro); margin-top: 1px; }
+    .ali2 .k { font-size: 12px; font-weight: 600; }
+
+    /* ===================== v42 ===================== */
+    /* 1) Título "Hoy" más contenido: sigue siendo el texto más grande */
+    .cabecera h1 { font-size: 30px; }
+    /* 2) Chevron a 16 px del texto */
+    .fila-titulo.junto { justify-content: flex-start; gap: 16px; }
+
+    /* 3) Aviso de Milo: solo si hay algo fuera de lo normal; informa, no actúa; "Ver" o cerrar */
+    .aviso-milo { background: var(--blanco); border: 1.5px solid var(--negro); border-radius: 16px; padding: 12px 14px; }
+    .aviso-milo .cab { display: flex; align-items: center; gap: 10px; }
+    .aviso-milo .cab .t { font-size: 12px; font-weight: 600; color: var(--gris-oscuro); text-transform: uppercase; letter-spacing: .04em; }
+    .aviso-milo .cab .cerrar { margin-left: auto; font-size: 16px; color: var(--gris-oscuro); line-height: 1; }
+    .aviso-milo .cuerpo { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+    .aviso-milo .cuerpo p { flex: 1; font-size: 13px; line-height: 1.4; }
+    .aviso-milo .milo-ava { width: 22px; height: 22px; font-size: 10px; }
+
+    /* 4) Puntos de entrada: las acciones recurrentes */
+    .registrar-rapido { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .rr { display: flex; align-items: center; gap: 8px; padding: 10px; border-radius: 14px; background: var(--blanco); border: 1px solid var(--gris-claro); }
+    .rr.principal { background: var(--negro); color: var(--blanco); border-color: var(--negro); }
+    .rr .placeholder { width: 22px; height: 22px; border-radius: 7px; }
+    .rr.principal .placeholder { background: var(--gris-oscuro); border-color: var(--gris-medio); }
+    .rr .t { font-size: 13px; font-weight: 600; line-height: 1.1; }
+    .rr .s { font-size: 10px; color: var(--gris-oscuro); margin-top: 2px; }
+    .rr.principal .s { color: var(--gris-claro); }
+
+    /* 5) El resto es estado: sin botones */
+    .estado-dos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .ed2 { background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; padding: 12px 14px; }
+    .ed2 .cab { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+    .ed2 .cab .t { font-size: 12px; color: var(--gris-oscuro); }
+    .ed2 .cab .d { font-size: 13px; font-weight: 600; }
+    .ed2 .cab .d span { font-weight: 400; color: var(--gris-oscuro); font-size: 11px; }
+    .ed2 .barra { height: 5px; }
+    .ed2 .det { font-size: 11px; color: var(--gris-oscuro); margin-top: 6px; }
+    .zona-inferior .seccion + .seccion { margin-top: 12px; }
+    .fc1 { padding: 8px 0; }
+    .fc1.toca-estado .txt b { font-weight: 700; }
+    .fc1.toca-estado { background: var(--gris-fondo); margin: 0 -14px; padding: 8px 14px; }
+
+    /* Detalle del aviso */
+    .contexto-aviso { background: var(--gris-fondo); border-radius: 14px; padding: 14px; font-size: 13px; line-height: 1.5; margin-bottom: 16px; }
+    .contexto-aviso b { font-weight: 600; }
+    .comparar { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0 0; }
+    .comparar div { background: var(--blanco); border-radius: 10px; padding: 10px; }
+    .comparar .n { font-size: 11px; color: var(--gris-oscuro); }
+    .comparar .v { font-size: 15px; font-weight: 600; margin-top: 2px; }
+    /* Ajuste final para que el home con aviso quepa sobre la barra */
+    .aviso-milo { padding: 10px 14px; }
+    .aviso-milo .cuerpo { margin-top: 6px; }
+    .rr { padding: 8px 10px; }
+
+    /* ===================== v43 · Aviso con menos elementos ===================== */
+    .av { background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; }
+    .av .txt { flex: 1; font-size: 13px; line-height: 1.35; }
+    .av .txt .etq { display: block; font-size: 11px; color: var(--gris-oscuro); margin-bottom: 2px; }
+    .av .ir { font-size: 13px; font-weight: 600; text-decoration: underline; white-space: nowrap; }
+    .av .chev { font-size: 18px; color: var(--gris-oscuro); }
+    .av .cerrar { font-size: 15px; color: var(--gris-medio); line-height: 1; }
+    .av.marcado { border-left: 4px solid var(--negro); }
+    .nota-gesto { font-size: 10px; color: var(--gris-oscuro); margin: 4px 4px 0; }
+
+    /* ===================== v45 · "Registrar nueva comida" en el home; sin el botón "+" ===================== */
+    .registrar-card { display: flex; align-items: center; gap: 12px; background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; padding: 14px 16px; }
+    .registrar-card .txt { flex: 1; }
+    .registrar-card .t { font-size: 15px; font-weight: 600; }
+    .registrar-card .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 2px; }
+    .registrar-card .pill { height: 34px; padding: 0 16px; font-size: 13px; }
+
+    /* Hoja: ¿qué deseas registrar? */
+    .que-registrar { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; background: var(--blanco); border-radius: 20px 20px 0 0; border-top: 1.5px solid var(--negro); padding: 10px 16px 34px; }
+    .que-registrar h2 { font-size: 18px; margin-bottom: 14px; }
+    .tipo { display: grid; grid-template-columns: 32px 1fr auto 10px; align-items: center; column-gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--gris-fondo); }
+    .tipo .placeholder { width: 32px; height: 32px; border-radius: 10px; }
+    .tipo .t { font-size: 15px; font-weight: 600; }
+    .tipo .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 1px; }
+    .tipo .d { font-size: 12px; font-weight: 600; color: var(--gris-oscuro); }
+    .tipo .chev { color: var(--gris-medio); }
+    .tipo.principal { background: var(--gris-fondo); margin: 0 -16px; padding: 12px 16px; border-bottom: none; }
+    .que-registrar .pidele { margin-top: 16px; }
+    .nav .capsula { flex: 1; }
+
+    /* ===================== v46 · Registro genérico + lo registrado se va llenando ===================== */
+    .registrar-card .t { font-size: 15px; }
+    .registro-dia { background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 16px; padding: 2px 14px; }
+    .rd { display: grid; grid-template-columns: 28px 1fr auto; align-items: center; column-gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--gris-fondo); }
+    .rd:last-child { border-bottom: none; }
+    .rd .placeholder { width: 28px; height: 28px; border-radius: 8px; }
+    .rd .t { font-size: 14px; font-weight: 600; }
+    .rd .t span { font-size: 11px; font-weight: 400; color: var(--gris-oscuro); margin-left: 6px; }
+    .rd .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rd .v { font-size: 13px; font-weight: 600; white-space: nowrap; }
+    .rd.nuevo { background: var(--gris-fondo); margin: 0 -14px; padding: 9px 14px; }
+    .rd.nuevo .t::after { content: "Nuevo"; white-space: nowrap; margin-left: 8px; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 8px; border: 1px solid var(--gris-medio); color: var(--gris-oscuro); }
+    .vacio-dia { text-align: center; padding: 28px 20px; border: 1.5px dashed var(--gris-medio); border-radius: 16px; }
+    .vacio-dia .t { font-size: 14px; font-weight: 600; }
+    .vacio-dia .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 4px; line-height: 1.4; }
+
+    /* Hoja de registro: lo que antes vivía en el "+" */
+    .que-registrar .grupo-hoja { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--gris-oscuro); margin: 14px 0 2px; }
+    .selector-comidas { display: flex; gap: 6px; overflow: hidden; margin: 8px 0 2px 44px; }
+    .selector-comidas span { flex-shrink: 0; font-size: 11px; font-weight: 600; padding: 5px 10px; border-radius: 12px; border: 1px solid var(--gris-medio); }
+    .selector-comidas span.sel { border: 2px solid var(--negro); background: var(--blanco); }
+    .selector-comidas span.hecha { color: var(--gris-medio); border-color: var(--gris-claro); }
+
+    /* ===================== v47 · Opción B: "+" global que abre el chat primero ===================== */
+    /* Momento cero: el estado vacío enseña y señala el "+" */
+    .vacio-cero { text-align: center; padding: 26px 20px 22px; border: 1.5px dashed var(--gris-medio); border-radius: 18px; background: var(--blanco); }
+    .vacio-cero .ilus { width: 56px; height: 56px; border-radius: 16px; margin: 0 auto 12px; }
+    .vacio-cero .t { font-size: 16px; font-weight: 600; }
+    .vacio-cero .s { font-size: 13px; color: var(--gris-oscuro); margin: 6px auto 14px; line-height: 1.45; max-width: 270px; }
+    .vacio-cero .pill { height: 38px; padding: 0 18px; font-size: 14px; }
+    .vacio-cero .pista { font-size: 12px; color: var(--gris-oscuro); margin-top: 12px; }
+    .vacio-cero .pista b { display: inline-flex; width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--negro); align-items: center; justify-content: center; font-size: 13px; color: var(--negro); vertical-align: middle; }
+    .flecha-pista { position: absolute; right: 30px; bottom: 96px; font-size: 26px; z-index: 2; }
+
+    /* Chat primero: teclado y voz listos; atajos como sugerencias sobre el campo */
+    .chat-b { position: absolute; left: 0; right: 0; bottom: 0; top: 54px; z-index: 3; background: var(--blanco); border-radius: 20px 20px 0 0; border-top: 1.5px solid var(--negro); display: flex; flex-direction: column; }
+    .chat-b .cab-chat { display: flex; align-items: center; gap: 10px; padding: 14px 16px 12px; border-bottom: 1px solid var(--gris-fondo); }
+    .chat-b .cab-chat .t { font-size: 16px; font-weight: 700; }
+    .chat-b .cab-chat .s { font-size: 11px; color: var(--gris-oscuro); }
+    .chat-b .cab-chat .x { margin-left: auto; font-size: 18px; color: var(--gris-oscuro); }
+    .chat-b .cuerpo { flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
+    .chat-b .saludo { font-size: 14px; line-height: 1.45; }
+    .atajos-chat { display: flex; gap: 6px; overflow: hidden; padding: 8px 16px; }
+    .atajos-chat span { flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 8px 12px; border-radius: 18px; border: 1px solid var(--gris-medio); background: var(--blanco); }
+    .atajos-chat span i { font-style: normal; font-weight: 400; color: var(--gris-oscuro); font-size: 11px; }
+    .compositor { display: flex; align-items: center; gap: 8px; padding: 6px 16px 10px; }
+    .compositor .campo { flex: 1; min-height: 44px; border-radius: 22px; border: 1.5px solid var(--negro); display: flex; align-items: center; padding: 0 14px; font-size: 14px; }
+    .compositor .campo .cursor { width: 1.5px; height: 18px; background: var(--negro); margin-left: 1px; }
+    .compositor .campo.vacio { color: var(--gris-oscuro); font-size: 13px; }
+    .compositor .bot { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--negro); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+    .compositor .bot.negro { background: var(--negro); color: var(--blanco); }
+    .teclado { height: 214px; background: var(--gris-claro); display: grid; grid-template-rows: repeat(4, 1fr); gap: 8px; padding: 10px 6px 30px; }
+    .teclado .fila-t { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; }
+    .teclado .fila-t i { background: var(--blanco); border-radius: 5px; }
+    .teclado .fila-t.ultima { grid-template-columns: 1fr 5fr 1fr; }
+
+    /* Confirmación en el home */
+    .toast { position: absolute; left: 16px; right: 16px; bottom: 100px; z-index: 3; display: flex; align-items: center; gap: 10px; background: var(--negro); color: var(--blanco); border-radius: 14px; padding: 12px 14px; font-size: 13px; }
+    .toast .deshacer { margin-left: auto; font-weight: 600; text-decoration: underline; }
+
+    /* ===================== v48 ===================== */
+    /* 1) "+ Registrar" con texto en la barra: el estado vacío ya no necesita su propio botón */
+    .nav-registrar { flex-shrink: 0; height: 64px; padding: 0 18px; border-radius: 32px; background: var(--negro); color: var(--blanco); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; box-shadow: 0 6px 16px rgba(0,0,0,.18); white-space: nowrap; }
+    .nav .capsula .nav-item { font-size: 10px; }
+    .vacio-min { text-align: center; padding: 34px 20px; }
+    .vacio-min .ilus { width: 48px; height: 48px; border-radius: 14px; margin: 0 auto 12px; }
+    .vacio-min .t { font-size: 15px; font-weight: 600; }
+    .vacio-min .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 4px; }
+    .vacio-min .s b { font-weight: 600; color: var(--negro); }
+    .flecha-abajo { position: absolute; right: 60px; bottom: 98px; font-size: 22px; z-index: 2; color: var(--gris-oscuro); }
+
+    /* 2) Comidas registradas: tarjetas individuales, sin flecha de detalle */
+    .titulo-comidas { display: flex; align-items: baseline; gap: 8px; margin: 0 4px 10px; }
+    .titulo-comidas .t { font-size: 13px; font-weight: 500; color: var(--gris-oscuro); }
+    .titulo-comidas .t b { color: var(--negro); font-weight: 600; }
+    .titulo-comidas .ok { font-size: 12px; font-weight: 600; }
+    .cards-comida { display: grid; gap: 8px; }
+    .cc2 { display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 12px; background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 14px; padding: 10px 14px; }
+    .cc2 .n { font-size: 14px; font-weight: 600; }
+    .cc2 .n span { font-size: 11px; font-weight: 400; color: var(--gris-oscuro); margin-left: 6px; }
+    .cc2 .p { font-size: 12px; color: var(--gris-oscuro); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cc2 .der { text-align: right; }
+    .cc2 .k { font-size: 13px; font-weight: 600; }
+    .cc2 .ed { display: block; font-size: 11px; font-weight: 600; text-decoration: underline; color: var(--gris-oscuro); margin-top: 2px; }
+    .otros-reg { display: flex; gap: 16px; font-size: 12px; color: var(--gris-oscuro); margin: 10px 4px 0; }
+    .otros-reg b { color: var(--negro); font-weight: 600; }
+
+    /* 3) Milo al abrirse: opciones por defecto (patrón Companion) */
+    .milo-full { position: absolute; inset: 0; z-index: 3; background: var(--blanco); display: flex; flex-direction: column; }
+    .milo-top { display: flex; align-items: center; justify-content: space-between; padding: 6px 18px 0; font-size: 18px; }
+    .milo-top .titulo { font-size: 15px; font-weight: 600; }
+    .milo-top .titulo span { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 6px; border: 1px solid var(--gris-medio); margin-left: 6px; color: var(--gris-oscuro); }
+    .milo-top .iconos { display: flex; gap: 14px; font-size: 13px; color: var(--gris-oscuro); }
+    .milo-hero { text-align: center; padding: 22px 24px 18px; }
+    .milo-hero .logo { width: 48px; height: 48px; border-radius: 14px; margin: 0 auto 14px; border: 2px solid var(--negro); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; }
+    .milo-hero h2 { font-size: 24px; line-height: 1.2; }
+    .opciones-milo { padding: 0 16px; display: grid; gap: 8px; overflow: hidden; flex: 1; align-content: start; }
+    .om { background: var(--gris-fondo); border-radius: 14px; padding: 13px 14px; }
+    .om .cab { display: flex; align-items: center; gap: 12px; }
+    .om .cab .placeholder { width: 22px; height: 22px; border-radius: 6px; }
+    .om .cab .t { font-size: 14px; font-weight: 600; flex: 1; }
+    .om .cab .v { font-size: 13px; color: var(--gris-oscuro); }
+    .om .sub { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; }
+    .om .sub span { background: var(--blanco); border-radius: 10px; padding: 9px 4px; text-align: center; font-size: 11px; font-weight: 600; border: 1px solid var(--gris-claro); }
+    .om .sub span small { display: block; font-size: 10px; font-weight: 400; color: var(--gris-oscuro); margin-top: 1px; }
+    .om .sub span.destacada { border: 1.5px solid var(--negro); }
+    .milo-full .compositor { padding: 10px 16px 30px; border-top: 1px solid var(--gris-fondo); }
+
+    /* Editar porción conversando */
+    .porciones-chat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px; }
+    .porciones-chat span { text-align: center; padding: 8px 4px; border-radius: 10px; border: 1px solid var(--gris-medio); font-size: 11px; font-weight: 600; }
+    .porciones-chat span small { display: block; font-weight: 400; color: var(--gris-oscuro); font-size: 10px; }
+    .porciones-chat span.sel { border: 2px solid var(--negro); background: var(--gris-fondo); }
+
+    /* ===================== v49 ===================== */
+    /* Capítulos con la misma composición: título con conteo + tarjetas (nombre, detalle, valor, editar) */
+    .capitulo + .capitulo { margin-top: 18px; }
+    .cap-tit { font-size: 13px; font-weight: 500; color: var(--gris-oscuro); margin: 0 4px 8px; }
+    .cap-tit b { color: var(--negro); font-weight: 600; }
+    .cap-tit .ok { margin-left: 6px; font-weight: 600; color: var(--negro); }
+    .cards-cap { display: grid; gap: 8px; }
+    .cr { display: grid; grid-template-columns: 1fr auto 24px; align-items: center; column-gap: 10px; background: var(--blanco); border: 1px solid var(--gris-claro); border-radius: 14px; padding: 11px 12px 11px 14px; }
+    .cr .n { font-size: 14px; font-weight: 600; }
+    .cr .p { font-size: 12px; color: var(--gris-oscuro); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cr .k { font-size: 13px; font-weight: 600; white-space: nowrap; }
+    .cr .lapiz { width: 24px; height: 24px; border-radius: 8px; border: 1px solid var(--gris-claro); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--gris-oscuro); }
+
+    /* Notificación del sistema */
+    .notif { position: absolute; left: 10px; right: 10px; top: 50px; z-index: 5; background: rgba(255,255,255,.97); border: 1px solid var(--gris-claro); border-radius: 18px; padding: 12px 14px; box-shadow: 0 8px 24px rgba(0,0,0,.18); display: grid; grid-template-columns: 30px 1fr; column-gap: 10px; }
+    .notif .app { width: 30px; height: 30px; border-radius: 8px; background: var(--negro); }
+    .notif .cab { display: flex; justify-content: space-between; font-size: 11px; color: var(--gris-oscuro); }
+    .notif .t { font-size: 13px; font-weight: 600; margin-top: 2px; }
+    .notif .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 1px; line-height: 1.35; }
+    /* Aviso en el home (versión B de la v43) */
+    .av { background: var(--blanco); border: 1px solid var(--gris-claro); border-left: 4px solid var(--negro); border-radius: 14px; padding: 11px 14px; display: flex; align-items: center; gap: 12px; }
+    .av .txt { flex: 1; font-size: 13px; line-height: 1.35; }
+    .av .etq { display: block; font-size: 11px; color: var(--gris-oscuro); margin-bottom: 2px; }
+    .av .chev { font-size: 18px; color: var(--gris-oscuro); }
+
+    /* Milo: categorías (sin acordeón) */
+    .categorias { padding: 0 16px; display: grid; gap: 8px; align-content: start; flex: 1; }
+    .cat { display: flex; align-items: center; gap: 12px; background: var(--gris-fondo); border-radius: 14px; padding: 14px; }
+    .cat .placeholder { width: 24px; height: 24px; border-radius: 7px; }
+    .cat .t { flex: 1; font-size: 14px; font-weight: 600; }
+    .cat .chev { color: var(--gris-medio); }
+    /* Chat: opciones como tarjetas dentro de la conversación */
+    .opciones-chat { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+    .opciones-chat span { background: var(--blanco); border: 1px solid var(--gris-medio); border-radius: 12px; padding: 10px; font-size: 12px; font-weight: 600; }
+    .opciones-chat span small { display: block; font-size: 10px; font-weight: 400; color: var(--gris-oscuro); margin-top: 2px; }
+    .opciones-chat span.destacada { border: 1.5px solid var(--negro); }
+    .yo.sel { font-weight: 600; }
+    .decision { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .decision .pill.borde { background: var(--blanco); }
+
+    /* ===================== v50 ===================== */
+    .opciones3 { padding: 0 16px; display: grid; gap: 8px; align-content: start; }
+    .o3 { display: flex; align-items: center; gap: 12px; background: var(--gris-fondo); border-radius: 14px; padding: 14px; }
+    .o3 .placeholder { width: 26px; height: 26px; border-radius: 8px; }
+    .o3 .t { font-size: 14px; font-weight: 600; }
+    .o3 .s { font-size: 12px; color: var(--gris-oscuro); margin-top: 1px; }
+    .o3 .chev { margin-left: auto; color: var(--gris-medio); }
+    .consulta { padding: 18px 16px 0; flex: 1; }
+    .consulta .etq { font-size: 12px; color: var(--gris-oscuro); margin-bottom: 8px; }
+    .consulta .ejemplos { display: flex; flex-wrap: wrap; gap: 6px; }
+    .consulta .ejemplos span { font-size: 12px; padding: 7px 11px; border-radius: 16px; border: 1px solid var(--gris-medio); }
+    .tres-opciones { display: grid; gap: 6px; margin-top: 8px; }
+    .tres-opciones span { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--blanco); border: 1px solid var(--gris-medio); border-radius: 12px; padding: 11px 12px; font-size: 13px; font-weight: 600; }
+    .tres-opciones span small { font-size: 11px; font-weight: 400; color: var(--gris-oscuro); }
+    .tres-opciones span.destacada { border: 1.5px solid var(--negro); }
+
+    /* Mapa de edición */
+    .mapa { max-width: 1100px; margin: 40px auto 0; background: var(--blanco); border: 1.5px solid var(--negro); border-radius: 16px; padding: 24px; }
+    .mapa h2 { font-size: 18px; margin-bottom: 4px; }
+    .mapa .intro { font-size: 13px; color: var(--gris-oscuro); margin-bottom: 16px; }
+    .mapa table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .mapa th, .mapa td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--gris-claro); vertical-align: top; }
+    .mapa th { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--gris-oscuro); }
+    .mapa .regla { margin-top: 14px; background: var(--gris-fondo); border-radius: 12px; padding: 12px 14px; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <!--
+    v50: sin aviso dentro del home (solo la notificación fuera de la app) · agua con una sola medida (vasos) ·
+    Milo con máximo 3 opciones (Registrar · Registrar peso · Armar un plato con lo que tengo) + consultas generales ·
+    al elegir "Registrar", Milo pregunta qué: comida, agua o suplemento · mapa de dónde se edita.
+  -->
+  <div class="lienzo">
+
+    <div>
+      <div class="etiqueta-vista">
+        <strong>1 · Home · 14:30</strong>
+        <span>Sin aviso dentro; agua con una sola medida.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>14:30</span><span class="indicadores"><i></i><i></i></span></div>
+        <main class="contenido">
+          <div class="zona-superior">
+          <header class="cabecera">
+            <h1>Hoy</h1>
+            <div class="perfil" aria-label="Perfil"></div>
+          </header>
+          <section class="tarjeta">
+            <div class="fila-titulo junto"><p class="eyebrow">Calorías consumidas</p><span class="flecha-meta" aria-label="Ver tu meta">›</span></div>
+            <div class="fila-cifra"><span class="cifra">1.350</span><span class="contexto">/ 2.000 kcal</span></div>
+            <div class="barra grande"><div style="width: 67.5%;"></div></div>
+            <div class="macros-col">
+              <div class="macro-col"><p class="nombre-macro">Proteína</p><p class="valor">62 g <span>/ 140</span></p><div class="barra"><div style="width: 44%;"></div></div></div>
+              <div class="macro-col"><p class="nombre-macro">Carbos</p><p class="valor">160 g <span>/ 215</span></p><div class="barra"><div style="width: 74%;"></div></div></div>
+              <div class="macro-col"><p class="nombre-macro">Grasa</p><p class="valor">45 g <span>/ 65</span></p><div class="barra"><div style="width: 69%;"></div></div></div>
+            </div>
+          </section>
+          </div>
+          <div class="zona-inferior">
+            <div class="capitulo">
+              <p class="cap-tit">Comidas · <b>3 de 5</b></p>
+              <div class="cards-cap">
+                <div class="cr"><div><p class="n">Desayuno</p><p class="p">Huevos pericos y arepa</p></div><p class="k">480 kcal</p><span class="lapiz" aria-label="Editar">✎</span></div>
+                <div class="cr"><div><p class="n">Media mañana</p><p class="p">Yogur griego y banano</p></div><p class="k">270 kcal</p><span class="lapiz" aria-label="Editar">✎</span></div>
+                <div class="cr"><div><p class="n">Almuerzo</p><p class="p">Arroz, pollo y ensalada</p></div><p class="k">600 kcal</p><span class="lapiz" aria-label="Editar">✎</span></div>
+              </div>
+            </div>
+            <div class="capitulo">
+              <p class="cap-tit">Agua · <b>1,5 de 2 L</b></p>
+              <!-- Una sola medida, la que eligió el usuario en Perfil (aquí: vasos de 250 ml) -->
+              <div class="cards-cap">
+                <div class="cr"><div><p class="n">Vasos</p><p class="p">6 de 8 · 250 ml cada uno</p></div><p class="k">1,5 L</p><span class="lapiz" aria-label="Editar">✎</span></div>
+              </div>
+            </div>
+            <div class="capitulo">
+              <p class="cap-tit">Suplementos · <b>1 de 2</b></p>
+              <div class="cards-cap">
+                <div class="cr"><div><p class="n">Creatina</p><p class="p">Después del desayuno</p></div><p class="k">5 g</p><span class="lapiz" aria-label="Editar">✎</span></div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <nav class="nav">
+          <div class="capsula">
+            <div class="nav-item activo"><div class="placeholder"></div>Hoy</div>
+            <div class="nav-item"><div class="placeholder"></div>Preparaciones</div>
+            <div class="nav-item"><div class="placeholder"></div>Estadísticas</div>
+          </div>
+          <div class="nav-mas" aria-label="Registrar">+</div>
+        </nav>
+      </div>
+    </div>
+
+    <div>
+      <div class="etiqueta-vista">
+        <strong>2 · Comida sin registrar · 17:10</strong>
+        <span>Solo la notificación, fuera de la app.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>17:10</span><span class="indicadores"><i></i><i></i></span></div>
+        <main class="contenido">
+          <div class="zona-superior">
+          <header class="cabecera">
+            <h1>Hoy</h1>
+            <div class="perfil" aria-label="Perfil"></div>
+          </header>
+          <section class="tarjeta">
+            <div class="fila-titulo junto"><p class="eyebrow">Calorías consumidas</p><span class="flecha-meta" aria-label="Ver tu meta">›</span></div>
+            <div class="fila-cifra"><span class="cifra">1.350</span><span class="contexto">/ 2.000 kcal</span></div>
+            <div class="barra grande"><div style="width: 67.5%;"></div></div>
+            <div class="macros-col">
+              <div class="macro-col"><p class="nombre-macro">Proteína</p><p class="valor">62 g <span>/ 140</span></p><div class="barra"><div style="width: 44%;"></div></div></div>
+              <div class="macro-col"><p class="nombre-macro">Carbos</p><p class="valor">160 g <span>/ 215</span></p><div class="barra"><div style="width: 74%;"></div></div></div>
+              <div class="macro-col"><p class="nombre-macro">Grasa</p><p class="valor">45 g <span>/ 65</span></p><div class="barra"><div style="width: 69%;"></div></div></div>
+            </div>
+          </section>
+          </div>
+          <div class="zona-inferior">
+            <div class="capitulo">
+              <p class="cap-tit">Comidas · <b>3 de 5</b></p>
+              <div class="cards-cap">
+                <div class="cr"><div><p class="n">Desayuno</p><p class="p">Huevos pericos y arepa</p></div><p class="k">480 kcal</p><span class="lapiz" aria-label="Editar">✎</span></div>
+                <div class="cr"><div><p class="n">Media mañana</p><p class="p">Yogur griego y banano</p></div><p class="k">270 kcal</p><span class="lapiz" aria-label="Editar">✎</span></div>
+                <div class="cr"><div><p class="n">Almuerzo</p><p class="p">Arroz, pollo y ensalada</p></div><p class="k">600 kcal</p><span class="lapiz" aria-label="Editar">✎</span></div>
+              </div>
+            </div>
+            <div class="capitulo">
+              <p class="cap-tit">Agua · <b>1,5 de 2 L</b></p>
+              <!-- Una sola medida, la que eligió el usuario en Perfil (aquí: vasos de 250 ml) -->
+              <div class="cards-cap">
+                <div class="cr"><div><p class="n">Vasos</p><p class="p">6 de 8 · 250 ml cada uno</p></div><p class="k">1,5 L</p><span class="lapiz" aria-label="Editar">✎</span></div>
+              </div>
+            </div>
+            <div class="capitulo">
+              <p class="cap-tit">Suplementos · <b>1 de 2</b></p>
+              <div class="cards-cap">
+                <div class="cr"><div><p class="n">Creatina</p><p class="p">Después del desayuno</p></div><p class="k">5 g</p><span class="lapiz" aria-label="Editar">✎</span></div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <nav class="nav">
+          <div class="capsula">
+            <div class="nav-item activo"><div class="placeholder"></div>Hoy</div>
+            <div class="nav-item"><div class="placeholder"></div>Preparaciones</div>
+            <div class="nav-item"><div class="placeholder"></div>Estadísticas</div>
+          </div>
+          <div class="nav-mas" aria-label="Registrar">+</div>
+        </nav>
+        <!-- Solo un mensaje fuera de la app; dentro del home no hay aviso -->
+        <div class="notif">
+          <span class="app"></span>
+          <div><p class="cab"><span>Milo</span><span>ahora</span></p><p class="t">¿Ya tomaste tus onces?</p><p class="s">Te falta registrarlas. Dime qué comiste y lo anoto.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="etiqueta-vista">
+        <strong>3 · Al tocar +</strong>
+        <span>Milo: 3 opciones y consultas generales.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>17:10</span><span class="indicadores"><i></i><i></i></span></div>
+
+        <div class="milo-full">
+          <div class="barra-estado"><span>17:10</span><span class="indicadores"><i></i><i></i></span></div>
+          <div class="milo-top"><span>×</span><p class="titulo">Milo<span>Beta</span></p><span class="iconos"><span>Historial</span></span></div>
+          <div class="milo-hero"><div class="logo">M</div><h2>¿En qué te ayudo?</h2></div>
+          <!-- Máximo 3 opciones. Lo demás —consultas generales— va en el campo de abajo -->
+          <div class="opciones3">
+            <div class="o3"><span class="placeholder"></span><div><p class="t">Registrar</p><p class="s">Una comida, agua o un suplemento</p></div><span class="chev">›</span></div>
+            <div class="o3"><span class="placeholder"></span><div><p class="t">Registrar peso</p><p class="s">Último: 72,8 kg · lunes</p></div><span class="chev">›</span></div>
+            <div class="o3"><span class="placeholder"></span><div><p class="t">Armar un plato con lo que tengo</p><p class="s">Dime qué hay en tu cocina</p></div><span class="chev">›</span></div>
+          </div>
+          <div class="consulta">
+            <p class="etq">También puedes preguntarle</p>
+            <div class="ejemplos"><span>¿El aguacate engorda?</span><span>¿Qué pido en un corrientazo?</span><span>¿Cuánta agua debo tomar?</span></div>
+          </div>
+          <div class="compositor"><div class="campo vacio">O pregúntale lo que quieras sobre comida…</div><span class="bot">Foto</span><span class="bot negro">Voz</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="etiqueta-vista">
+        <strong>4 · Elegir Registrar</strong>
+        <span>Milo pregunta qué: comida, agua o suplemento.</span>
+      </div>
+      <div class="telefono">
+        <div class="barra-estado"><span>17:10</span><span class="indicadores"><i></i><i></i></span></div>
+
+        <div class="milo-full">
+          <div class="barra-estado"><span>17:10</span><span class="indicadores"><i></i><i></i></span></div>
+          <div class="milo-top"><span>‹</span><p class="titulo">Milo<span>Beta</span></p><span class="iconos"><span>Historial</span></span></div>
+          <div class="cuerpo" style="flex:1;padding:16px;display:flex;flex-direction:column;gap:10px;overflow:hidden">
+            <p class="yo sel">Registrar</p>
+            <div class="el">¿Qué quieres registrar?
+              <div class="tres-opciones">
+                <span class="destacada">Una comida <small>Te tocan las onces</small></span>
+                <span>Agua <small>1,5 de 2 L</small></span>
+                <span>Un suplemento <small>Magnesio pendiente</small></span>
+              </div>
+            </div>
+          </div>
+          <div class="compositor"><div class="campo vacio">Escribe o habla…</div><span class="bot">Foto</span><span class="bot negro">Voz</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= Dónde se edita ================= -->
+  <section class="mapa">
+    <h2>Dónde puede editar el usuario</h2>
+    <p class="intro">Una regla simple para que nunca haya que buscar.</p>
+    <table>
+      <thead><tr><th>Qué se edita</th><th>Dónde</th><th>Cómo</th></tr></thead>
+      <tbody>
+        <tr><td>Comidas, agua y suplementos de hoy</td><td>Home · lápiz de cada tarjeta</td><td>Abre a Milo con el contexto: porción, cambiar alimento o eliminar</td></tr>
+        <tr><td>Registros de días pasados</td><td>Estadísticas › Diario</td><td>El mismo componente de edición</td></tr>
+        <tr><td>Peso registrado</td><td>Estadísticas › Peso</td><td>Editar o borrar un registro</td></tr>
+        <tr><td>Meta de calorías y macros</td><td>Home › Calorías (flecha) › Tu meta</td><td>Botón "Editar meta"</td></tr>
+        <tr><td>Plan: comidas, platos, horarios, días de entreno</td><td>Perfil › Mi plan</td><td>Formulario, o pidiéndoselo a Milo</td></tr>
+        <tr><td>Medida de agua (vaso o botella, tamaño) y meta</td><td>Perfil › Preferencias</td><td>Se elige una sola medida</td></tr>
+        <tr><td>Rutina de suplementos</td><td>Perfil › Preferencias</td><td>Agregar, quitar u horario</td></tr>
+        <tr><td>Lo que Milo sabe de ti y su tono</td><td>Perfil › Milo</td><td>Memoria editable</td></tr>
+      </tbody>
+    </table>
+    <p class="regla"><b>Regla:</b> lo de hoy se edita en el home · lo pasado en Estadísticas · lo que define tu plan en Perfil.</p>
+  </section>
+</body>
+</html>

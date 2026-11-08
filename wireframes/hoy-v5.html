@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe – Hoy v5</title>
+  <style>
+    /* ===== Paleta de wireframe: solo grises, blanco y negro ===== */
+    :root {
+      --negro: #111;
+      --gris-oscuro: #555;
+      --gris-medio: #999;
+      --gris-claro: #ddd;
+      --gris-fondo: #f2f2f2;
+      --blanco: #fff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--gris-claro);
+      color: var(--negro);
+      padding: 24px 16px;
+    }
+
+    /* ===== Dos celulares lado a lado ===== */
+    .lienzo {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .etiqueta-vista {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gris-oscuro);
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    /* ===== Marco del celular (390 px) ===== */
+    .telefono {
+      width: 390px;
+      height: 844px;
+      background: var(--blanco);
+      border: 2px solid var(--negro);
+      border-radius: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contenido {
+      height: 100%;
+      overflow-y: auto;
+      padding: 20px 16px 170px; /* espacio para la barra y el botón flotante */
+    }
+
+    section { margin-bottom: 14px; }
+
+    .texto-chico { font-size: 12px; color: var(--gris-oscuro); }
+
+    .enlace {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--negro);
+      text-decoration: underline;
+    }
+
+    /* Caja gris que reemplaza íconos e imágenes */
+    .placeholder {
+      background: var(--gris-claro);
+      border: 1px dashed var(--gris-medio);
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    /* ===== 1. Encabezado ===== */
+    .encabezado { margin-bottom: 14px; }
+    .encabezado h1 { font-size: 22px; }
+
+    /* ===== 2. Velocímetro (protagonista) ===== */
+    .velocimetro {
+      border: 2px solid var(--negro);
+      border-radius: 16px;
+      padding: 14px 12px 12px;
+      text-align: center;
+    }
+    .velocimetro svg { width: 100%; height: auto; display: block; }
+    .velocimetro .pista { stroke: var(--gris-claro); }
+    .velocimetro .relleno { stroke: var(--negro); }
+    .velocimetro .marca { stroke: var(--negro); stroke-width: 2.5; }
+    .velocimetro .extremo { font-size: 11px; fill: var(--gris-oscuro); }
+    .velocimetro .etiqueta-meta { font-size: 11px; font-weight: 700; fill: var(--negro); }
+    .velocimetro .antes { font-size: 13px; fill: var(--gris-oscuro); }
+    .velocimetro .valor { font-size: 40px; font-weight: 700; fill: var(--negro); }
+    .velocimetro .despues { font-size: 14px; fill: var(--gris-oscuro); }
+    .leyenda {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--gris-oscuro);
+      margin-top: 4px;
+    }
+    .muestra-zona {
+      width: 18px; height: 8px;
+      border-radius: 2px;
+      background: repeating-linear-gradient(45deg, var(--gris-claro) 0 3px, var(--gris-oscuro) 3px 4.5px);
+    }
+    .pista-toque { font-size: 12px; color: var(--gris-oscuro); margin-top: 6px; }
+
+    /* ===== 3. Medidores secundarios: una fila de 4 ===== */
+    .mini-medidores {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    .mini {
+      border: 1px solid var(--gris-medio);
+      border-radius: 10px;
+      padding: 8px 6px;
+      text-align: center;
+    }
+    .mini .nombre { font-size: 10px; color: var(--gris-oscuro); margin-bottom: 6px; }
+    .mini .barra {
+      height: 6px;
+      border-radius: 3px;
+      background: var(--gris-claro);
+      overflow: hidden;
+    }
+    .mini .barra div { height: 100%; background: var(--negro); }
+    .mini .dato { font-size: 12px; font-weight: 700; margin-top: 6px; white-space: nowrap; }
+
+    /* ===== 4. Testigos: borde sólido para llamar la atención ===== */
+    .testigos { list-style: none; display: grid; gap: 6px; }
+    .testigos li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 12px;
+      border: 2px solid var(--negro);
+      border-radius: 8px;
+    }
+    /* Luz testigo: punto negro, como en el tablero */
+    .luz { width: 10px; height: 10px; border-radius: 50%; background: var(--negro); flex-shrink: 0; }
+
+    /* ===== 5. Siguiente comida ===== */
+    .siguiente {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      padding: 12px 0;
+      border-top: 1px solid var(--gris-claro);
+      border-bottom: 1px solid var(--gris-claro);
+    }
+    .siguiente .etiqueta { color: var(--gris-oscuro); }
+    .siguiente .enlace { margin-left: auto; }
+
+    /* ===== 6. Tu semana ===== */
+    .semana-titulo {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+    .semana-titulo strong { font-size: 14px; }
+    .puntos { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .punto { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; }
+    .punto i {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 1.5px solid var(--negro);
+    }
+    .punto.marcado i { background: var(--negro); }
+    .punto.hoy i { border-width: 3px; }
+    .punto.hoy { font-weight: 700; }
+    .punto.futuro { opacity: 0.35; }
+    .punto.futuro i { border-style: dashed; }
+    .atencion {
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--gris-oscuro);
+      padding: 8px 10px;
+      background: var(--gris-fondo);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    /* ===== 7. Barra de navegación y botón flotante ===== */
+    .nav-inferior {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 80px;
+      background: var(--blanco);
+      border-top: 1.5px solid var(--negro);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding-bottom: 12px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--gris-oscuro);
+      width: 72px;
+    }
+    .nav-item .placeholder { width: 24px; height: 24px; }
+    .nav-item.activo { color: var(--negro); font-weight: 700; }
+    .nav-item.activo .placeholder { background: var(--gris-medio); }
+
+    .boton-flotante {
+      position: absolute;
+      right: 20px;
+      bottom: 100px; /* 20 px por encima de la barra */
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      background: var(--negro);
+      color: var(--blanco);
+      font-size: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 0 var(--gris-medio);
+    }
+    /* ===== Menú del botón "+" abierto ===== */
+    .velo {
+      position: absolute;
+      inset: 0;
+      background: rgba(17, 17, 17, 0.55);
+    }
+    .menu-flotante {
+      position: absolute;
+      right: 20px;
+      bottom: 176px; /* encima del botón flotante */
+      width: 260px;
+      background: var(--blanco);
+      border: 2px solid var(--negro);
+      border-radius: 14px;
+      padding: 8px;
+    }
+    .menu-titulo {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--gris-oscuro);
+      padding: 8px 10px 4px;
+    }
+    .menu-opcion {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 10px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .menu-opcion .placeholder { width: 26px; height: 26px; }
+    .menu-separador { border: none; border-top: 1px solid var(--gris-claro); margin: 6px 10px; }
+  </style>
+</head>
+<body>
+  <!-- Patrón rayado de la zona 1.800–2.200, compartido por ambos velocímetros -->
+  <svg width="0" height="0" style="position: absolute;" aria-hidden="true">
+    <defs>
+      <pattern id="rayas" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <rect width="6" height="6" fill="#ddd"/>
+        <rect width="2" height="6" fill="#555"/>
+      </pattern>
+    </defs>
+  </svg>
+
+  <!--
+    Velocímetro: escala de 0 a 2.600 kcal sobre un arco de 180° (pathLength = 100).
+      Zona 1.800–2.200 → 69,23 % a 84,62 % del arco
+      Meta 2.000       → 76,92 % (ángulo de 41,5° desde la derecha)
+      A: 750 kcal      → 28,85 %
+      B: 1.350 kcal    → 51,92 %
+    Metas del día: 140 g proteína · 215 g carbohidratos · 65 g grasa · 2 L agua
+    (560 + 860 + 585 ≈ 2.005 kcal, coherente con la meta de 2.000).
+  -->
+  <div class="lienzo">
+
+    <!-- ================= A · 13:30, almuerzo sin registrar ================= -->
+    <div>
+      <p class="etiqueta-vista">A · 13:30 · almuerzo sin registrar</p>
+      <div class="telefono">
+        <main class="contenido">
+
+          <!-- 1. Encabezado -->
+          <header class="encabezado">
+            <h1>Hola, Sebastián</h1>
+            <p class="texto-chico">Jueves 22 de octubre · 13:30</p>
+          </header>
+
+          <!-- 2. Velocímetro: 750 = desayuno 480 + snack 270 -->
+          <section class="velocimetro">
+            <svg viewBox="0 0 340 186" aria-label="Has consumido 750 de 2.000 kcal">
+              <path class="pista" d="M 50 160 A 120 120 0 0 1 290 160" pathLength="100"
+                    fill="none" stroke-width="20" stroke-linecap="round"/>
+              <path d="M 50 160 A 120 120 0 0 1 290 160" pathLength="100"
+                    fill="none" stroke="url(#rayas)" stroke-width="20"
+                    stroke-dasharray="15.38 100" stroke-dashoffset="-69.23"/>
+              <path class="relleno" d="M 50 160 A 120 120 0 0 1 290 160" pathLength="100"
+                    fill="none" stroke-width="20" stroke-linecap="round"
+                    stroke-dasharray="28.85 100"/>
+              <line class="marca" x1="249.3" y1="89.7" x2="271.8" y2="69.8"/>
+              <text class="etiqueta-meta" x="276" y="62">Meta 2.000</text>
+              <text class="extremo" x="50" y="184" text-anchor="middle">0</text>
+              <text class="extremo" x="290" y="184" text-anchor="middle">2.600</text>
+              <text class="antes" x="170" y="100" text-anchor="middle">Has consumido</text>
+              <text class="valor" x="170" y="140" text-anchor="middle">750</text>
+              <text class="despues" x="170" y="162" text-anchor="middle">de 2.000 kcal</text>
+            </svg>
+            <div class="leyenda"><span class="muestra-zona"></span>Zona 1.800 – 2.200 kcal</div>
+            <p class="pista-toque">Toca para ver tu diario ›</p>
+          </section>
+
+          <!-- 3. Medidores secundarios -->
+          <section class="mini-medidores">
+            <div class="mini">
+              <div class="nombre">Proteína</div>
+              <div class="barra"><div style="width: 32%;"></div></div>
+              <div class="dato">45 / 140 g</div>
+            </div>
+            <div class="mini">
+              <div class="nombre">Carbohidratos</div>
+              <div class="barra"><div style="width: 37%;"></div></div>
+              <div class="dato">80 / 215 g</div>
+            </div>
+            <div class="mini">
+              <div class="nombre">Grasa</div>
+              <div class="barra"><div style="width: 38%;"></div></div>
+              <div class="dato">25 / 65 g</div>
+            </div>
+            <div class="mini">
+              <div class="nombre">Agua</div>
+              <div class="barra"><div style="width: 60%;"></div></div>
+              <div class="dato">1,2 / 2 L</div>
+            </div>
+          </section>
+
+          <!-- 4. Testigos -->
+          <section>
+            <ul class="testigos">
+              <li><span class="luz"></span>¿Ya almorzaste? Registra tu almuerzo</li>
+            </ul>
+          </section>
+
+          <!-- 5. Siguiente comida -->
+          <section class="siguiente">
+            <span class="etiqueta">Siguiente:</span>
+            <strong>Almuerzo</strong>
+            <a href="#" class="enlace">¿Qué como? ›</a>
+          </section>
+
+          <!-- 6. Tu semana -->
+          <section>
+            <div class="semana-titulo">
+              <strong>Tu semana</strong>
+              <span class="texto-chico">3 de 3 días consistentes</span>
+            </div>
+            <div class="puntos">
+              <div class="punto marcado"><i></i>L</div>
+              <div class="punto marcado"><i></i>M</div>
+              <div class="punto marcado"><i></i>M</div>
+              <div class="punto hoy"><i></i>J</div>
+              <div class="punto futuro"><i></i>V</div>
+              <div class="punto futuro"><i></i>S</div>
+              <div class="punto futuro"><i></i>D</div>
+            </div>
+            <p class="atencion">Esta semana tu proteína estuvo por debajo de la meta 2 de 3 días. Ponle atención a tu consumo.</p>
+            <a href="#" class="enlace">Ver progreso ›</a>
+          </section>
+
+        </main>
+
+        <!-- 7. Botón flotante y barra de navegación -->
+        <div class="boton-flotante" aria-label="Registrar">+</div>
+        <nav class="nav-inferior">
+          <div class="nav-item activo"><div class="placeholder"></div>Hoy</div>
+          <div class="nav-item"><div class="placeholder"></div>Progreso</div>
+          <div class="nav-item"><div class="placeholder"></div>Perfil</div>
+        </nav>
+      </div>
+    </div>
+
+    <!-- ================= B · 14:30, almuerzo registrado ================= -->
+    <div>
+      <p class="etiqueta-vista">B · 14:30 · almuerzo registrado</p>
+      <div class="telefono">
+        <main class="contenido">
+
+          <!-- 1. Encabezado -->
+          <header class="encabezado">
+            <h1>Hola, Sebastián</h1>
+            <p class="texto-chico">Jueves 22 de octubre · 14:30</p>
+          </header>
+
+          <!-- 2. Velocímetro: 1.350 = 750 de la mañana + almuerzo 600 -->
+          <section class="velocimetro">
+            <svg viewBox="0 0 340 186" aria-label="Has consumido 1.350 de 2.000 kcal">
+              <path class="pista" d="M 50 160 A 120 120 0 0 1 290 160" pathLength="100"
+                    fill="none" stroke-width="20" stroke-linecap="round"/>
+              <path d="M 50 160 A 120 120 0 0 1 290 160" pathLength="100"
+                    fill="none" stroke="url(#rayas)" stroke-width="20"
+                    stroke-dasharray="15.38 100" stroke-dashoffset="-69.23"/>
+              <path class="relleno" d="M 50 160 A 120 120 0 0 1 290 160" pathLength="100"
+                    fill="none" stroke-width="20" stroke-linecap="round"
+                    stroke-dasharray="51.92 100"/>
+              <line class="marca" x1="249.3" y1="89.7" x2="271.8" y2="69.8"/>
+              <text class="etiqueta-meta" x="276" y="62">Meta 2.000</text>
+              <text class="extremo" x="50" y="184" text-anchor="middle">0</text>
+              <text class="extremo" x="290" y="184" text-anchor="middle">2.600</text>
+              <text class="antes" x="170" y="100" text-anchor="middle">Has consumido</text>
+              <text class="valor" x="170" y="140" text-anchor="middle">1.350</text>
+              <text class="despues" x="170" y="162" text-anchor="middle">de 2.000 kcal</text>
+            </svg>
+            <div class="leyenda"><span class="muestra-zona"></span>Zona 1.800 – 2.200 kcal</div>
+            <p class="pista-toque">Toca para ver tu diario ›</p>
+          </section>
+
+          <!-- 3. Medidores secundarios -->
+          <section class="mini-medidores">
+            <div class="mini">
+              <div class="nombre">Proteína</div>
+              <div class="barra"><div style="width: 44%;"></div></div>
+              <div class="dato">62 / 140 g</div>
+            </div>
+            <div class="mini">
+              <div class="nombre">Carbohidratos</div>
+              <div class="barra"><div style="width: 74%;"></div></div>
+              <div class="dato">160 / 215 g</div>
+            </div>
+            <div class="mini">
+              <div class="nombre">Grasa</div>
+              <div class="barra"><div style="width: 69%;"></div></div>
+              <div class="dato">45 / 65 g</div>
+            </div>
+            <div class="mini">
+              <div class="nombre">Agua</div>
+              <div class="barra"><div style="width: 75%;"></div></div>
+              <div class="dato">1,5 / 2 L</div>
+            </div>
+          </section>
+
+          <!-- 4. Testigos -->
+          <section>
+            <ul class="testigos">
+              <li><span class="luz"></span>Vas bajo en proteína; tu cena puede equilibrarlo</li>
+            </ul>
+          </section>
+
+          <!-- 5. Siguiente comida -->
+          <section class="siguiente">
+            <span class="etiqueta">Siguiente:</span>
+            <strong>Cena</strong>
+            <a href="#" class="enlace">¿Qué como? ›</a>
+          </section>
+
+          <!-- 6. Tu semana -->
+          <section>
+            <div class="semana-titulo">
+              <strong>Tu semana</strong>
+              <span class="texto-chico">3 de 3 días consistentes</span>
+            </div>
+            <div class="puntos">
+              <div class="punto marcado"><i></i>L</div>
+              <div class="punto marcado"><i></i>M</div>
+              <div class="punto marcado"><i></i>M</div>
+              <div class="punto hoy"><i></i>J</div>
+              <div class="punto futuro"><i></i>V</div>
+              <div class="punto futuro"><i></i>S</div>
+              <div class="punto futuro"><i></i>D</div>
+            </div>
+            <p class="atencion">Esta semana tu proteína estuvo por debajo de la meta 2 de 3 días. Ponle atención a tu consumo.</p>
+            <a href="#" class="enlace">Ver progreso ›</a>
+          </section>
+
+        </main>
+
+        <!-- 7. Botón flotante y barra de navegación -->
+        <div class="boton-flotante" aria-label="Registrar">+</div>
+        <nav class="nav-inferior">
+          <div class="nav-item activo"><div class="placeholder"></div>Hoy</div>
+          <div class="nav-item"><div class="placeholder"></div>Progreso</div>
+          <div class="nav-item"><div class="placeholder"></div>Perfil</div>
+        </nav>
+      </div>
+    </div>
+
+
+    <!-- ================= C · menú del botón "+" abierto (sobre la pantalla de las 14:30) ================= -->
+    <div>
+      <p class="etiqueta-vista">C · menú del botón "+" abierto</p>
+      <div class="telefono">
+        <main class="contenido">
+
+          <!-- 1. Encabezado -->
+          <header class="encabezado">
+            <h1>Hola, Sebastián</h1>
+            <p class="texto-chico">Jueves 22 de octubre · 14:30</p>
+          </header>
+
+          <!-- 2. Velocímetro: 1.350 = 750 de la mañana + almuerzo 600 -->
+          <section class="velocimetro">
+            <svg viewBox="0 0 340 186" aria-label="Has consumido 1.350 de 2.000 kcal">
+              <path class="pista" d="M 50 160 A 120 120 0 0 1 290 160" pathLength="100"
+                    fill="none" stroke-width="20" stroke-linecap="round"/>
+              <path d="M 50 160 A 120 120 0 0 1 290 160" pathLength="100"
+                    fill="none" stroke="url(#rayas)" stroke-width="20"
+                    stroke-dasharray="15.38 100" stroke-dashoffset="-69.23"/>
+              <path class="relleno" d="M 50 160 A 120 120 0 0 1 290 160" pathLength="100"
+                    fill="none" stroke-width="20" stroke-linecap="round"
+                    stroke-dasharray="51.92 100"/>
+              <line class="marca" x1="249.3" y1="89.7" x2="271.8" y2="69.8"/>
+              <text class="etiqueta-meta" x="276" y="62">Meta 2.000</text>
+              <text class="extremo" x="50" y="184" text-anchor="middle">0</text>
+              <text class="extremo" x="290" y="184" text-anchor="middle">2.600</text>
+              <text class="antes" x="170" y="100" text-anchor="middle">Has consumido</text>
+              <text class="valor" x="170" y="140" text-anchor="middle">1.350</text>
+              <text class="despues" x="170" y="162" text-anchor="middle">de 2.000 kcal</text>
+            </svg>
+            <div class="leyenda"><span class="muestra-zona"></span>Zona 1.800 – 2.200 kcal</div>
+            <p class="pista-toque">Toca para ver tu diario ›</p>
+          </section>
+
+          <!-- 3. Medidores secundarios -->
+          <section class="mini-medidores">
+            <div class="mini">
+              <div class="nombre">Proteína</div>
+              <div class="barra"><div style="width: 44%;"></div></div>
+              <div class="dato">62 / 140 g</div>
+            </div>
+            <div class="mini">
+              <div class="nombre">Carbohidratos</div>
+              <div class="barra"><div style="width: 74%;"></div></div>
+              <div class="dato">160 / 215 g</div>
+            </div>
+            <div class="mini">
+              <div class="nombre">Grasa</div>
+              <div class="barra"><div style="width: 69%;"></div></div>
+              <div class="dato">45 / 65 g</div>
+            </div>
+            <div class="mini">
+              <div class="nombre">Agua</div>
+              <div class="barra"><div style="width: 75%;"></div></div>
+              <div class="dato">1,5 / 2 L</div>
+            </div>
+          </section>
+
+          <!-- 4. Testigos -->
+          <section>
+            <ul class="testigos">
+              <li><span class="luz"></span>Vas bajo en proteína; tu cena puede equilibrarlo</li>
+            </ul>
+          </section>
+
+          <!-- 5. Siguiente comida -->
+          <section class="siguiente">
+            <span class="etiqueta">Siguiente:</span>
+            <strong>Cena</strong>
+            <a href="#" class="enlace">¿Qué como? ›</a>
+          </section>
+
+          <!-- 6. Tu semana -->
+          <section>
+            <div class="semana-titulo">
+              <strong>Tu semana</strong>
+              <span class="texto-chico">3 de 3 días consistentes</span>
+            </div>
+            <div class="puntos">
+              <div class="punto marcado"><i></i>L</div>
+              <div class="punto marcado"><i></i>M</div>
+              <div class="punto marcado"><i></i>M</div>
+              <div class="punto hoy"><i></i>J</div>
+              <div class="punto futuro"><i></i>V</div>
+              <div class="punto futuro"><i></i>S</div>
+              <div class="punto futuro"><i></i>D</div>
+            </div>
+            <p class="atencion">Esta semana tu proteína estuvo por debajo de la meta 2 de 3 días. Ponle atención a tu consumo.</p>
+            <a href="#" class="enlace">Ver progreso ›</a>
+          </section>
+
+        </main>
+
+        <!-- 7. Barra de navegación -->
+        <nav class="nav-inferior">
+          <div class="nav-item activo"><div class="placeholder"></div>Hoy</div>
+          <div class="nav-item"><div class="placeholder"></div>Progreso</div>
+          <div class="nav-item"><div class="placeholder"></div>Perfil</div>
+        </nav>
+
+        <!-- Velo gris que oscurece la pantalla detrás del menú -->
+        <div class="velo"></div>
+
+        <!-- Menú abierto, en dos grupos -->
+        <div class="menu-flotante">
+          <div class="menu-titulo">¿Qué como?</div>
+          <div class="menu-opcion"><div class="placeholder"></div>Armar mi plato</div>
+          <div class="menu-opcion"><div class="placeholder"></div>Con lo que tengo</div>
+          <div class="menu-opcion"><div class="placeholder"></div>Voy a comer fuera</div>
+          <div class="menu-opcion"><div class="placeholder"></div>Antes de entrenar</div>
+          <hr class="menu-separador">
+          <div class="menu-titulo">Registrar</div>
+          <div class="menu-opcion"><div class="placeholder"></div>Comida</div>
+          <div class="menu-opcion"><div class="placeholder"></div>Agua</div>
+          <div class="menu-opcion"><div class="placeholder"></div>Peso</div>
+          <div class="menu-opcion"><div class="placeholder"></div>Suplemento</div>
+        </div>
+
+        <!-- El botón flotante se convierte en "×" para cerrar -->
+        <div class="boton-flotante" aria-label="Cerrar menú">×</div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

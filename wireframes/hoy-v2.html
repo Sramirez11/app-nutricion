@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe – Hoy v2</title>
+  <style>
+    /* ===== Paleta de wireframe: solo grises, blanco y negro ===== */
+    :root {
+      --negro: #111;
+      --gris-oscuro: #555;
+      --gris-medio: #999;
+      --gris-claro: #ddd;
+      --gris-fondo: #f2f2f2;
+      --blanco: #fff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--gris-claro);
+      color: var(--negro);
+      padding: 24px 16px;
+    }
+
+    /* ===== Dos celulares lado a lado ===== */
+    .lienzo {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .etiqueta-vista {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gris-oscuro);
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    /* ===== Marco del celular (390 px) ===== */
+    .telefono {
+      width: 390px;
+      height: 844px;
+      background: var(--blanco);
+      border: 2px solid var(--negro);
+      border-radius: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contenido {
+      height: 100%;
+      overflow-y: auto;
+      padding: 20px 16px 170px; /* espacio para la barra y el botón flotante */
+    }
+
+    section { margin-bottom: 16px; }
+
+    .tarjeta {
+      border: 1.5px solid var(--negro);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .titulo-seccion {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--gris-oscuro);
+      margin-bottom: 12px;
+    }
+
+    .texto-chico { font-size: 12px; color: var(--gris-oscuro); }
+
+    .enlace {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--negro);
+      text-decoration: underline;
+    }
+
+    /* Caja gris que reemplaza íconos e imágenes */
+    .placeholder {
+      background: var(--gris-claro);
+      border: 1px dashed var(--gris-medio);
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    /* ===== 1. Encabezado ===== */
+    .encabezado { margin-bottom: 20px; }
+    .encabezado h1 { font-size: 22px; }
+
+    /* ===== 2. Balance de hoy ===== */
+    .medidor { margin-bottom: 14px; }
+    .medidor:last-child { margin-bottom: 0; }
+    .medidor-fila {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .medidor-fila strong { font-weight: 600; }
+    .barra {
+      position: relative;
+      height: 10px;
+      border: 1.5px solid var(--negro);
+      border-radius: 6px;
+      background: var(--blanco);
+      overflow: hidden;
+    }
+    .barra .relleno {
+      height: 100%;
+      background: var(--negro);
+    }
+    /* Zona objetivo de calorías dentro de la barra */
+    .barra .zona {
+      position: absolute;
+      top: 0; bottom: 0;
+      background: repeating-linear-gradient(45deg, var(--gris-claro) 0 4px, var(--gris-medio) 4px 6px);
+    }
+    .barra-calorias { height: 16px; }
+    .escala {
+      position: relative;
+      height: 14px;
+      font-size: 10px;
+      color: var(--gris-oscuro);
+      margin-top: 4px;
+    }
+    .escala span { position: absolute; transform: translateX(-50%); }
+    .separador { border: none; border-top: 1px solid var(--gris-claro); margin: 14px 0; }
+
+    /* ===== 3. Comidas del día ===== */
+    .lista-comidas { list-style: none; }
+    .lista-comidas li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gris-claro);
+    }
+    .lista-comidas li:last-child { border-bottom: none; }
+    .lista-comidas .placeholder { width: 32px; height: 32px; }
+    .lista-comidas .info { flex: 1; }
+    .lista-comidas .comida { font-size: 15px; font-weight: 600; }
+    .lista-comidas .detalle { font-size: 12px; color: var(--gris-oscuro); }
+    .estado {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+    .estado.registrada { background: var(--negro); color: var(--blanco); }
+    .estado.pendiente { border: 1px dashed var(--gris-oscuro); color: var(--gris-oscuro); }
+    .estado.siguiente { border: 1.5px solid var(--negro); font-weight: 700; }
+    /* Comida siguiente destacada */
+    .lista-comidas li.destacada {
+      background: var(--gris-fondo);
+      border: 2px solid var(--negro);
+      border-radius: 10px;
+      padding: 12px;
+      margin: 4px -4px;
+    }
+    .lista-comidas li.destacada .enlace { display: inline-block; margin-top: 4px; }
+
+    /* ===== 4. Tu semana ===== */
+    .semana { display: flex; justify-content: space-between; margin-bottom: 12px; }
+    .dia { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; }
+    .circulo {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 1.5px solid var(--negro);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .circulo.marcado { background: var(--negro); color: var(--blanco); }
+    .dia.hoy .circulo { border: 3px solid var(--negro); }
+    .dia.hoy span { font-weight: 700; }
+    .dia.futuro { opacity: 0.35; }
+    .dia.futuro .circulo { border-style: dashed; }
+    .semana-resumen { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .semana-mensaje { font-size: 13px; color: var(--gris-oscuro); margin-bottom: 10px; }
+
+    /* ===== 5. Suplementos ===== */
+    .linea-estado {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      white-space: nowrap;
+      padding: 12px 14px;
+      border: 1px dashed var(--gris-medio);
+      border-radius: 10px;
+    }
+    .linea-estado .placeholder { width: 20px; height: 20px; }
+    .linea-estado .titulo { color: var(--gris-oscuro); }
+
+    /* ===== 6. Barra de navegación inferior (solo navegación) ===== */
+    .nav-inferior {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 80px;
+      background: var(--blanco);
+      border-top: 1.5px solid var(--negro);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding-bottom: 12px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--gris-oscuro);
+      width: 72px;
+    }
+    .nav-item .placeholder { width: 24px; height: 24px; }
+    .nav-item.activo { color: var(--negro); font-weight: 700; }
+    .nav-item.activo .placeholder { background: var(--gris-medio); }
+
+    /* ===== 7. Botón flotante ===== */
+    .boton-flotante {
+      position: absolute;
+      right: 20px;
+      bottom: 100px; /* 20 px por encima de la barra */
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      background: var(--negro);
+      color: var(--blanco);
+      font-size: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 0 var(--gris-medio);
+      z-index: 3;
+    }
+
+    /* ===== Menú del botón flotante abierto ===== */
+    .velo {
+      position: absolute;
+      inset: 0;
+      background: rgba(17, 17, 17, 0.55);
+      z-index: 2;
+    }
+    .menu-flotante {
+      position: absolute;
+      right: 20px;
+      bottom: 176px; /* encima del botón flotante */
+      width: 270px;
+      background: var(--blanco);
+      border: 2px solid var(--negro);
+      border-radius: 14px;
+      padding: 8px;
+      z-index: 3;
+    }
+    .menu-titulo {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--gris-oscuro);
+      padding: 8px 10px 6px;
+    }
+    .menu-opcion {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 10px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 8px;
+    }
+    .menu-opcion .placeholder { width: 28px; height: 28px; }
+    .menu-opcion .flecha { margin-left: auto; color: var(--gris-oscuro); }
+    .menu-opcion.abierta { background: var(--gris-fondo); }
+    .submenu {
+      list-style: none;
+      margin: 2px 0 6px 50px;
+      border-left: 1.5px solid var(--negro);
+    }
+    .submenu li {
+      padding: 9px 12px;
+      font-size: 14px;
+      border-bottom: 1px solid var(--gris-claro);
+    }
+    .submenu li:last-child { border-bottom: none; }
+    .menu-separador { border: none; border-top: 1px solid var(--gris-claro); margin: 2px 10px; }
+  </style>
+</head>
+<body>
+  <div class="lienzo">
+
+    <!-- ================= CELULAR IZQUIERDO: pantalla normal ================= -->
+    <div>
+      <p class="etiqueta-vista">A · Pantalla Hoy</p>
+      <div class="telefono">
+        <main class="contenido">
+
+          <!-- 1. Encabezado: saludo y fecha (sin avatar) -->
+          <header class="encabezado">
+            <h1>Hola, Sebastián</h1>
+            <p class="texto-chico">Jueves 22 de octubre</p>
+          </header>
+
+          <!-- 2. Balance de hoy -->
+          <section class="tarjeta">
+            <div class="titulo-seccion">Balance de hoy</div>
+
+            <!-- Calorías: escala de 0 a 2.400 kcal; la zona 1.800–2.200 va del 75 % al 91,7 % -->
+            <div class="medidor">
+              <div class="medidor-fila"><strong>Calorías</strong><span>750 kcal</span></div>
+              <div class="barra barra-calorias">
+                <div class="zona" style="left: 75%; width: 16.7%;"></div>
+                <div class="relleno" style="width: 31.25%;"></div>
+              </div>
+              <div class="escala">
+                <span style="left: 75%;">1.800</span>
+                <span style="left: 91.7%;">2.200</span>
+              </div>
+              <p class="texto-chico">750 kcal · te faltan 1.050 – 1.450 para tu zona</p>
+            </div>
+
+            <hr class="separador">
+
+            <!-- Metas: 140 g proteína, 220 g carbohidratos, 65 g grasa (≈ 2.000 kcal) -->
+            <div class="medidor">
+              <div class="medidor-fila"><strong>Proteína</strong><span>32 % · 45 de 140 g</span></div>
+              <div class="barra"><div class="relleno" style="width: 32%;"></div></div>
+            </div>
+            <div class="medidor">
+              <div class="medidor-fila"><strong>Carbohidratos</strong><span>36 % · 80 de 220 g</span></div>
+              <div class="barra"><div class="relleno" style="width: 36%;"></div></div>
+            </div>
+            <div class="medidor">
+              <div class="medidor-fila"><strong>Grasa</strong><span>38 % · 25 de 65 g</span></div>
+              <div class="barra"><div class="relleno" style="width: 38%;"></div></div>
+            </div>
+
+            <hr class="separador">
+
+            <div class="medidor">
+              <div class="medidor-fila"><strong>Agua</strong><span>1,2 de 2 L · 60 %</span></div>
+              <div class="barra"><div class="relleno" style="width: 60%;"></div></div>
+            </div>
+          </section>
+
+          <!-- 3. Comidas del día -->
+          <section class="tarjeta">
+            <div class="titulo-seccion">Comidas del día</div>
+            <ul class="lista-comidas">
+              <li>
+                <div class="placeholder"></div>
+                <div class="info">
+                  <div class="comida">Desayuno</div>
+                  <div class="detalle">8:15 · 480 kcal</div>
+                </div>
+                <span class="estado registrada">Registrado</span>
+              </li>
+              <li>
+                <div class="placeholder"></div>
+                <div class="info">
+                  <div class="comida">Snack</div>
+                  <div class="detalle">11:00 · 270 kcal</div>
+                </div>
+                <span class="estado registrada">Registrado</span>
+              </li>
+              <li class="destacada">
+                <div class="placeholder"></div>
+                <div class="info">
+                  <div class="comida">Almuerzo</div>
+                  <a href="#" class="enlace">Ver qué comer</a>
+                </div>
+                <span class="estado siguiente">Siguiente</span>
+              </li>
+              <li>
+                <div class="placeholder"></div>
+                <div class="info">
+                  <div class="comida">Cena</div>
+                </div>
+                <span class="estado pendiente">Pendiente</span>
+              </li>
+            </ul>
+          </section>
+
+          <!-- 4. Tu semana -->
+          <section class="tarjeta">
+            <div class="titulo-seccion">Tu semana</div>
+            <div class="semana">
+              <div class="dia"><div class="circulo marcado">✓</div><span>L</span></div>
+              <div class="dia"><div class="circulo marcado">✓</div><span>M</span></div>
+              <div class="dia"><div class="circulo marcado">✓</div><span>M</span></div>
+              <div class="dia hoy"><div class="circulo"></div><span>J · hoy</span></div>
+              <div class="dia futuro"><div class="circulo"></div><span>V</span></div>
+              <div class="dia futuro"><div class="circulo"></div><span>S</span></div>
+              <div class="dia futuro"><div class="circulo"></div><span>D</span></div>
+            </div>
+            <p class="semana-resumen">3 de 3 días consistentes</p>
+            <p class="semana-mensaje">Buen comienzo de semana. Hoy sigue en curso.</p>
+            <a href="#" class="enlace">Ver mi progreso</a>
+          </section>
+
+          <!-- 5. Suplementos: una línea de estado -->
+          <section class="linea-estado">
+            <span><span class="titulo">Suplementos:</span> Creatina ✓ · Magnesio pendiente</span>
+          </section>
+
+        </main>
+
+        <!-- 7. Botón flotante -->
+        <div class="boton-flotante" aria-label="Registrar">+</div>
+
+        <!-- 6. Barra de navegación inferior -->
+        <nav class="nav-inferior">
+          <div class="nav-item activo"><div class="placeholder"></div>Hoy</div>
+          <div class="nav-item"><div class="placeholder"></div>Qué comer</div>
+          <div class="nav-item"><div class="placeholder"></div>Progreso</div>
+          <div class="nav-item"><div class="placeholder"></div>Perfil</div>
+        </nav>
+      </div>
+    </div>
+
+    <!-- ================= CELULAR DERECHO: menú del botón flotante abierto ================= -->
+    <div>
+      <p class="etiqueta-vista">B · Menú del botón "+" abierto</p>
+      <div class="telefono">
+        <!-- Misma pantalla de fondo, simplificada (queda tapada por el velo) -->
+        <main class="contenido">
+          <header class="encabezado">
+            <h1>Hola, Sebastián</h1>
+            <p class="texto-chico">Jueves 22 de octubre</p>
+          </header>
+          <section class="tarjeta">
+            <div class="titulo-seccion">Balance de hoy</div>
+            <div class="medidor">
+              <div class="medidor-fila"><strong>Calorías</strong><span>750 kcal</span></div>
+              <div class="barra barra-calorias">
+                <div class="zona" style="left: 75%; width: 16.7%;"></div>
+                <div class="relleno" style="width: 31.25%;"></div>
+              </div>
+            </div>
+            <div class="medidor">
+              <div class="medidor-fila"><strong>Proteína</strong><span>32 %</span></div>
+              <div class="barra"><div class="relleno" style="width: 32%;"></div></div>
+            </div>
+            <div class="medidor">
+              <div class="medidor-fila"><strong>Carbohidratos</strong><span>36 %</span></div>
+              <div class="barra"><div class="relleno" style="width: 36%;"></div></div>
+            </div>
+            <div class="medidor">
+              <div class="medidor-fila"><strong>Grasa</strong><span>38 %</span></div>
+              <div class="barra"><div class="relleno" style="width: 38%;"></div></div>
+            </div>
+            <div class="medidor">
+              <div class="medidor-fila"><strong>Agua</strong><span>1,2 de 2 L</span></div>
+              <div class="barra"><div class="relleno" style="width: 60%;"></div></div>
+            </div>
+          </section>
+          <section class="tarjeta">
+            <div class="titulo-seccion">Comidas del día</div>
+            <ul class="lista-comidas">
+              <li><div class="placeholder"></div><div class="info"><div class="comida">Desayuno</div></div><span class="estado registrada">Registrado</span></li>
+              <li><div class="placeholder"></div><div class="info"><div class="comida">Snack</div></div><span class="estado registrada">Registrado</span></li>
+              <li class="destacada"><div class="placeholder"></div><div class="info"><div class="comida">Almuerzo</div></div><span class="estado siguiente">Siguiente</span></li>
+              <li><div class="placeholder"></div><div class="info"><div class="comida">Cena</div></div><span class="estado pendiente">Pendiente</span></li>
+            </ul>
+          </section>
+        </main>
+
+        <nav class="nav-inferior">
+          <div class="nav-item activo"><div class="placeholder"></div>Hoy</div>
+          <div class="nav-item"><div class="placeholder"></div>Qué comer</div>
+          <div class="nav-item"><div class="placeholder"></div>Progreso</div>
+          <div class="nav-item"><div class="placeholder"></div>Perfil</div>
+        </nav>
+
+        <!-- Velo gris que oscurece la pantalla detrás del menú -->
+        <div class="velo"></div>
+
+        <!-- Menú abierto: 4 opciones; Comida con su segundo nivel -->
+        <div class="menu-flotante">
+          <div class="menu-titulo">Registrar</div>
+          <div class="menu-opcion abierta">
+            <div class="placeholder"></div>Comida<span class="flecha">▾</span>
+          </div>
+          <ul class="submenu">
+            <li>Foto con IA</li>
+            <li>Buscar alimento</li>
+            <li>Lo de siempre</li>
+            <li>Producto desde la etiqueta</li>
+          </ul>
+          <hr class="menu-separador">
+          <div class="menu-opcion"><div class="placeholder"></div>Agua</div>
+          <div class="menu-opcion"><div class="placeholder"></div>Peso</div>
+          <div class="menu-opcion"><div class="placeholder"></div>Suplemento</div>
+        </div>
+
+        <!-- El botón flotante se convierte en "×" para cerrar -->
+        <div class="boton-flotante" aria-label="Cerrar menú">×</div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
