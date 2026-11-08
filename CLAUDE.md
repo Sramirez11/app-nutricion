@@ -41,26 +41,45 @@
 - Onboarding: meta obligatoria y datos básicos; el plan de comidas
   es opcional y se puede crear después desde Mi plan.
 
-## Onboarding (referencia: wireframes/onboarding-v24.html)
-- La v24 reúne la experiencia completa: onboarding (v15), armar el
-  plan de comidas (v21) y el recorrido sobre el Hoy de la v93. Las
-  variantes están en la v15 y la v21.
-- La cuenta se crea antes del onboarding (el login queda fuera).
-- Pasos: objetivo → datos básicos (sexo y edad) → medidas
-  (estatura, peso actual y "¿A qué peso quieres llegar?") → días de
-  ejercicio a la semana → ritmo (botón "Finalizar") → "Calculando
-  tu plan" → "Tu plan está listo". Mantener: 4 pasos, sin peso
-  meta ni ritmo.
+## Onboarding (referencia: wireframes/onboarding-v33.html)
+- La v33 reúne la experiencia completa: onboarding, armar el plan de
+  comidas y el recorrido sobre el Hoy de la v93. Trae arriba un
+  prototipo interactivo de "Tu meta". Las demás variantes están en
+  la v15 y la v21 y no se han pasado a esta estructura.
+- La cuenta se crea antes del onboarding (el login queda fuera). El
+  aviso de que la app no reemplaza a un nutricionista va en los
+  términos y condiciones de esa experiencia, no en el onboarding.
+- Pasos: "¿Qué quieres lograr?" → "Cuéntanos sobre ti" → días de
+  ejercicio a la semana → "Tu meta" → "¿Qué comidas haces al día?"
+  (botón "Finalizar") → "Calculando tu plan" → "Tu plan está listo".
+  Mantener: 4 pasos, sin "Tu meta".
+- "Cuéntanos sobre ti": sexo, edad y estatura, en cascada y a todo
+  el ancho. En Mantener también va aquí el peso actual.
+- Días de ejercicio: la ayuda va en un callout con ícono informativo.
+- "Tu meta": "Con estos pesos calculamos tu ritmo.", peso actual y
+  "¿A qué peso quieres llegar?". Al tocar "Listo" con los dos pesos
+  y una meta saludable aparecen la validación y "¿A qué ritmo
+  quieres ir?" con 2 tarjetas (calorías al día, kilos por semana y
+  cuándo llegas). Si la meta no es saludable (ver Reglas de datos),
+  es igual a su peso o va en contra del objetivo, solo se muestra un
+  callout informativo, sin ritmo y con "Continuar" desactivado.
+- "¿Qué comidas haces al día?": checks con 4 marcadas (desayuno,
+  almuerzo, snack de la tarde y cena) y un callout. Sin contador.
+  Reparte las calorías por comida y define "Comidas 0 de 4" en Hoy.
 - Números con teclado numérico, solo en cm y kg. Botones "Atrás" y
   "Continuar" del mismo tamaño, sin chevrones. Lenguaje sin siglas.
-- "Tu plan está listo": un solo botón principal, "Ir al inicio";
-  "Armar mi plan de comidas" es una tarjeta opcional.
-- Armar el plan de comidas: formulario de 4 pasos (cuáles comidas →
-  tu alimentación → lo que te gusta → cómo cocinas), con barra de
-  pasos arriba y una × a la derecha del título para salir en
-  cualquier momento. Comidas posibles:
+- "Tu plan está listo": un solo botón principal, "Ir al inicio". La
+  tarjeta va en este orden: la meta y cuándo llega ("Perder 3 kg ·
+  Llegas a mediados de diciembre") → "Para lograrlo, te recomendamos
+  al día" con 2.000 kcal y nutrientes → acordeón cerrado "Calorías
+  en tus 4 comidas". Debajo, una tarjeta opcional sin etiquetas:
+  "¿Te ayudamos con qué comer?", 3 líneas cortas y el botón con
+  borde "Armar mi plan".
+- Armar el plan de comidas: formulario de 3 pasos (tu alimentación →
+  lo que te gusta → cómo cocinas), porque las comidas ya se eligieron
+  en el onboarding. Tiene barra de pasos arriba y una × a la derecha
+  del título para salir en cualquier momento. Comidas posibles:
   desayuno, snack de la mañana, almuerzo, snack de la tarde y cena.
-  Es el mismo flujo con el que se crea el plan desde Mi plan.
 - Recorrido (opcional): al llegar a Hoy, una hoja "Así te ayuda
   Milo" con índice de 4 pasos, "Ver recorrido" y "Ahora no". Pasos:
   tu balance → Mi plan y Estadísticas → Milo AI → registrar (termina
@@ -254,8 +273,11 @@
   de 5 kg se muestra una primera etapa de 5 kg.
 - No hay límite de kilos a perder o ganar. La meta se valida con el
   rango saludable del IMC de adultos (18,5 a 24,9) según la
-  estatura (ej.: 1,75 m → 57 a 76 kg). Si queda por debajo, una
-  alerta explica el riesgo y sugiere el mínimo, sin bloquear.
+  estatura (ej.: 1,75 m → 57 a 76 kg). Si al perder la meta queda
+  por debajo del rango, o al ganar queda por encima, no se muestra
+  "¿A qué ritmo quieres ir?": solo un texto informativo explica el
+  riesgo y sugiere el peso recomendado, y "Continuar" queda
+  desactivado hasta corregir la meta.
 - Tope por comida del plan: desayuno 550 kcal, cada snack 300,
   almuerzo 700 y cena 600. Si las comidas elegidas no alcanzan la
   meta, la diferencia se muestra como "Fuera de tu plan".
@@ -263,11 +285,31 @@
   Edad mínima: 18 años.
 
 ## Estilo de wireframe
+- Aplica solo a los wireframes (carpeta wireframes/). La alta
+  fidelidad sigue el DESIGN.md.
 - Solo grises, blanco y negro. Sin colores. Cajas grises como
   placeholder de imágenes. Ancho de celular de 390 px.
 - Escala tipográfica: 28 (título y cifra principal), 17 (título de
   pantalla), 15 (sección y elemento), 13 (secundario), 12
   (etiquetas).
+
+## Línea visual de alta fidelidad (referencia: diseno/linea-visual-v6.html)
+- Todo diseño en alta fidelidad (carpeta diseno/) sigue el DESIGN.md:
+  colores, estados, tipografía, espaciados, radios, sombras,
+  componentes y reglas de uso. Si algo nuevo lo contradice,
+  pregúntame. La regla de "solo grises" aplica solo a los wireframes.
+- El contexto de producto para Impeccable está en PRODUCT.md.
+- Resumen del DESIGN.md:
+- Acento: cobalto. Claro #2442D4 (texto blanco en botones). Oscuro
+  #90A3FF (texto del botón #11131A). Cumple WCAG AA en los dos.
+- Fondo cálido: claro #F5F2EC, oscuro #131210. El acento va solo en
+  la barra de calorías, la pestaña activa, el radio, el cursor y el
+  botón principal.
+- Foco y selección: borde de 2 px en el color del texto, no en el
+  acento.
+- Base Apple, color Wise, datos MacroFactor, íconos 3D (Airbnb) solo
+  en tipos de comida, estados vacíos y bienvenida, y animación
+  (Revolut) solo al registrar.
 
 ## Documento de referencia
 - La definición completa está en el documento "App de nutrición ·
